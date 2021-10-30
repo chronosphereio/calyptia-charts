@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "aggregator-chart.fullname" . }}
+  labels:
+    {{- include "aggregator-chart.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "aggregator-chart.fullname" . }}
+  labels:
+    {{- include "aggregator-chart.labels" . | nindent 4 }}
+spec:
+  hostPath:
+    path: /opt/calyptia-aggregator/
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
