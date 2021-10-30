@@ -3,6 +3,16 @@ entries:
   aggregator:
   - apiVersion: v2
     appVersion: v0.1.4
+    created: "2021-10-30T18:11:12.706948281Z"
+    description: A Helm chart to deploy Calyptia Inc. Aggregator on Kubernetes
+    digest: c57dc482bd3cc18d45536fea0590eac8336ccd37b6b55b2cd215efca18c24fe9
+    name: aggregator
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/aggregator-0.1.3/aggregator-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v2
+    appVersion: v0.1.4
     created: "2021-10-30T12:35:53.366406169Z"
     description: A Helm chart to deploy Calyptia Inc. Aggregator on Kubernetes
     digest: a666c6195be8f7f4f0c86437e727ebd618100e2c056a881848cc0ca5902a37c9
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/aggregator-0.1.2/aggregator-0.1.2.tgz
     version: 0.1.2
-generated: "2021-10-30T12:35:53.366411169Z"
+generated: "2021-10-30T18:11:12.706957982Z"
