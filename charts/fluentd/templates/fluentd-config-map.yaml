@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  labels:
+    {{- include "fluentd.labels" . | nindent 4 }}
+data:
+{{- range $key, $value := .Values.defaultConfigs }}
+  {{$key }}: |-
+    {{- $value | nindent 4 }}
+{{- end }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-main
+  labels:
+    {{- include "fluentd.labels" . | nindent 4 }}
+data:
+  fluent.conf: |-
+    <label @FLUENT_LOG>
+      <match **>
+        @type null
+        @id ignore_fluent_log
+      </match>
+    </label>
+
+    @include config.d/*conf
+    {{- range $key := .Values.configMapConfigs }}
+    {{- print "@include " $key ".d/*" | nindent 4 }}
+    {{- end }}
