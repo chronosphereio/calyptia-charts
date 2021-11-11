@@ -31,4 +31,15 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/aggregator-0.1.2/aggregator-0.1.2.tgz
     version: 0.1.2
-generated: "2021-11-01T23:28:46.75036103Z"
+  fluentd:
+  - apiVersion: v2
+    appVersion: v1.14.2
+    created: "2021-11-11T09:24:44.573100644Z"
+    description: A Helm chart to deploy Calyptia favor of Fluentd on Kubernetes
+    digest: bb57e21e6dfd5039cb058712133577511dc20e1fe917f0f2a9efacafcdb07450
+    name: fluentd
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-11-11T09:24:44.573115044Z"
