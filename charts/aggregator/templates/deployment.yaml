@@ -43,6 +43,8 @@ spec:
               value: {{ required "A valid Calyptia project_token is required!" .Values.project_token }}
             - name: AGGREGATOR_STORE_PATH
               value: /opt/calyptia-aggregator/.store/
+            - name: AGGREGATOR_FLUENTBIT_CLOUD_URL
+              value: {{ .Values.api_url | default "https://cloud-api.calyptia.com/" }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
