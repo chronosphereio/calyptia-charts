@@ -7,6 +7,7 @@ replicaCount: 1
 #required values
 machine_id: ""
 project_token: ""
+cloud_url: "https://cloud-api.calyptia.com/"
 
 image:
   repository: ghcr.io/calyptia/aggregator
