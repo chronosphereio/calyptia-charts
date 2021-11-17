@@ -46,9 +46,9 @@ spec:
             - name: AGGREGATOR_FLUENTBIT_CLOUD_URL
               value: {{ .Values.api_url | default "https://cloud-api.calyptia.com/" }}
             - name: AGGREGATOR_FLUENTBIT_TLS_VERIFY
-              value: {{ .Values.api_tls_verify | default "on" }}
+              value: "on"
             - name: AGGREGATOR_FLUENTBIT_TLS
-              value: {{ .Values.api_tls | default "on" }}              
+              value: "on"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
