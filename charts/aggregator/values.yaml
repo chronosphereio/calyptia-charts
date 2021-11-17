@@ -8,6 +8,8 @@ replicaCount: 1
 machine_id: ""
 project_token: ""
 api_url: "https://cloud-api.calyptia.com/"
+api_tls: "on"
+api_tls_verify: "on"
 
 image:
   repository: ghcr.io/calyptia/aggregator
