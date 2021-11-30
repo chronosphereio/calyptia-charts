@@ -1,5 +1,5 @@
 {{- define "fluentd.pod" -}}
-{{- $defaultTag := printf "%s-debian-elasticsearch7-1.1" (.Chart.AppVersion) -}}
+{{- $defaultTag := printf "%s-debian-elasticsearch7-1.0" (.Chart.AppVersion) -}}
 {{- with .Values.imagePullSecrets }}
 imagePullSecrets:
   {{- toYaml . | nindent 2 }}
