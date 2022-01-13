@@ -113,6 +113,16 @@ entries:
     version: 0.1.2
   fluentd:
   - apiVersion: v2
+    appVersion: v1.14.4
+    created: "2022-01-13T17:20:29.449243738Z"
+    description: A Helm chart to deploy Calyptia favor of Fluentd on Kubernetes
+    digest: 5b5199da93a55a456d43262062f49a744eeae3418d9cb08174a4fe97efc35581
+    name: fluentd
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/fluentd-0.1.2/fluentd-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
     appVersion: v1.14.3
     created: "2021-12-05T21:44:09.002820138Z"
     description: A Helm chart to deploy Calyptia favor of Fluentd on Kubernetes
@@ -132,4 +142,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2021-12-24T14:37:16.262420768Z"
+generated: "2022-01-13T17:20:29.449285339Z"
