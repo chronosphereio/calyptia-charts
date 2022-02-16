@@ -12,8 +12,6 @@ api_url: "https://cloud-api.calyptia.com/"
 image:
   repository: ghcr.io/calyptia/aggregator
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "master"
 
 imagePullSecrets: []
 nameOverride: ""
