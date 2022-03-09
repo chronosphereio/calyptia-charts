@@ -1,16 +1,18 @@
-# Default values for aggregator-chart.
+# Default values for calyptia-core-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
-#required values
 machine_id: ""
+
+# aggregator unique name.
+name: ""
 project_token: ""
 api_url: "https://cloud-api.calyptia.com/"
 
 image:
-  repository: ghcr.io/calyptia/aggregator
+  repository: ghcr.io/calyptia/core
   pullPolicy: Always
 
 imagePullSecrets: []

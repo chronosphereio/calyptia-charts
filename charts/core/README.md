@@ -11,10 +11,10 @@ If you had already added this repo earlier, run `helm repo update` to retrieve
 the latest versions of the packages.  You can then run `helm search repo
 <alias>` to see the charts.
 
-To install the calyptia-aggregator chart:
+To install the calyptia-core chart:
 
-    helm install calyptia-aggregator <alias>/<chart-name>
+    helm install calyptia-core <alias>/<chart-name>
 
 To uninstall the chart:
 
-    helm delete calyptia-aggregator
+    helm delete calyptia-core

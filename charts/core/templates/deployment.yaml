@@ -1,15 +1,14 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: {{ include "aggregator-chart.fullname" . }}
+  name: {{ include "calyptia-core-chart.fullname" . }}
   labels:
-    {{- include "aggregator-chart.labels" . | nindent 4 }}
+    {{- include "calyptia-core-chart.labels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "aggregator-chart.fullname" . }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      {{- include "aggregator-chart.selectorLabels" . | nindent 6 }}
+      {{- include "calyptia-core-chart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -17,33 +16,31 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "aggregator-chart.selectorLabels" . | nindent 8 }}
+        {{- include "calyptia-core-chart.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "aggregator-chart.serviceAccountName" . }}
+      serviceAccountName: {{ include "calyptia-core-chart.serviceAccountName" . }}
       automountServiceAccountToken: true
-      volumes:
-        - name: {{ include "aggregator-chart.fullname" . }}
-          persistentVolumeClaim:
-            claimName: {{ include "aggregator-chart.fullname" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          args:
+            - -debug=true
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: AGGREGATOR_MACHINE_ID
               value: {{ .Values.machine_id | default uuidv4 }}
+            - name: AGGREGATOR_NAME
+              value: {{ .Values.name }}
             - name: PROJECT_TOKEN
-              value: {{ required "A valid Calyptia project_token is required!" .Values.project_token }}
-            - name: AGGREGATOR_STORE_PATH
-              value: /opt/calyptia-aggregator/.store/
+              value: {{ required "A valid Calyptia project_token is required." .Values.project_token }}
             - name: AGGREGATOR_FLUENTBIT_CLOUD_URL
               value: {{ .Values.api_url | default "https://cloud-api.calyptia.com/" }}
             - name: AGGREGATOR_FLUENTBIT_TLS_VERIFY
@@ -52,9 +49,6 @@ spec:
               value: "on"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-            - mountPath: /opt/calyptia-aggregator/
-              name: {{ include "aggregator-chart.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -67,11 +61,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-  volumeClaimTemplates:
-    - metadata:
-        name: {{ include "aggregator-chart.fullname" . }}
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Gi

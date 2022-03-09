@@ -1,9 +1,9 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "aggregator-chart.fullname" . }}
+  name: {{ include "calyptia-core-chart.fullname" . }}
   labels:
-    {{- include "aggregator-chart.labels" . | nindent 4 }}
+    {{- include "calyptia-core-chart.labels" . | nindent 4 }}
 rules:
   - apiGroups:
       - ""
@@ -16,6 +16,7 @@ rules:
       - services
       - configmaps
       - deployments/scale
+      - secrets
     verbs:
       - get
       - list
