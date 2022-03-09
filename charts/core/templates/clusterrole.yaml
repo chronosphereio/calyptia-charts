@@ -1,0 +1,28 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "calyptia-core-chart.fullname" . }}
+  labels:
+    {{- include "calyptia-core-chart.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - ""
+      - "apps"
+    resources:
+      - namespaces
+      - deployments
+      - replicasets
+      - pods
+      - services
+      - configmaps
+      - deployments/scale
+      - secrets
+    verbs:
+      - get
+      - list
+      - create
+      - delete
+      - patch
+      - update
+      - watch
+      - deletecollection
