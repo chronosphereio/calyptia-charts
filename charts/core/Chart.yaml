@@ -3,5 +3,5 @@ name: core
 description: A helm chart to deploy Calyptia Inc. core on Kubernetes
 
 type: application
-version: 0.2.8
-appVersion: "v0.1.14"
+version: 0.2.9
+appVersion: "v0.2.0"
