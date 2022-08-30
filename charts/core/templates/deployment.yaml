@@ -47,6 +47,8 @@ spec:
               value: "{{ .Values.tls_verify | default "on" }}"
             - name: AGGREGATOR_FLUENTBIT_TLS
               value: "{{ .Values.tls | default "on" }}"
+            - name: AGGREGATOR_SIDECAR_URL
+              value: "{{ .Values.sidecar_url }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
