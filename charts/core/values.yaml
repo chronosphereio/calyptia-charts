@@ -10,6 +10,7 @@ machine_id: ""
 name: ""
 project_token: ""
 api_url: "https://cloud-api.calyptia.com/"
+sidecar_url: "nats://tcp-4222-nats-messaging.default.svc.local:4222"
 
 image:
   repository: ghcr.io/calyptia/core
