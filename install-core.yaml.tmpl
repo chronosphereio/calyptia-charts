@@ -1,0 +1,117 @@
+---
+# Source: core/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: calyptia-core
+  labels:
+    helm.sh/chart: core-0.2.9
+    app.kubernetes.io/name: core
+    app.kubernetes.io/instance: calyptia
+    app.kubernetes.io/version: "v0.2.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: core/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: calyptia-core
+  labels:
+    helm.sh/chart: core-0.2.9
+    app.kubernetes.io/name: core
+    app.kubernetes.io/instance: calyptia
+    app.kubernetes.io/version: "v0.2.0"
+    app.kubernetes.io/managed-by: Helm
+rules:
+  - apiGroups:
+      - ""
+      - "apps"
+    resources:
+      - namespaces
+      - deployments
+      - replicasets
+      - pods
+      - services
+      - configmaps
+      - deployments/scale
+      - secrets
+    verbs:
+      - get
+      - list
+      - create
+      - delete
+      - patch
+      - update
+      - watch
+      - deletecollection
+---
+# Source: core/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: calyptia-core
+  labels:
+    helm.sh/chart: core-0.2.9
+    app.kubernetes.io/name: core
+    app.kubernetes.io/instance: calyptia
+    app.kubernetes.io/version: "v0.2.0"
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: calyptia-core
+subjects:
+  - kind: ServiceAccount
+    name: calyptia-core
+    namespace: default
+---
+# Source: core/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calyptia-core
+  labels:
+    helm.sh/chart: core-0.2.9
+    app.kubernetes.io/name: core
+    app.kubernetes.io/instance: calyptia
+    app.kubernetes.io/version: "v0.2.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: core
+      app.kubernetes.io/instance: calyptia
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: core
+        app.kubernetes.io/instance: calyptia
+    spec:
+      serviceAccountName: calyptia-core
+      automountServiceAccountToken: true
+      securityContext:
+        {}
+      containers:
+        - name: core
+          securityContext:
+            {}
+          args:
+            - -debug=true
+          image: "ghcr.io/calyptia/core:v0.2.0"
+          imagePullPolicy: Always
+          env:
+            - name: AGGREGATOR_MACHINE_ID
+              value: 709a46b5-f1a1-497c-b80a-2f71effec46e
+            - name: AGGREGATOR_NAME
+              value: 
+            - name: PROJECT_TOKEN
+              value: $PROJECT_TOKEN
+            - name: AGGREGATOR_FLUENTBIT_CLOUD_URL
+              value: https://cloud-api.calyptia.com/
+            - name: AGGREGATOR_FLUENTBIT_TLS_VERIFY
+              value: "on"
+            - name: AGGREGATOR_FLUENTBIT_TLS
+              value: "on"
+          resources:
+            {}
