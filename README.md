@@ -5,7 +5,7 @@ Helm's [documentation](https://helm.sh/docs) to get started.
 
 Once Helm has been set up correctly, add the repo as follows:
 
-  helm repo add calyptia <https://helm.calyptia.com/>
+    helm repo add calyptia https://helm.calyptia.com/
   
 If you had already added this repo earlier, run `helm repo update` to retrieve
 the latest versions of the packages.  You can then run `helm search repo
@@ -19,25 +19,24 @@ helm install <chart-name> calyptia/<chart-name>
 
 To uninstall the chart:
 
-```shell
-helm delete my-<chart-name>
+    helm delete my-<chart-name>
+    
+## Current supported charts
+
+### Calyptia-core
+
+First, get a project token from [Calyptia Cloud](https://cloud.calyptia.com/)
+To install a calyptia-core instance on the default namespace, run with:
+
 ```
-
-## Currently supported charts
-
-* Core Instance
-
-```shell
-helm install calyptia calyptia/core
+helm install calyptia-core calyptia/core --set project_token=<PROJECT TOKEN>
 ```
+#### Enable specific functionality on Calyptia Core.
 
-## YAML support
-
-This repo also contains [YAML templates](./install-core.yaml.tmpl) of the Helm chart for direct `kubectl` deployment:
+To enable the experimental cluster logging functionality:
 
 ```shell
-export PROJECT_TOKEN=XXX
-curl -sSfL https://github.com/calyptia/charts/install-core.yaml.tmpl | envsubst '$PROJECT_TOKEN' | kubectl apply -f -
+helm install --set-string cluster_logging=true --set project_token=<PROJECT TOKEN>
 ```
 
 Note that a valid project token is required.
