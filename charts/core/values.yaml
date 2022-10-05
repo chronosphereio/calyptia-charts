@@ -6,11 +6,18 @@ replicaCount: 1
 
 machine_id: ""
 
-# aggregator unique name.
+# core instance unique name.
 name: ""
 project_token: ""
 api_url: "https://cloud-api.calyptia.com/"
 sidecar_url: "nats://tcp-4222-nats-messaging.default.svc.local:4222"
+
+# core instance variables required at creation/register time on the Calyptia Cloud API.
+core_instance_environment: "default"
+# comma separated set of tags used when creating the core_instance on the Calyptia Cloud API.
+core_instance_tags: ""
+# Experimental: enable of disable the cluster logging functionality for this core instance.
+cluster_logging: false
 
 image:
   repository: ghcr.io/calyptia/core

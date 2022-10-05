@@ -35,8 +35,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: AGGREGATOR_MACHINE_ID
-              value: {{ .Values.machine_id | default uuidv4 }}
+            - name: CORE_INSTANCE_TAGS
+              value: {{ .Values.core_instance_tags }}
+            - name: CORE_INSTANCE_ENVIRONMENT
+              value: {{ .Values.core_instance_environment | default "default" }}
+            - name: CORE_INSTANCE_CLUSTER_LOGGING
+              value: "{{ .Values.cluster_logging | default "false" }}"
             - name: AGGREGATOR_NAME
               value: {{ .Values.name }}
             - name: PROJECT_TOKEN
