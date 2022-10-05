@@ -1,4 +1,4 @@
-## Usage
+# Usage
 
 [Helm](https://helm.sh) must be installed to use the charts.  Please refer to
 Helm's [documentation](https://helm.sh/docs) to get started.
@@ -11,9 +11,11 @@ If you had already added this repo earlier, run `helm repo update` to retrieve
 the latest versions of the packages.  You can then run `helm search repo
 calyptia` to see the charts.
 
-To install the <chart-name> chart:
+To install the `chart-name` chart:
 
-    helm install <chart-name> calyptia/<chart-name>
+```shell
+helm install <chart-name> calyptia/<chart-name>
+```
 
 To uninstall the chart:
 
@@ -36,3 +38,5 @@ To enable the experimental cluster logging functionality:
 ```shell
 helm install --set-string cluster_logging=true --set project_token=<PROJECT TOKEN>
 ```
+
+Note that a valid project token is required.
