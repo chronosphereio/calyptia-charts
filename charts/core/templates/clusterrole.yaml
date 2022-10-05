@@ -12,6 +12,7 @@ rules:
       - namespaces
       - deployments
       - replicasets
+      - daemonsets
       - pods
       - services
       - configmaps
