@@ -36,7 +36,33 @@ To install a calyptia-core instance on the default namespace, run with:
 helm install calyptia-core calyptia/core --set project_token=<PROJECT TOKEN>
 ```
 
-#### Enable specific functionality on Calyptia Core.
+YAML-only install
+
+Calyptia Core can be installed without Helm as well using equivalent YAML.
+
+The template YAML is auto-generated on each release for you as [`install-core.yaml.tmpl`](./install-core.yaml.tmpl).
+It only requires the definition of the `PROJECT_TOKEN` variable and substitution in the YAML like so:
+
+```shell
+$ export PROJECT_TOKEN=XXX
+$ curl -sSfL https://raw.githubusercontent.com/calyptia/charts/master/install-core.yaml.tmpl | envsubst '$PROJECT_TOKEN' | kubectl apply -f -
+serviceaccount/calyptia-core created
+clusterrole.rbac.authorization.k8s.io/calyptia-core created
+clusterrolebinding.rbac.authorization.k8s.io/calyptia-core created
+deployment.apps/calyptia-core created
+```
+
+**The recommendation would always be to download and verify directly without applying initially for security purposes.**
+
+An all-in-one command to do it is therefore (replacing `XXX` with your token) on Linux or compatible platforms with `envsubst` available:
+
+```shell
+export PROJECT_TOKEN=XXX;curl -sSfL https://raw.githubusercontent.com/calyptia/charts/master/install-core.yaml.tmpl | envsubst '$PROJECT_TOKEN' | kubectl apply -f -
+```
+
+For Windows or other platforms without envsubst available the YAML template can be downloaded and the PROJECT_TOKEN substituted manually or in some other fashion.
+
+#### Enable specific functionality on Calyptia Core
 
 To enable the experimental cluster logging functionality:
 
