@@ -70,4 +70,10 @@ To enable the experimental cluster logging functionality:
 helm install --set-string cluster_logging=true --set project_token=<PROJECT TOKEN>
 ```
 
+To add tags to the calyptia-core instance:
+
+```shell
+helm install --set-string core_instance_tags='one\,two' --set project_token=<PROJECT TOKEN>
+```
+
 Note that a valid project token is required.
