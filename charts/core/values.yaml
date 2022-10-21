@@ -15,6 +15,9 @@ sidecar_url: "nats://tcp-4222-nats-messaging.default.svc.local:4222"
 # core instance variables required at creation/register time on the Calyptia Cloud API.
 core_instance_environment: "default"
 # comma separated set of tags used when creating the core_instance on the Calyptia Cloud API.
+# Please note that --set-string doesn't parses comma delimited values properly
+# and requires to escape the strings as in (tag\,tag2).
+# TODO: look for an array value.
 core_instance_tags: ""
 # Experimental: enable of disable the cluster logging functionality for this core instance.
 cluster_logging: false
