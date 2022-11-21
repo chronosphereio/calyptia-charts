@@ -5,10 +5,10 @@ kind: ServiceAccount
 metadata:
   name: calyptia-core
   labels:
-    helm.sh/chart: core-0.3.5
+    helm.sh/chart: core-0.3.0
     app.kubernetes.io/name: core
     app.kubernetes.io/instance: calyptia
-    app.kubernetes.io/version: "v0.4.2"
+    app.kubernetes.io/version: "v0.3.9"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: core/templates/clusterrole.yaml
@@ -17,10 +17,10 @@ kind: ClusterRole
 metadata:
   name: calyptia-core
   labels:
-    helm.sh/chart: core-0.3.5
+    helm.sh/chart: core-0.3.0
     app.kubernetes.io/name: core
     app.kubernetes.io/instance: calyptia
-    app.kubernetes.io/version: "v0.4.2"
+    app.kubernetes.io/version: "v0.3.9"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups:
@@ -52,10 +52,10 @@ kind: ClusterRoleBinding
 metadata:
   name: calyptia-core
   labels:
-    helm.sh/chart: core-0.3.5
+    helm.sh/chart: core-0.3.0
     app.kubernetes.io/name: core
     app.kubernetes.io/instance: calyptia
-    app.kubernetes.io/version: "v0.4.2"
+    app.kubernetes.io/version: "v0.3.9"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -72,10 +72,10 @@ kind: Deployment
 metadata:
   name: calyptia-core
   labels:
-    helm.sh/chart: core-0.3.5
+    helm.sh/chart: core-0.3.0
     app.kubernetes.io/name: core
     app.kubernetes.io/instance: calyptia
-    app.kubernetes.io/version: "v0.4.2"
+    app.kubernetes.io/version: "v0.3.9"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -99,17 +99,17 @@ spec:
             {}
           args:
             - -debug=true
-          image: "ghcr.io/calyptia/core:v0.4.2"
+          image: "ghcr.io/calyptia/core:v0.3.9"
           imagePullPolicy: Always
           env:
             - name: CORE_INSTANCE_TAGS
-              value: 
+              value: $CORE_INSTANCE_TAGS
             - name: CORE_INSTANCE_ENVIRONMENT
               value: default
             - name: CORE_INSTANCE_CLUSTER_LOGGING
               value: "false"
             - name: AGGREGATOR_NAME
-              value: 
+              value: $CORE_INSTANCE_NAME
             - name: PROJECT_TOKEN
               value: $PROJECT_TOKEN
             - name: AGGREGATOR_FLUENTBIT_CLOUD_URL

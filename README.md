@@ -45,19 +45,23 @@ It only requires the definition of the `PROJECT_TOKEN` variable and substitution
 
 ```shell
 $ export PROJECT_TOKEN=XXX
-$ curl -sSfL https://raw.githubusercontent.com/calyptia/charts/master/install-core.yaml.tmpl | envsubst '$PROJECT_TOKEN' | kubectl apply -f -
+$ export CORE_INSTANCE_TAGS=''
+$ export CORE_INSTANCE_NAME=''
+$ curl -sSfL https://raw.githubusercontent.com/calyptia/charts/master/install-core.yaml.tmpl | envsubst '$PROJECT_TOKEN,$CORE_INSTANCE_TAGS,$CORE_INSTANCE_NAME' | kubectl apply -f -
 serviceaccount/calyptia-core created
 clusterrole.rbac.authorization.k8s.io/calyptia-core created
 clusterrolebinding.rbac.authorization.k8s.io/calyptia-core created
 deployment.apps/calyptia-core created
 ```
 
+In the example above we also show how you can set the Calyptia Core instance name (if not present then it will be auto-generated) and the Calyptia Core instance tags.
+
 **The recommendation would always be to download and verify directly without applying initially for security purposes.**
 
 An all-in-one command to do it is therefore (replacing `XXX` with your token) on Linux or compatible platforms with `envsubst` available:
 
 ```shell
-export PROJECT_TOKEN=XXX;curl -sSfL https://raw.githubusercontent.com/calyptia/charts/master/install-core.yaml.tmpl | envsubst '$PROJECT_TOKEN' | kubectl apply -f -
+export PROJECT_TOKEN=XXX;export CORE_INSTANCE_TAGS=test;export CORE_INSTANCE_NAME=test;curl -sSfL https://raw.githubusercontent.com/calyptia/charts/master/install-core.yaml.tmpl | envsubst '$PROJECT_TOKEN' | kubectl apply -f -
 ```
 
 For Windows or other platforms without envsubst available the YAML template can be downloaded and the PROJECT_TOKEN substituted manually or in some other fashion.
