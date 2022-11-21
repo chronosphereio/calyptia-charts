@@ -41,12 +41,18 @@ YAML-only install
 Calyptia Core can be installed without Helm as well using equivalent YAML.
 
 The template YAML is auto-generated on each release for you as [`install-core.yaml.tmpl`](./install-core.yaml.tmpl).
-It only requires the definition of the `PROJECT_TOKEN` variable and substitution in the YAML like so:
+It requires the definition of the following environment variables:
+
+* `PROJECT_TOKEN` - the Calyptia Core token to use.
+* `CORE_INSTANCE_NAME` - the name of the Calyptia Core instance to create.
+* `CORE_INSTANCE_TAGS` - a comma-separated list of tags to add to the Calyptia Core instance.
+
+With these variables defined we can then use substitution in the YAML like so:
 
 ```shell
 $ export PROJECT_TOKEN=XXX
-$ export CORE_INSTANCE_TAGS=''
-$ export CORE_INSTANCE_NAME=''
+$ export CORE_INSTANCE_TAGS=test
+$ export CORE_INSTANCE_NAME=test-instance
 $ curl -sSfL https://raw.githubusercontent.com/calyptia/charts/master/install-core.yaml.tmpl | envsubst '$PROJECT_TOKEN,$CORE_INSTANCE_TAGS,$CORE_INSTANCE_NAME' | kubectl apply -f -
 serviceaccount/calyptia-core created
 clusterrole.rbac.authorization.k8s.io/calyptia-core created
@@ -58,10 +64,10 @@ In the example above we also show how you can set the Calyptia Core instance nam
 
 **The recommendation would always be to download and verify directly without applying initially for security purposes.**
 
-An all-in-one command to do it is therefore (replacing `XXX` with your token) on Linux or compatible platforms with `envsubst` available:
+An all-in-one command to do it is therefore (replacing `XXX` with your token, and changing the name/tags as appropriate) on Linux or compatible platforms with `envsubst` available:
 
 ```shell
-export PROJECT_TOKEN=XXX;export CORE_INSTANCE_TAGS=test;export CORE_INSTANCE_NAME=test;curl -sSfL https://raw.githubusercontent.com/calyptia/charts/master/install-core.yaml.tmpl | envsubst '$PROJECT_TOKEN' | kubectl apply -f -
+export PROJECT_TOKEN=XXX;export CORE_INSTANCE_TAGS=onelineinstall;export CORE_INSTANCE_NAME=$HOSTNAME;curl -sSfL https://raw.githubusercontent.com/calyptia/charts/master/install-core.yaml.tmpl | envsubst '$PROJECT_TOKEN,$CORE_INSTANCE_TAGS,$CORE_INSTANCE_NAME' | kubectl apply -f -
 ```
 
 For Windows or other platforms without envsubst available the YAML template can be downloaded and the PROJECT_TOKEN substituted manually or in some other fashion.
