@@ -39,7 +39,7 @@ jobs:
       - run: |
           helm repo add calyptia http://helm.calyptia.com
           helm repo update
-          helm template calyptia calyptia/core --set project_token='$PROJECT_TOKEN' > install-core.yaml.tmpl
+          helm template calyptia calyptia/core --set project_token='$PROJECT_TOKEN',core_instance_tags='$CORE_INSTANCE_TAGS',name='$CORE_INSTANCE_NAME' > install-core.yaml.tmpl
         shell: bash
 
       - name: Create PR for update

@@ -22,7 +22,7 @@ jobs:
           curl -sSfl -H "Authorization: Bearer $GITHUB_TOKEN"  https://api.github.com/repos/calyptia/core/releases/latest
           LATEST_RELEASE_TAG=$(curl -sSfl -H "Authorization: Bearer $GITHUB_TOKEN"  https://api.github.com/repos/calyptia/core/releases/latest|jq -r .tag_name)
           echo "Found tag for latest release: $LATEST_RELEASE_TAG"
-          echo "::set-output name=tag::$LATEST_RELEASE_TAG"
+          echo "tag=$LATEST_RELEASE_TAG" >> $GITHUB_OUTPUT
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.CI_PAT }}

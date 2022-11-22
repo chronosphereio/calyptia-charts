@@ -103,13 +103,13 @@ spec:
           imagePullPolicy: Always
           env:
             - name: CORE_INSTANCE_TAGS
-              value: 
+              value: $CORE_INSTANCE_TAGS
             - name: CORE_INSTANCE_ENVIRONMENT
               value: default
             - name: CORE_INSTANCE_CLUSTER_LOGGING
               value: "false"
             - name: AGGREGATOR_NAME
-              value: 
+              value: $CORE_INSTANCE_NAME
             - name: PROJECT_TOKEN
               value: $PROJECT_TOKEN
             - name: AGGREGATOR_FLUENTBIT_CLOUD_URL
