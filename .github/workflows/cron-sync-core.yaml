@@ -29,7 +29,7 @@ jobs:
 
       # Note we assume a simple version update so no chart version update
       - run: |
-          sed "s/^appVersion.*$/appVersion: $NEW_CALYPTIA_CORE_VERSION/g" ./charts/core/Chart.yaml
+          sed -i "s/^appVersion.*$/appVersion: $NEW_CALYPTIA_CORE_VERSION/g" ./charts/core/Chart.yaml
         env:
           NEW_CALYPTIA_CORE_VERSION: ${{ steps.get-core-release.outputs.tag }}
         shell: bash
