@@ -1,0 +1,9 @@
+apiVersion: v2
+name: calyptia-fluent-bit
+description: Fast and lightweight observability processor and forwarder or Linux, OSX and BSD
+  family operating systems.
+home: https://calyptia.com/products/lts-fluentbit/
+icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/fluentd/fluentbit/icon/fluentbit-icon-color.svg
+type: application
+version: 0.1.0
+appVersion: "22.10"

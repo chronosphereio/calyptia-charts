@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "calyptia-fluent-bit.fullname" . }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "calyptia-fluent-bit.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  namespace: {{ default "fluentbit" .Values.namespace.name }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "calyptia-fluent-bit.selectorLabels" . | nindent 6 }}
+
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "calyptia-fluent-bit.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "calyptia-fluent-bit.pod" . | nindent 6 }}
