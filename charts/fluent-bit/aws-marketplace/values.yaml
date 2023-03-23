@@ -41,7 +41,6 @@ existingConfigMap: ""
 
 service:
   type: ClusterIP
-  port: 2020
   annotations: {}
 
 rbac:
@@ -49,7 +48,9 @@ rbac:
   nodeAccess: false
 
 labels: {}
-annotations: {}
+annotations:
+  fluentbit.io/exclude: "true"
+
 podAnnotations: {}
 
 luaScripts: {}
@@ -99,19 +100,9 @@ config:
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
-        Name es
-        Match kube.*
-        Host elasticsearch-master
-        Logstash_Format On
-        Retry_Limit False
+        Name stdout
+        Match *
 
-    [OUTPUT]
-        Name es
-        Match host.*
-        Host elasticsearch-master
-        Logstash_Format On
-        Logstash_Prefix node
-        Retry_Limit False
 
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
