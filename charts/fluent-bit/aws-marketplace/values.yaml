@@ -3,7 +3,10 @@ namespace:
   name: "calyptia-fluentbit"
 
 serviceAccount:
+  name: "eks-calyptia-fluentbit"
   create: true
+  annotations:
+    eks.amazonaws.com/role-arn: "<Enter the ARN of the IAM service account>"
 
 image:
   amd:
