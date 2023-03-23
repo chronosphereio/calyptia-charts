@@ -5,10 +5,10 @@ kind: ServiceAccount
 metadata:
   name: calyptia-core
   labels:
-    helm.sh/chart: core-1.1.0
+    helm.sh/chart: core-1.1.1
     app.kubernetes.io/name: core
     app.kubernetes.io/instance: calyptia
-    app.kubernetes.io/version: "v1.1.1"
+    app.kubernetes.io/version: "v1.1.2"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: core/templates/clusterrole.yaml
@@ -17,10 +17,10 @@ kind: ClusterRole
 metadata:
   name: calyptia-core
   labels:
-    helm.sh/chart: core-1.1.0
+    helm.sh/chart: core-1.1.1
     app.kubernetes.io/name: core
     app.kubernetes.io/instance: calyptia
-    app.kubernetes.io/version: "v1.1.1"
+    app.kubernetes.io/version: "v1.1.2"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups:
@@ -52,10 +52,10 @@ kind: ClusterRoleBinding
 metadata:
   name: calyptia-core
   labels:
-    helm.sh/chart: core-1.1.0
+    helm.sh/chart: core-1.1.1
     app.kubernetes.io/name: core
     app.kubernetes.io/instance: calyptia
-    app.kubernetes.io/version: "v1.1.1"
+    app.kubernetes.io/version: "v1.1.2"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -72,10 +72,10 @@ kind: Deployment
 metadata:
   name: calyptia-core
   labels:
-    helm.sh/chart: core-1.1.0
+    helm.sh/chart: core-1.1.1
     app.kubernetes.io/name: core
     app.kubernetes.io/instance: calyptia
-    app.kubernetes.io/version: "v1.1.1"
+    app.kubernetes.io/version: "v1.1.2"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -99,7 +99,7 @@ spec:
             {}
           args:
             - -debug=true
-          image: "ghcr.io/calyptia/core:v1.1.1"
+          image: "ghcr.io/calyptia/core:v1.1.2"
           imagePullPolicy: Always
           env:
             - name: CORE_INSTANCE_TAGS
