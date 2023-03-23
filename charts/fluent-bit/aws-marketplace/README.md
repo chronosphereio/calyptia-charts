@@ -18,3 +18,13 @@ To install the calyptia-fluentbit chart:
 To uninstall the chart:
 
     helm delete calyptia-fluentbit
+
+For AWS marketplace we need to set up a service account with the correct IAM roles:
+
+```
+eksctl create cluster
+
+eksctl utils associate-iam-oidc-provider --cluster=<clusterName> --approve
+
+eksctl create iamserviceaccount --cluster=<clusterName> --name=<serviceAccountName> --namespace=<serviceAccountNamespace> --attach-policy-arn=arn:aws:iam::aws:policy/AWSMarketplaceMeteringRegisterUsage --approve
+```
