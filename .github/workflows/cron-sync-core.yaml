@@ -27,11 +27,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CI_PAT }}
 
-      - run: source .github/scripts/semverCheck.sh
-        env:
-          NEW_CALYPTIA_CORE_VERSION: ${{ steps.get-core-release.outputs.tag }}
-        shell: bash
-
       # Note we assume a simple version update so no chart version update
       - run: |
           if [[ "$NEW_CALYPTIA_CORE_VERSION" =~ ^v?([0-9]+\.[0-9]+\.[0-9]+)$ ]] ; then
