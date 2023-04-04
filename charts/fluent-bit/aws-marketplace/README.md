@@ -11,7 +11,7 @@ eksctl create cluster
 
 eksctl utils associate-iam-oidc-provider --cluster=<clusterName> --approve
 
-eksctl create iamserviceaccount --cluster=<clusterName> --name=<serviceAccountName> --namespace=<serviceAccountNamespace> --attach-policy-arn=arn:aws:iam::aws:policy/AWSMarketplaceMeteringRegisterUsage --approve
+eksctl create iamserviceaccount --cluster=<clusterName> --name=eks-calyptia-fluentbit --namespace=<serviceAccountNamespace> --attach-policy-arn=arn:aws:iam::aws:policy/AWSMarketplaceMeteringRegisterUsage --approve
 ```
 
 [Helm](https://helm.sh) must be installed to use the charts.  Please refer to
