@@ -1,5 +1,5 @@
 namespace:
-  create : true
+  create: true
   name: "calyptia-fluentbit"
 
 serviceAccount:
@@ -48,8 +48,6 @@ podAnnotations: {}
 
 luaScripts: {}
 
-
-
 ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/configuration-file
 config:
   service: |
@@ -96,7 +94,6 @@ config:
         Name stdout
         Match *
 
-
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
   upstream: {}
@@ -111,7 +108,6 @@ config:
         Time_Format %Y-%m-%dT%H:%M:%S.%L
 
   extraFiles: {}
-
 
 # The config volume is mounted by default, either to the existingConfigMap value, or the default of "fluent-bit.fullname"
 volumeMounts:
