@@ -37,8 +37,8 @@ jobs:
               echo "ERROR: Invalid semver string: $NEW_CALYPTIA_FB_VERSION"
               exit 1
           fi
-          sed -i "s/^version.*$/version: $NEW_CALYPTIA_FB_VERSION/g" ./charts/fluent-bit/Chart.yaml
-          sed -i "s/^appVersion.*$/appVersion: v$NEW_CALYPTIA_FB_VERSION/g" ./charts/fluent-bit/Chart.yaml
+          sed -i "s/^version.*$/version: $NEW_CALYPTIA_FB_VERSION/g" ./charts/aws-fluent-bit/Chart.yaml
+          sed -i "s/^appVersion.*$/appVersion: v$NEW_CALYPTIA_FB_VERSION/g" ./charts/aws-fluent-bit/Chart.yaml
           echo "chart version=$NEW_CALYPTIA_FB_VERSION" >> $GITHUB_OUTPUT
           echo "app version=v$NEW_CALYPTIA_FB_VERSION" >> $GITHUB_OUTPUT
         env:

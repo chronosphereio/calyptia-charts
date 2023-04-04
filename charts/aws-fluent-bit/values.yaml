@@ -1,5 +1,5 @@
 namespace:
-  create : true
+  create: true
   name: "calyptia-fluentbit"
 
 serviceAccount:
@@ -9,13 +9,8 @@ serviceAccount:
     eks.amazonaws.com/role-arn: "<Enter the ARN of the IAM service account>"
 
 image:
-  amd:
-    repository: http://709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
-    tag: 22.10.5
-    pullPolicy: Always
-  arn:
-    repository: nil
-    tag: nil
+  repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
+  tag: 22.10.5
   pullPolicy: Always
 
 metricsPort: 2020
@@ -52,8 +47,6 @@ annotations:
 podAnnotations: {}
 
 luaScripts: {}
-
-
 
 ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/configuration-file
 config:
@@ -101,7 +94,6 @@ config:
         Name stdout
         Match *
 
-
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
   upstream: {}
@@ -116,7 +108,6 @@ config:
         Time_Format %Y-%m-%dT%H:%M:%S.%L
 
   extraFiles: {}
-
 
 # The config volume is mounted by default, either to the existingConfigMap value, or the default of "fluent-bit.fullname"
 volumeMounts:
