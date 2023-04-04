@@ -20,7 +20,7 @@ Helm's [documentation](https://helm.sh/docs) to get started.
 Once Helm has been set up correctly, add the repo as follows:
 
 ```shell
-helm repo add calyptia https://calyptia.github.io/charts
+helm repo add calyptia https://helm.calyptia.com
 ```
 
 If you had already added this repo earlier, run `helm repo update` to retrieve
@@ -30,7 +30,7 @@ the latest versions of the packages.  You can then run `helm search repo
 To install the calyptia-fluentbit chart:
 
 ```shell
-helm install calyptia-fluentbit <alias>/<chart-name>
+helm install calyptia-fluentbit calyptia/fluent-bit
 ```
 
 To uninstall the chart:
