@@ -21,14 +21,8 @@ containers:
     securityContext:
       {{- toYaml . | nindent 6 }}
   {{- end }}
-  {{- if eq .Values.arch "amd64" }}
-    image: "{{ .Values.image.amd.repository }}:{{ default .Chart.AppVersion .Values.image.amd.tag }}"
+    image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
     imagePullPolicy: {{ .Values.image.pullPolicy }}
-  {{- end }}
-  {{- if eq .Values.arch "arn64" }}
-    image: "{{ .Values.image.arn.repository }}:{{ default .Chart.AppVersion .Values.image.arn.tag }}"
-    imagePullPolicy: {{ .Values.image.pullPolicy }}
-  {{- end }}
   {{- if or .Values.env .Values.envWithTpl }}
     env:
     {{- with .Values.env }}

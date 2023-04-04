@@ -9,13 +9,8 @@ serviceAccount:
     eks.amazonaws.com/role-arn: "<Enter the ARN of the IAM service account>"
 
 image:
-  amd:
-    repository: http://709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
-    tag: 22.10.5
-    pullPolicy: Always
-  arn:
-    repository: nil
-    tag: nil
+  repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
+  tag: 22.10.5
   pullPolicy: Always
 
 metricsPort: 2020
