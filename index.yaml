@@ -1,19 +1,5 @@
 apiVersion: v1
 entries:
-  calyptia-fluent-bit:
-  - apiVersion: v2
-    appVersion: v22.10.5
-    created: "2023-04-04T09:28:31.434277079Z"
-    description: Fast and lightweight observability processor and forwarder for Linux,
-      Windows and macOS
-    digest: 75a12adbbe761ba11fac590c7508d8e25e4191a400fa4e81142588a33c6a8bd0
-    home: https://calyptia.com/products/lts-fluentbit/
-    icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/fluentd/fluentbit/icon/fluentbit-icon-color.svg
-    name: calyptia-fluent-bit
-    type: application
-    urls:
-    - https://github.com/calyptia/charts/releases/download/calyptia-fluent-bit-22.10.5/calyptia-fluent-bit-22.10.5.tgz
-    version: 22.10.5
   core:
   - apiVersion: v2
     appVersion: v1.1.2
