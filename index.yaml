@@ -115,6 +115,24 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/core-0.2.6/core-0.2.6.tgz
     version: 0.2.6
+  fluent-bit-helm:
+  - apiVersion: v2
+    appVersion: v22.10.5
+    created: "2023-04-04T11:20:25.238825376Z"
+    description: Fast and lightweight observability processor and forwarder for Linux,
+      Windows and macOS
+    digest: e0fa71e7a8b67a8c43b95cd90ea10df689fe35fa8ce638697f3e937f0bb37fad
+    home: https://calyptia.com/products/lts-fluentbit/
+    icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/fluentd/fluentbit/icon/fluentbit-icon-color.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: fluent-bit-helm
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/fluent-bit-helm-0.0.1/fluent-bit-helm-0.0.1.tgz
+    version: 0.0.1
   fluentd:
   - apiVersion: v2
     appVersion: v1.14.4
@@ -146,4 +164,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2023-04-04T09:28:31.774377816Z"
+generated: "2023-04-04T11:20:25.500378659Z"
