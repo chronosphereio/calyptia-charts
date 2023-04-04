@@ -5,4 +5,4 @@ home: https://calyptia.com/products/lts-fluentbit/
 icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/fluentd/fluentbit/icon/fluentbit-icon-color.svg
 type: application
 version: 22.10.5
-appVersion: "22.10.5"
+appVersion: "v22.10.5"
