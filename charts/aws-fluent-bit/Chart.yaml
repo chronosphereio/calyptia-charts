@@ -7,3 +7,7 @@ icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/fluentd/flu
 type: application
 version: 0.0.1
 appVersion: "v22.10.5"
+maintainers: 
+  - name: Calyptia
+    email: hello@calyptia.com
+    url: www.calyptia.com
