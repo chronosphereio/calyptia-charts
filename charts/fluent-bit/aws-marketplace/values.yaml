@@ -11,14 +11,12 @@ serviceAccount:
 image:
   amd:
     repository: http://709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
-    tag: 22.10.2-amd64
+    tag: 22.10.5
     pullPolicy: Always
   arn:
     repository: nil
     tag: nil
   pullPolicy: Always
-
-arch: amd64
 
 metricsPort: 2020
 hostNetwork: false
