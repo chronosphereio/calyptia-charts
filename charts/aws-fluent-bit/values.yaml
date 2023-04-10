@@ -1,17 +1,25 @@
 namespace:
-  create: true
+## Namespace creation is set to false as the namespace is expected to be created through the CLI since eksctl command may require.
+  create: false
   name: "calyptia-fluentbit"
 
+## The service account creation configuration is taken care by the eksctl command to contact the AWS marketplace API's to fetch the image.
 serviceAccount:
-  name: "eks-calyptia-fluentbit"
-  create: true
+  create: false
+## This is the name of the service account created by the eksctl create iamservice command.
+  name: "<Enter the name of the service account>"
   annotations:
-    eks.amazonaws.com/role-arn: "<Enter the ARN of the IAM service account>"
+## This is the Role ARN of the IAM role which should have the required policy and trust relationship setup using OIDC.
+    eks.amazonaws.com/role-arn: "<Enter the Role ARN of the IAM service account>"
 
 image:
   repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
   tag: 22.10.5
   pullPolicy: Always
+
+imagePullSecrets:
+### This is the Kubernetes secret created to authenticate to ECR. This should be created before installing this chart
+  - name: "<Enter the name of the secret to pull the image>"
 
 metricsPort: 2020
 hostNetwork: false
