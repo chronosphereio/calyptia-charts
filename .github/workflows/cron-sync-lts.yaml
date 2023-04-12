@@ -46,7 +46,7 @@ jobs:
         shell: bash
 
       - name: Generate PR
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           commit-message: 'ci: update to latest LTS version'
           signoff: true
