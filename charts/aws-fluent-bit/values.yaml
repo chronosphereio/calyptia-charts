@@ -93,7 +93,7 @@ config:
         Tag                 host.*
         Systemd_Filter      _SYSTEMD_UNIT=kubelet.service
         Read_From_Tail      On
-    
+
     [INPUT]
         name                fluentbit_metrics
         tag                 metrics.calyptia
