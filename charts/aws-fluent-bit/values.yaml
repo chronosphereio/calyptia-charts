@@ -1,3 +1,11 @@
+calyptia:
+  ## Calyptia Project Token to use: see https://core.calyptia.com
+  project_token: ""
+  api_url: "https://cloud-api.calyptia.com/"
+  port: 443
+  tls: "on"
+  tls_verify: "on"
+
 namespace:
 ## Namespace creation is set to false as the namespace is expected to be created through the CLI since eksctl command may require.
   create: false
@@ -59,47 +67,65 @@ luaScripts: {}
 config:
   service: |
     [SERVICE]
-        Daemon Off
-        Flush {{ .Values.flush }}
-        Log_Level {{ .Values.logLevel }}
-        Parsers_File parsers.conf
-        Parsers_File custom_parsers.conf
-        HTTP_Server On
-        HTTP_Listen 0.0.0.0
-        HTTP_Port {{ .Values.metricsPort }}
-        Health_Check On
+        Daemon              Off
+        Flush               {{ .Values.flush }}
+        Log_Level           {{ .Values.logLevel }}
+        Parsers_File        parsers.conf
+        Parsers_File        custom_parsers.conf
+        HTTP_Server         On
+        HTTP_Listen         0.0.0.0
+        HTTP_Port           {{ .Values.metricsPort }}
+        Health_Check        On
+        storage.metrics     On
 
   ## https://docs.fluentbit.io/manual/pipeline/inputs
   inputs: |
     [INPUT]
-        Name tail
-        Path /var/log/containers/*.log
-        multiline.parser docker, cri
-        Tag kube.*
-        Mem_Buf_Limit 5MB
-        Skip_Long_Lines On
+        Name                tail
+        Path                /var/log/containers/*.log
+        multiline.parser    docker, cri
+        Tag                 kube.*
+        Mem_Buf_Limit       5MB
+        Skip_Long_Lines     On
 
     [INPUT]
-        Name systemd
-        Tag host.*
-        Systemd_Filter _SYSTEMD_UNIT=kubelet.service
-        Read_From_Tail On
+        Name                systemd
+        Tag                 host.*
+        Systemd_Filter      _SYSTEMD_UNIT=kubelet.service
+        Read_From_Tail      On
+    
+    [INPUT]
+        name                fluentbit_metrics
+        tag                 metrics.calyptia
+        scrape_on_start     true
+        scrape_interval     30
 
   ## https://docs.fluentbit.io/manual/pipeline/filters
   filters: |
     [FILTER]
-        Name kubernetes
-        Match kube.*
-        Merge_Log On
-        Keep_Log Off
-        K8S-Logging.Parser On
+        Name                kubernetes
+        Match               kube.*
+        Merge_Log           On
+        Keep_Log            Off
+        K8S-Logging.Parser  On
         K8S-Logging.Exclude On
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
-        Name stdout
-        Match *
+        Name                stdout
+        Match               *
+
+  ## Only included if we have a project token
+  calyptia: |
+    [OUTPUT]
+        Name                calyptia
+        Match               *
+        api_key             {{ required "A valid Calyptia project_token is required." .Values.calyptia.project_token }}
+        calyptia_host       {{ .Values.calyptia.api_url }}
+        calyptia_port       {{ .Values.calyptia.port }}
+        calyptia_tls        {{ .Values.calyptia.tls }}
+        calyptia_tls.verify {{ .Values.calyptia.tls_verify }}
 
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
@@ -108,11 +134,11 @@ config:
   ## https://docs.fluentbit.io/manual/pipeline/parsers
   customParsers: |
     [PARSER]
-        Name docker_no_time
-        Format json
-        Time_Keep Off
-        Time_Key time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Name                docker_no_time
+        Format              json
+        Time_Keep           Off
+        Time_Key            time
+        Time_Format         %Y-%m-%dT%H:%M:%S.%L
 
   extraFiles: {}
 
@@ -150,3 +176,11 @@ daemonSetVolumeMounts:
 
 flush: 1
 logLevel: info
+
+openShift:
+  # Sets Openshift support
+  enabled: false
+  # Creates SCC for when Openshift support is enabled
+  securityContextConstraints:
+    create: true
+    annotations: {}
