@@ -15,6 +15,10 @@ initContainers:
   {{-  toYaml . | nindent 2 }}
 {{- end -}}
 {{- end }}
+{{- with .Values.imagePullSecrets }}
+imagePullSecrets:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
 containers:
   - name: {{ .Chart.Name }}
   {{- with .Values.securityContext }}

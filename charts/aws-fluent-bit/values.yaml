@@ -1,17 +1,24 @@
 namespace:
-  create: true
+## Namespace creation is set to false as the namespace is expected to be created through the CLI since eksctl command may require.
+  create: false
   name: "calyptia-fluentbit"
 
+## The service account creation configuration is taken care by the eksctl command to contact the AWS marketplace API's to register the usage.
 serviceAccount:
-  name: "eks-calyptia-fluentbit"
-  create: true
+  create: false
+## This is the name of the service account created from the eksctl create iamservice command.
+  name: sa-calyptia-fluentbit
   annotations:
-    eks.amazonaws.com/role-arn: "<Enter the ARN of the IAM service account>"
+## This is the Role ARN of the IAM role which should have the required policy and trust relationship setup using OIDC.
+    eks.amazonaws.com/role-arn: arn:aws:iam::123456789:role/aws-marketplace-access-role
 
 image:
   repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
   tag: 22.10.5
   pullPolicy: Always
+
+imagePullSecrets: []
+### This is the Kubernetes secret created to authenticate to ECR.
 
 metricsPort: 2020
 hostNetwork: false
@@ -121,7 +128,7 @@ volumeMounts:
 daemonSetVolumes:
   - name: varlog
     hostPath:
-      path: /var/log
+      path: /var/log/
   - name: varlibdockercontainers
     hostPath:
       path: /var/lib/docker/containers
@@ -132,10 +139,14 @@ daemonSetVolumes:
 
 daemonSetVolumeMounts:
   - name: varlog
-    mountPath: /var/log
+    mountPath: /var/log/
+    readOnly: true
   - name: varlibdockercontainers
     mountPath: /var/lib/docker/containers
     readOnly: true
   - name: etcmachineid
     mountPath: /etc/machine-id
     readOnly: true
+
+flush: 1
+logLevel: info
