@@ -6,11 +6,11 @@ namespace:
 ## The service account creation configuration is taken care by the eksctl command to contact the AWS marketplace API's to fetch the image.
 serviceAccount:
   create: false
-## This is the name of the service account created by the eksctl create iamservice command.
-  name: "<Enter the name of the service account>"
+## This is the name of the service account created from the eksctl create iamservice command.
+  name: irsa-calyptia-fluentbit
   annotations:
 ## This is the Role ARN of the IAM role which should have the required policy and trust relationship setup using OIDC.
-    eks.amazonaws.com/role-arn: "<Enter the Role ARN of the IAM service account>"
+    eks.amazonaws.com/role-arn: arn:aws:iam::123456789:role/aws-marketplace-access-role
 
 image:
   repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
@@ -18,8 +18,7 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: []
-# - name: "<Enter the name of the secret to pull the image>"
-## This is the Kubernetes secret created to authenticate to ECR.
+### This is the Kubernetes secret created to authenticate to ECR.
 
 metricsPort: 2020
 hostNetwork: false

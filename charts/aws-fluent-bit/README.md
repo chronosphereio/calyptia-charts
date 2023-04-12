@@ -26,10 +26,10 @@ The below command will create the role and the kubernetes service account in the
 
 ```
 eksctl create iamserviceaccount \
- --name <enterthenameoftheserviceaccount> \
- --namespace <serviceaccount'snamespace> \
+ --name irsa-calyptia-fluentbit \
+ --namespace calyptia-fluentbit \
  --cluster <clusterName> \
- --role-name "<enterthenameoftherole>" \
+ --role-name "<enterthenameoftheroletocreate>" \
  --attach-policy-arn arn:aws:iam::aws:policy/AWSMarketplaceMeteringRegisterUsage \
  --approve \
  --override-existing-serviceaccounts
