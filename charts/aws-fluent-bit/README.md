@@ -26,10 +26,10 @@ The below command will create the role and the kubernetes service account in the
 
 ```
 eksctl create iamserviceaccount \
- --name irsa-calyptia-fluentbit \
+ --name sa-calyptia-fluentbit \
  --namespace calyptia-fluentbit \
  --cluster <clusterName> \
- --role-name "<enterthenameoftheroletocreate>" \
+ --role-name "" \ #This would be the role name that would get created as part of this command.
  --attach-policy-arn arn:aws:iam::aws:policy/AWSMarketplaceMeteringRegisterUsage \
  --approve \
  --override-existing-serviceaccounts
@@ -40,14 +40,42 @@ verify if the trust relationship is configured correctly by running the below co
 aws iam get-role --role-name <enterthenameoftherole> --query Role.AssumeRolePolicyDocument
 ```
 
+Expected Output:
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::123456789:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/048D292E8F7E6BECFFE042FE903F529D"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "oidc.eks.us-east-1.amazonaws.com/id/048F292E8F7E6BRCFFE042FE903F529D:aud": "sts.amazonaws.com",
+                    "oidc.eks.us-east-1.amazonaws.com/id/048F292E8F7E6BRCFFE042FE903F529D:sub": "system:serviceaccount:calyptia-fluentbit:svc-calyptia-fluentbit"
+                }
+            }
+        }
+    ]
+}
+```
+
 verify that you attached to your role is attached as expected:
 ```
 aws iam list-attached-role-policies --role-name aws-marketplace-access-role --output text
 ```
 
+Expected Output:
+```
+ATTACHEDPOLICIES        arn:aws:iam::aws:policy/AWSMarketplaceMeteringRegisterUsage     AWSMarketplaceMeteringRegisterUsage
+```
+
+
 confirm if the kubernetes service account that got created is annotated with the role:
 ```
-kubectl describe serviceaccount <enterthenameoftheserviceaccount> -n default
+kubectl describe serviceaccount <enterthenameoftheserviceaccount> -n calyptia-fluentbit
 ```
 
 

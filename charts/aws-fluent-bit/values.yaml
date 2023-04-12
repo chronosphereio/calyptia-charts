@@ -3,11 +3,11 @@ namespace:
   create: false
   name: "calyptia-fluentbit"
 
-## The service account creation configuration is taken care by the eksctl command to contact the AWS marketplace API's to fetch the image.
+## The service account creation configuration is taken care by the eksctl command to contact the AWS marketplace API's to register the usage.
 serviceAccount:
   create: false
 ## This is the name of the service account created from the eksctl create iamservice command.
-  name: irsa-calyptia-fluentbit
+  name: sa-calyptia-fluentbit
   annotations:
 ## This is the Role ARN of the IAM role which should have the required policy and trust relationship setup using OIDC.
     eks.amazonaws.com/role-arn: arn:aws:iam::123456789:role/aws-marketplace-access-role
