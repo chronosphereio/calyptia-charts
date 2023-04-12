@@ -3,9 +3,9 @@ apiVersion: v2
 name: fluent-bit-helm
 description: Fast and lightweight observability processor and forwarder for Linux, Windows and macOS
 home: https://calyptia.com/products/lts-fluentbit/
-icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/fluentd/fluentbit/icon/fluentbit-icon-color.svg
+icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 0.0.4
+version: 0.0.5
 appVersion: "v22.10.5"
 maintainers:
   - name: Calyptia
