@@ -41,11 +41,13 @@ readinessProbe:
     path: /api/v1/health
     port: http
 extraVolumes: []
+
+## Ensure any UID matching is set up to allow access to files on the host
 securityContext: {}
+
 extraVolumeMounts: []
 
 existingConfigMap: ""
-
 
 service:
   type: ClusterIP
