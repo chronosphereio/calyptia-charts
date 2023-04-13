@@ -14,6 +14,9 @@ data:
     {{- (tpl .Values.config.inputs $)  | nindent 4 }}
     {{- (tpl .Values.config.filters $)  | nindent 4 }}
     {{- (tpl .Values.config.outputs $)  | nindent 4 }}
+  {{- if .Values.project_token -}}
+    {{- (tpl .Values.config.calyptia $)  | nindent 4 }}
+  {{- end -}}
   {{- range $key, $val := .Values.config.upstream }}
   {{ $key }}: |
     {{- (tpl $val $) | nindent 4 }}
