@@ -19,16 +19,6 @@ rules:
       - get
       - list
       - watch
-  {{- if and .Values.podSecurityPolicy.create (semverCompare "<=1.25-0" .Capabilities.KubeVersion.GitVersion) }}
-  - apiGroups:
-      - policy
-    resources:
-      - podsecuritypolicies
-    resourceNames:
-      - {{ include "calyptia-fluent-bit.fullname" . }}
-    verbs:
-      - use
-  {{- end }}
   {{- if and .Values.openShift.enabled .Values.openShift.securityContextConstraints.create }}
   - apiGroups:
       - security.openshift.io
