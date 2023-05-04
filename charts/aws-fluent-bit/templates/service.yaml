@@ -8,16 +8,29 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.httpPort }}
+    - port: {{ default .Values.service.port .Values.httpPort }}
       targetPort: http
       protocol: TCP
       name: http
-    {{- if .Values.extraPorts }}
-      {{- range .Values.extraPorts }}
-      - name: {{ .name }}
-        containerPort: {{ .containerPort }}
-        protocol: {{ .protocol }}
+      {{- if and (eq .Values.service.type "NodePort") (.Values.service.nodePort) }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+  {{- if .Values.metricsPort }}
+    - port: {{ .Values.metricsPort }}
+      targetPort: prometheus
+      protocol: TCP
+      name: prometheus
+  {{- end }}
+  {{- if .Values.extraPorts }}
+    {{- range .Values.extraPorts }}
+    - name: {{ .name }}
+      targetPort: {{ default .containerPort .name }}
+      protocol: {{ .protocol }}
+      port: {{ .port }}
+      {{- if and (eq $.Values.service.type "NodePort") (.nodePort) }}
+      nodePort: {{ .nodePort }}
       {{- end }}
     {{- end }}
+  {{- end }}
   selector:
     {{- include "calyptia-fluent-bit.selectorLabels" . | nindent 4 }}

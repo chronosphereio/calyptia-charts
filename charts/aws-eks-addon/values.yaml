@@ -9,9 +9,9 @@ calyptia:
   tls_verify: "on"
 
 resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
   requests:
     cpu: 100m
     memory: 128Mi
@@ -22,7 +22,7 @@ podAnnotations:
   # Set up Prometheus scraping
   prometheus.io/scrape: "true"
   prometheus.io/path: "/metrics"
-  prometheus.io/port: {{ .Values.metricsPort }}
+  prometheus.io/port: prometheus
 
 podLabels: {}
 
@@ -182,12 +182,6 @@ rbac:
 
 annotations:
   app.kubernetes.io/managed-by: "EKS"
-
-# Pass in the metrics port now
-extraPorts:
-  - name: prometheus
-    port: {{ .Values.metricsPort }}
-    protocol: TCP
 
 env:
   - name: NODE_NAME
