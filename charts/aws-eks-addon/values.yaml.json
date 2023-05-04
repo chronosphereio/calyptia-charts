@@ -1,0 +1,50 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+      "podAnnotations": {
+        "description": "Pod Annotations",
+        "type": "object"
+      },
+      "podLabels": {
+        "description": "Pod Labels",
+        "type": "string"
+      },
+      "resources": {
+        "type": "object",
+        "description": "Resources"
+      },
+      "flush": {
+        "description": "Flush timeout",
+        "type": "integer"
+      },
+      "logLevel": {
+        "description": "Logging Level",
+        "type": "string",
+        "enum": [
+          "off",
+          "error",
+          "warn",
+          "info",
+          "debug",
+          "trace"
+        ]
+      },
+      "httpPort": {
+        "description": "Fluent Bit webserver port",
+        "type": "integer"
+      },
+      "metricsPort": {
+        "description": "Prometheus metrics endpoint",
+        "type": "integer"
+      },
+      "config": {
+        "description": "Custom Configuration",
+        "type": "object"
+      },
+      "luaScripts": {
+        "description": "Custom LUA scripts",
+        "type": "object"
+      }
+    }
+  }
