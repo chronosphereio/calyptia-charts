@@ -1,11 +1,11 @@
 apiVersion: v2
 # This needs to match up with the AWS repository name
-name: fluent-bit-helm
+name: fluent-bit-eks-addon
 description: Fast and lightweight observability processor and forwarder for Linux, Windows and macOS
 home: https://calyptia.com/products/lts-fluentbit/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 0.0.6
+version: 0.0.1
 appVersion: "v22.10.5"
 maintainers:
   - name: Calyptia

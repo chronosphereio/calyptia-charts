@@ -1,71 +1,38 @@
+### User-configurable section
+
 calyptia:
-  ## Calyptia Project Token to use: see https://core.calyptia.com
+  # Calyptia Project Token to use: see https://core.calyptia.com
   project_token: ""
   api_url: "https://cloud-api.calyptia.com/"
   port: 443
   tls: "on"
   tls_verify: "on"
 
-namespace:
-## Namespace creation is set to false as the namespace is expected to be created through the CLI since eksctl command may require.
-  create: false
-  name: "calyptia-fluentbit"
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
-## The service account creation configuration is taken care by the eksctl command to contact the AWS marketplace API's to register the usage.
-serviceAccount:
-  create: false
-## This is the name of the service account created from the eksctl create iamservice command.
-  name: sa-calyptia-fluentbit
-  annotations:
-## This is the Role ARN of the IAM role which should have the required policy and trust relationship setup using OIDC.
-    eks.amazonaws.com/role-arn: arn:aws:iam::123456789:role/aws-marketplace-access-role
+podAnnotations:
+  # Exclude our own logs
+  fluentbit.io/exclude: "true"
+  # Set up Prometheus scraping
+  prometheus.io/scrape: "true"
+  prometheus.io/path: "/metrics"
+  prometheus.io/port: {{ .Values.metricsPort }}
 
-image:
-  repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
-  tag: 22.10.5
-  pullPolicy: Always
+podLabels: {}
 
-imagePullSecrets: []
-### This is the Kubernetes secret created to authenticate to ECR.
+flush: 1
+logLevel: info
 
 httpPort: 2020
-hostNetwork: false
-dnsPolicy: ClusterFirst
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
+metricsPort: 2021
 
-readinessProbe:
-  httpGet:
-    path: /api/v1/health
-    port: http
-extraVolumes: []
-
-## Ensure any UID matching is set up to allow access to files on the host
-securityContext: {}
-
-extraVolumeMounts: []
-
-existingConfigMap: ""
-
-service:
-  type: ClusterIP
-  annotations: {}
-
-rbac:
-  create: true
-  nodeAccess: false
-
-labels: {}
-annotations:
-  fluentbit.io/exclude: "true"
-
-podAnnotations: {}
-
-luaScripts: {}
-
-## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/configuration-file
+# https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/configuration-file
 config:
   service: |
     [SERVICE]
@@ -86,13 +53,13 @@ config:
         Name                tail
         Path                /var/log/containers/*.log
         multiline.parser    docker, cri
-        Tag                 kube.*
+        Tag                 logs.kube.*
         Mem_Buf_Limit       5MB
         Skip_Long_Lines     On
 
     [INPUT]
         Name                systemd
-        Tag                 host.*
+        Tag                 logs.node.*
         Systemd_Filter      _SYSTEMD_UNIT=kubelet.service
         Read_From_Tail      On
 
@@ -102,11 +69,16 @@ config:
         scrape_on_start     true
         scrape_interval     30
 
+    [INPUT]
+        name                node_exporter_metrics
+        tag                 metrics.node
+        scrape_interval     30
+
   ## https://docs.fluentbit.io/manual/pipeline/filters
   filters: |
     [FILTER]
         Name                kubernetes
-        Match               kube.*
+        Match               logs.kube.*
         Merge_Log           On
         Keep_Log            Off
         K8S-Logging.Parser  On
@@ -116,7 +88,14 @@ config:
   outputs: |
     [OUTPUT]
         Name                stdout
-        Match               *
+        Match               logs.*
+
+    [OUTPUT]
+        name                prometheus_exporter
+        match               metrics.*
+        host                0.0.0.0
+        port                {{ .Values.metricsPort }}
+        add_label           node ${NODE_NAME}
 
   ## Only included if we have a project token
   calyptia: |
@@ -129,10 +108,6 @@ config:
         calyptia_tls        {{ .Values.calyptia.tls }}
         calyptia_tls.verify {{ .Values.calyptia.tls_verify }}
 
-  ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
-  ## This configuration is deprecated, please use `extraFiles` instead.
-  upstream: {}
-
   ## https://docs.fluentbit.io/manual/pipeline/parsers
   customParsers: |
     [PARSER]
@@ -143,6 +118,98 @@ config:
         Time_Format         %Y-%m-%dT%H:%M:%S.%L
 
   extraFiles: {}
+
+luaScripts: {}
+
+### End of user configuration
+
+### System defaults
+# Everything else is hardcoded for EKS add-ons.
+
+managedBy: "EKS"
+
+# Namespace configuration is currently not supported so specifying the same as the add-on for now.
+namespace:
+  create: false
+  name: "calyptia-fluentbit"
+
+serviceAccount:
+  create: false
+  name: sa-calyptia-fluentbit
+  # No annotations to be set by the add-on chart
+
+# These are all part of the add-on definition
+image:
+  repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
+  tag: 22.10.5
+  pullPolicy: Always
+
+# Not intended to be configurable for add-ons
+imagePullSecrets: []
+
+# Recommended for add-ons
+priorityClassName: system-node-critical
+
+hostNetwork: false
+dnsPolicy: ClusterFirst
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+
+readinessProbe:
+  httpGet:
+    path: /api/v1/health
+    port: http
+
+
+## Ensure any UID matching is set up to allow access to files on the host
+securityContext: {}
+
+extraVolumes: []
+extraVolumeMounts: []
+
+existingConfigMap: ""
+
+service:
+  type: ClusterIP
+  annotations: {}
+
+rbac:
+  create: true
+  nodeAccess: false
+
+annotations:
+  app.kubernetes.io/managed-by: "EKS"
+
+# Pass in the metrics port now
+extraPorts:
+  - name: prometheus
+    port: {{ .Values.metricsPort }}
+    protocol: TCP
+
+env:
+  - name: NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: POD_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+  - name: POD_NAMESPACE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.namespace
+  - name: POD_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+  - name: POD_SERVICE_ACCOUNT
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.serviceAccountName
 
 # The config volume is mounted by default, either to the existingConfigMap value, or the default of "fluent-bit.fullname"
 volumeMounts:
@@ -176,13 +243,13 @@ daemonSetVolumeMounts:
     mountPath: /etc/machine-id
     readOnly: true
 
-flush: 1
-logLevel: info
+updateStrategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 1
 
+# Not configurable so disable for now
 openShift:
   # Sets Openshift support
   enabled: false
-  # Creates SCC for when Openshift support is enabled
-  securityContextConstraints:
-    create: true
-    annotations: {}

@@ -8,9 +8,16 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.metricsPort }}
+    - port: {{ .Values.httpPort }}
       targetPort: http
       protocol: TCP
       name: http
+    {{- if .Values.extraPorts }}
+      {{- range .Values.extraPorts }}
+      - name: {{ .name }}
+        containerPort: {{ .containerPort }}
+        protocol: {{ .protocol }}
+      {{- end }}
+    {{- end }}
   selector:
     {{- include "calyptia-fluent-bit.selectorLabels" . | nindent 4 }}

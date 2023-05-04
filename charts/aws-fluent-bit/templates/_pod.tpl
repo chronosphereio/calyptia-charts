@@ -51,7 +51,7 @@ containers:
   {{- end }}
     ports:
       - name: http
-        containerPort: {{ .Values.metricsPort }}
+        containerPort: {{ .Values.httpPort }}
         protocol: TCP
     {{- if .Values.extraPorts }}
       {{- range .Values.extraPorts }}
