@@ -15,7 +15,7 @@ namespace:
 serviceAccount:
   create: false
 ## This is the name of the service account created from the eksctl create iamservice command.
-  name: sa-calyptia-fluentbit
+  name: calyptia-fluentbit
   annotations:
 ## This is the Role ARN of the IAM role which should have the required policy and trust relationship setup using OIDC.
     eks.amazonaws.com/role-arn: arn:aws:iam::123456789:role/aws-marketplace-access-role

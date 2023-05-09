@@ -45,21 +45,51 @@ jobs:
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.4.0
 
+      - name: Run chart-testing (lint)
+        run: ct lint --target-branch ${{ github.event.repository.default_branch }}
+
       - name: Run chart-testing (list-changed)
-        id: list-changed
+        id: list-changed-core
         run: |
-          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
+          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }}) --chart-dirs charts/core,charts/fluentd
           if [[ -n "$changed" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
         shell: bash
+        
+      - name: Run chart-testing (list-changed)
+        id: list-changed-eks
+        run: |
+          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }}) --chart-dirs charts/aws-fluent-bit,charts/aws-eks-addon
+          if [[ -n "$changed" ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
+        
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.5.0
+        if: steps.list-changed-core.outputs.changed == 'true'
 
-      - name: Run chart-testing (lint)
-        run: ct lint --target-branch ${{ github.event.repository.default_branch }}
+      - name: Run chart-testing (install) on KIND
+        if: steps.list-changed-core.outputs.changed == 'true'
+        run: ct install --target-branch ${{ github.event.repository.default_branch }} --chart-dirs charts/core,charts/fluentd
 
-      # - name: Create kind cluster
-      #   uses: helm/kind-action@v1.5.0
-      #   if: steps.list-changed.outputs.changed == 'true'
+      - name: Create EKS cluster
+        if: steps.list-changed-eks.outputs.changed == 'true'
+        run: |
+          eksctl create cluster --name "$CLUSTER_NAME"
+          eksctl utils associate-iam-oidc-provider --cluster="$CLUSTER_NAME" --approve
+          eksctl create iamserviceaccount \
+            --name calyptia-fluentbit \
+            --namespace calyptia-fluentbit \
+            --cluster "$CLUSTER_NAME"\
+            --attach-policy-arn arn:aws:iam::aws:policy/AWSMarketplaceMeteringRegisterUsage \
+            --approve \
+            --override-existing-serviceaccounts
+        shell: bash
+        env:
+          CLUSTER_NAME: chart-testing
 
-      # - name: Run chart-testing (install)
-      #   run: ct install --target-branch ${{ github.event.repository.default_branch }}
+      - name: Run chart-testing (install) on EKS
+        if: steps.list-changed-eks.outputs.changed == 'true'
+        run: ct install --target-branch ${{ github.event.repository.default_branch }} --chart-dirs charts/aws-fluent-bit,charts/aws-eks-addon
