@@ -133,9 +133,10 @@ namespace:
   create: false
   name: "calyptia-fluentbit"
 
+# This must be created by default
 serviceAccount:
-  create: false
-  name: sa-calyptia-fluentbit
+  create: true
+  name: calyptia-fluentbit
   # No annotations to be set by the add-on chart
 
 # These are all part of the add-on definition
