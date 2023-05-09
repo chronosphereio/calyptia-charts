@@ -51,7 +51,7 @@ jobs:
       - name: Run chart-testing (list-changed)
         id: list-changed-core
         run: |
-          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }}) --chart-dirs charts/core,charts/fluentd
+          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }} --chart-dirs charts/core,charts/fluentd)
           if [[ -n "$changed" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
@@ -60,7 +60,7 @@ jobs:
       - name: Run chart-testing (list-changed)
         id: list-changed-eks
         run: |
-          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }}) --chart-dirs charts/aws-fluent-bit,charts/aws-eks-addon
+          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }} --chart-dirs charts/aws-fluent-bit,charts/aws-eks-addon)
           if [[ -n "$changed" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
@@ -73,6 +73,7 @@ jobs:
       - name: Run chart-testing (install) on KIND
         if: steps.list-changed-core.outputs.changed == 'true'
         run: ct install --target-branch ${{ github.event.repository.default_branch }} --chart-dirs charts/core,charts/fluentd
+        shell: bash
 
       - name: Create EKS cluster
         if: steps.list-changed-eks.outputs.changed == 'true'
@@ -89,7 +90,15 @@ jobs:
         shell: bash
         env:
           CLUSTER_NAME: chart-testing
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Run chart-testing (install) on EKS
         if: steps.list-changed-eks.outputs.changed == 'true'
         run: ct install --target-branch ${{ github.event.repository.default_branch }} --chart-dirs charts/aws-fluent-bit,charts/aws-eks-addon
+        shell: bash
+        env:
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
