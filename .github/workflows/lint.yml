@@ -132,10 +132,14 @@ jobs:
             echo "charts=" >> $GITHUB_OUTPUT
           fi
         shell: bash
+
+      - name: Install eksctl
+        uses: moia-oss/setup-eksctl@v1
         
       - name: Create EKS cluster
         if: github.event_name == 'workflow_dispatch' || steps.list-changed-eks.outputs.changed == 'true'
         run: |
+          eksctl version
           eksctl create cluster --name "$CLUSTER_NAME"
           eksctl utils associate-iam-oidc-provider --cluster="$CLUSTER_NAME" --approve
           eksctl create iamserviceaccount \
