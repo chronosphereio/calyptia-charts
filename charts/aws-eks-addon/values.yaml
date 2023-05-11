@@ -27,7 +27,7 @@ podAnnotations:
 podLabels: {}
 
 flush: 1
-logLevel: info
+logLevel: debug
 
 httpPort: 2020
 metricsPort: 2021
@@ -73,6 +73,9 @@ config:
         name                node_exporter_metrics
         tag                 metrics.node
         scrape_interval     30
+        # Ensure these are mounted
+        path.procfs         /host/proc
+        path.sysfs          /host/sys
 
   ## https://docs.fluentbit.io/manual/pipeline/filters
   filters: |
@@ -226,6 +229,12 @@ daemonSetVolumes:
     hostPath:
       path: /etc/machine-id
       type: File
+  - name: hostproc
+    hostPath:
+      path: /proc
+  - name: hostsys
+    hostPath:
+      path: /sys
 
 daemonSetVolumeMounts:
   - name: varlog
@@ -236,6 +245,12 @@ daemonSetVolumeMounts:
     readOnly: true
   - name: etcmachineid
     mountPath: /etc/machine-id
+    readOnly: true
+  - name: hostproc
+    mountPath: /host/proc
+    readOnly: true
+  - name: hostsys
+    mountPath: /host/sys
     readOnly: true
 
 updateStrategy: {}
@@ -248,3 +263,6 @@ updateStrategy: {}
 openShift:
   # Sets Openshift support
   enabled: false
+  securityContextConstraints:
+    create: true
+    annotations: {}
