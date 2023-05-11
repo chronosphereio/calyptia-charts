@@ -9,6 +9,6 @@ To learn more about the release, try:
 
 Get Calyptia Fluent Bit information by running these commands:
 
-export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "calyptia-fluent-bit.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 2020:2020
+export POD_NAME=$(kubectl get pods --namespace {{ .Values.Namespace }} -l "app.kubernetes.io/name={{ include "calyptia-fluent-bit.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace {{ .Values.Namespace }} port-forward $POD_NAME 2020:2020
 curl http://127.0.0.1:2020 
