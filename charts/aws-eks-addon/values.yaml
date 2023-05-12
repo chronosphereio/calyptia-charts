@@ -56,6 +56,8 @@ config:
         Tag                 logs.kube.*
         Mem_Buf_Limit       5MB
         Skip_Long_Lines     On
+        # Ensure we do not tail our own logs otherwise it can snowball even with exclusion later
+        Exclude_Path        *{{ include "calyptia-fluent-bit.name" . }}*.log
 
     [INPUT]
         Name                systemd
@@ -86,12 +88,13 @@ config:
         Keep_Log            Off
         K8S-Logging.Parser  On
         K8S-Logging.Exclude On
+        Kube_Tag_Prefix     logs.kube.var.log.containers.
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
         Name                stdout
-        Match               logs.*
+        Match               *
 
     [OUTPUT]
         name                prometheus_exporter
@@ -128,8 +131,6 @@ luaScripts: {}
 
 ### System defaults
 # Everything else is hardcoded for EKS add-ons.
-
-managedBy: "EKS"
 
 # Namespace configuration is currently not supported so specifying the same as the add-on for now.
 namespace:
@@ -169,7 +170,13 @@ readinessProbe:
 
 
 ## Ensure any UID matching is set up to allow access to files on the host
-securityContext: {}
+podSecurityContext: {}
+  # fsGroup: 9876
+  # fsGroupChangePolicy: "OnRootMismatch"
+
+securityContext: 
+  runAsNonRoot: false
+  runAsUser: 0
 
 extraVolumes: []
 extraVolumeMounts: []
