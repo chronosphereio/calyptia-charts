@@ -19,6 +19,10 @@ initContainers:
 imagePullSecrets:
   {{- toYaml . | nindent 2 }}
 {{- end }}
+{{- with .Values.podSecurityContext }}
+  securityContext:
+    {{- toYaml . | nindent 6 }}
+{{- end }}
 containers:
   - name: {{ .Chart.Name }}
   {{- with .Values.securityContext }}
@@ -52,6 +56,9 @@ containers:
     ports:
       - name: http
         containerPort: {{ .Values.httpPort }}
+        protocol: TCP
+      - name: prometheus
+        containerPort: {{ .Values.metricsPort }}
         protocol: TCP
     {{- if .Values.extraPorts }}
       {{- range .Values.extraPorts }}

@@ -34,12 +34,11 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "calyptia-fluent-bit.labels" -}}
-helm.sh/chart: {{ include "calyptia-fluent-bit.chart" . }}
 {{ include "calyptia-fluent-bit.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/managed-by: {{ default .Values.managedBy .Release.Service }}
+app.kubernetes.io/managed-by: EKS
 {{- end }}
 
 {{/*

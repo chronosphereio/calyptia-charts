@@ -7,5 +7,5 @@ metadata:
     release: {{ .Release.Name }}
   annotations:
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ default .Values.managedBy "Helm" }}
+    app.kubernetes.io/managed-by: EKS
 {{- end }}
