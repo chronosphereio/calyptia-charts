@@ -132,10 +132,12 @@ luaScripts: {}
 ### System defaults
 # Everything else is hardcoded for EKS add-ons.
 
-# Namespace configuration is currently not supported so specifying the same as the add-on for now.
-namespace:
-  create: false
-  name: "calyptia-fluentbit"
+# Namespace configuration must not be included as it triggers a conflict.
+# namespace:
+#   create: false
+#   name: "calyptia-fluentbit"
+# We provide a default namespace value for now with the intent to revert to the config above in the future
+addonNamespace: calyptia-fluentbit
 
 # This must be created by default
 serviceAccount:

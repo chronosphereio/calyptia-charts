@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ include "calyptia-fluent-bit.fullname" . }}
-  namespace: {{ .Values.namespace.name }}
+  namespace: {{ .Values.addonNamespace }}
   labels:
     {{- include "calyptia-fluent-bit.labels" . | nindent 4 }}
     {{- with .Values.labels }}
@@ -12,7 +12,6 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  namespace: {{ default "calyptia-fluentbit" .Values.namespace.name }}
 spec:
   selector:
     matchLabels:
