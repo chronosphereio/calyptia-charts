@@ -45,6 +45,10 @@
       "luaScripts": {
         "description": "Custom LUA scripts",
         "type": "object"
+      },
+      "region": {
+        "description": "AWS region to run in",
+        "type": "string"
       }
     }
   }

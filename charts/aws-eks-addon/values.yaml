@@ -1,5 +1,8 @@
 ### User-configurable section
 
+# The AWS region to run in
+region: us-west-2
+
 calyptia:
   # Calyptia Project Token to use: see https://core.calyptia.com
   project_token: ""
@@ -217,6 +220,15 @@ env:
     valueFrom:
       fieldRef:
         fieldPath: spec.serviceAccountName
+
+# The envWithTpl array below has the same usage as "env", but is using the tpl function to support templatable string.
+# This can be useful when you want to pass dynamic values to the Chart using the helm argument "--set <variable>=<value>"
+# https://helm.sh/docs/howto/charts_tips_and_tricks/#using-the-tpl-function
+envWithTpl: 
+  - name: AwS_REGION
+    value: "{{ .Values.region }}"
+  - name: AwS_DEFAULT_REGION
+    value: "{{ .Values.region }}"
 
 # The config volume is mounted by default, either to the existingConfigMap value, or the default of "fluent-bit.fullname"
 volumeMounts:
