@@ -151,7 +151,7 @@ serviceAccount:
 # These are all part of the add-on definition
 image:
   repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
-  tag: 22.10.5
+  tag: 23.4.3
   pullPolicy: Always
 
 # Not intended to be configurable for add-ons

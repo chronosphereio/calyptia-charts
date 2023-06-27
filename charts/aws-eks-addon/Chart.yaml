@@ -5,8 +5,8 @@ description: Fast and lightweight observability processor and forwarder for Linu
 home: https://calyptia.com/products/lts-fluentbit/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 0.0.6
-appVersion: "v22.10.5"
+version: 0.0.7
+appVersion: "v23.4.3"
 maintainers:
   - name: Calyptia
     email: hello@calyptia.com
