@@ -166,6 +166,23 @@ entries:
   fluent-bit-eks-addon:
   - apiVersion: v2
     appVersion: v23.4.3
+    created: "2023-06-27T15:25:47.727009011Z"
+    description: Fast and lightweight observability processor and forwarder for Linux,
+      Windows and macOS
+    digest: bb2cc2e72e19e9491c923deb3dd0cb0c44f957c65faf531427b3b3280cdae613
+    home: https://calyptia.com/products/lts-fluentbit/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: fluent-bit-eks-addon
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/fluent-bit-eks-addon-0.0.8/fluent-bit-eks-addon-0.0.8.tgz
+    version: 0.0.8
+  - apiVersion: v2
+    appVersion: v23.4.3
     created: "2023-06-27T15:03:08.905494243Z"
     description: Fast and lightweight observability processor and forwarder for Linux,
       Windows and macOS
@@ -400,4 +417,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2023-06-27T15:03:08.90585515Z"
+generated: "2023-06-27T15:25:47.727077513Z"
