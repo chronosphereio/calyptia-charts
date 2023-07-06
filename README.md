@@ -87,3 +87,17 @@ helm install --set-string core_instance_tags='one\,two' --set project_token=<PRO
 ```
 
 Note that a valid project token is required.
+
+#### Install core-operator with core-instance
+
+core-operator
+```shell 
+helm install core-operator calyptia/core-operator
+```
+
+core-instance
+```shell
+helm install core-inst calyptia/core-instance --set coreInstance=<your-core-instance> --set cloudToken=<your-token>
+```
+
+Token can be retrieved from the [Core UI](https://core.calyptia.com) under "Settings"
