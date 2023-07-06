@@ -163,6 +163,40 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/core-0.2.6/core-0.2.6.tgz
     version: 0.2.6
+  core-instance:
+  - apiVersion: v2
+    appVersion: v1.0.0
+    created: "2023-07-06T10:47:40.841609842Z"
+    description: Calyptia Core Instance chart
+    digest: 175d2ffe2490251ab5aac918f7876badb62938426d5dcff017d807f7492f6960
+    home: https://calyptia.com/products/core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-instance
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/core-instance-0.0.1/core-instance-0.0.1.tgz
+    version: 0.0.1
+  core-operator:
+  - apiVersion: v2
+    appVersion: v1.0.0
+    created: "2023-07-06T10:47:40.997670343Z"
+    description: Calyptia Core Operator chart
+    digest: 73c4e573a9096250191e9c2994463fefb01907519a06f3cfa107c4645a0e0adb
+    home: https://calyptia.com/products/core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-operator
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/core-operator-0.0.1/core-operator-0.0.1.tgz
+    version: 0.0.1
   fluent-bit-eks-addon:
   - apiVersion: v2
     appVersion: v23.4.3
@@ -417,4 +451,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2023-06-27T15:25:47.727077513Z"
+generated: "2023-07-06T10:47:40.997825645Z"
