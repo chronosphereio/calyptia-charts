@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: calyptia      
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+            app.kubernetes.io/part-of: calyptia
+    spec:
+      containers:
+      - env:
+        - name: CORE_INSTANCE
+          value: {{ .Values.coreInstance}}
+        - name: NAMESPACE
+          value: {{ .Values.namespace }}
+        - name: CLOUD_URL
+          value: {{.Values.cloudUrl}} 
+        - name: TOKEN
+          value: {{ .Values.cloudToken}}
+        - name: INTERVAL
+          value: {{ .Values.interval}}
+        - name: CLUSTER_LOGGING
+          value: {{ .Values.clusterLogging | toYaml}}  
+        - name: NO_TLS_VERIFY
+          value: {{ .Values.notls | toYaml }}
+        image: {{ .Values.fromcloudImage }} 
+        imagePullPolicy: Always
+        name: from-cloud
+      - env:
+        - name: CORE_INSTANCE
+          value: {{ .Values.coreInstance}}
+        - name: NAMESPACE
+          value: {{ .Values.namespace }}
+        - name: CLOUD_URL
+          value: {{.Values.cloudUrl}} 
+        - name: TOKEN
+          value: {{ .Values.cloudToken}}
+        - name: INTERVAL
+          value: {{ .Values.interval}}
+        - name: NO_TLS_VERIFY
+          value: {{ .Values.notls | toYaml}}
+        image: {{ .Values.tocloudImage }}
+        name: to-cloud
+      serviceAccount: {{ .Values.serviceAccount }}
+      
