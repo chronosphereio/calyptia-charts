@@ -2,6 +2,22 @@ apiVersion: v1
 entries:
   core:
   - apiVersion: v2
+    appVersion: v1.2.0
+    created: "2023-07-11T08:47:05.735394819Z"
+    description: A helm chart to deploy Calyptia Inc. core on Kubernetes
+    digest: 4be661f3f1ee7c9c8a603be3d27a1a7d8902d64b8725a3f64dd8c7667f7455d4
+    home: https://calyptia.com/products/calyptia-core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/core-1.2.0/core-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v2
     appVersion: v1.1.10
     created: "2023-07-07T08:59:43.244569288Z"
     description: A helm chart to deploy Calyptia Inc. core on Kubernetes
@@ -499,4 +515,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2023-07-07T14:25:23.176337949Z"
+generated: "2023-07-11T08:47:05.73551972Z"
