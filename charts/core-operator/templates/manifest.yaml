@@ -77,7 +77,6 @@ spec:
                       type: array
                   type: object
                 image:
-                  default: {{ .Values.fluentbit_image }}
                   type: string
                 kind:
                   description: Enums
@@ -588,7 +587,7 @@ spec:
       containers:
         - command:
             - /manager
-          image: {{ .Values.operator_image }}
+          image: {{ .Values.operatorImage }}
           livenessProbe:
             httpGet:
               path: /healthz
