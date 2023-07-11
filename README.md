@@ -91,11 +91,13 @@ Note that a valid project token is required.
 #### Install core-operator with core-instance
 
 core-operator
-```shell 
+
+```shell
 helm install core-operator calyptia/core-operator
 ```
 
 core-instance
+
 ```shell
 helm install core-inst calyptia/core-instance --set coreInstance=<your-core-instance> --set cloudToken=<your-token>
 ```

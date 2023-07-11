@@ -588,7 +588,7 @@ spec:
       containers:
         - command:
             - /manager
-          image: {{ .Values.operator_image }}
+          image: {{ .Values.operatorImage }}
           livenessProbe:
             httpGet:
               path: /healthz

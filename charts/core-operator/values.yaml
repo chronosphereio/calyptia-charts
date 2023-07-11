@@ -1,2 +1,2 @@
 namespace: "core-operator"
-operator_image: "ghcr.io/calyptia/core-operator:1.0.4"
+operatorImage: "ghcr.io/calyptia/core-operator:1.0.4"
