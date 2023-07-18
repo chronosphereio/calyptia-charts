@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-conf
+data:
+{{ (.Files.Glob "*.sh").AsConfig | indent 2 }}
+{{ (.Files.Glob "tests/*").AsConfig | indent 2 }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}"
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: test-job
+        image: "bitnami/kubectl"
+        command: ["/test/test.sh"]
+        env:
+          - name: MAX_ITERATIONS
+            value: 30
+          - name: RETRY_TIMEOUT
+            value: 5s
+          - name: PIPELINE_NAME
+            value: test-pipeline
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        volumeMounts:
+          - mountPath: /test
+            name: test-config
+      volumes:
+      - name: test-config
+        configMap:
+          name: test-conf

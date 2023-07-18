@@ -1,5 +1,4 @@
 name: "core-instance"
-namespace: "core-operator"
 clusterLogging: "false"
 coreInstance: ""
 coreSecret: "core-instance"
