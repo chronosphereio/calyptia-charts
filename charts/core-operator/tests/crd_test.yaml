@@ -1,0 +1,13 @@
+---
+suite: test my CRD
+templates:
+  - crd.yaml
+tests:
+  - it: should be a CRD
+    asserts:
+      - isKind:
+          of: CustomResourceDefinition
+      - equal:
+          path: metadata.name
+          value: pipelines.core.calyptia.com
+---
