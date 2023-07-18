@@ -1,0 +1,22 @@
+---
+suite: test my manager
+templates:
+  - manager.yaml
+release:
+  namespace: test
+tests:
+  - it: checks kind
+    set:
+      operatorImage: test_image:latest
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: controller-manager
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: test_image:latest
+      - equal:
+          path: metadata.namespace
+          value: test

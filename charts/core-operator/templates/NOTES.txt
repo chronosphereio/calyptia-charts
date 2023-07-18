@@ -1,0 +1,11 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+Review the Calyptia Core documentation for full details: <https://docs.calyptia.com/calyptia-core/getting-started/readme>
+
+Support can be accessed via: <https://support.calyptia.com/>
+
+To run post-installation tests please use the standard helm approach: <https://helm.sh/docs/topics/chart_tests/>
+
+helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}

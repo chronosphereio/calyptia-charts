@@ -1,0 +1,35 @@
+---
+suite: test my RBAC
+templates:
+  - rbac.yaml
+tests:
+  - it: checks kind
+    asserts:
+      - containsDocument:
+          kind: ServiceAccount
+          apiVersion: v1
+          name: controller-manager
+      - containsDocument:
+          kind: ClusterRole
+          apiVersion: rbac.authorization.k8s.io/v1
+          name: manager-role
+      - containsDocument:
+          kind: ClusterRole
+          apiVersion: rbac.authorization.k8s.io/v1
+          name: metrics-reader
+      - containsDocument:
+          kind: ClusterRole
+          apiVersion: rbac.authorization.k8s.io/v1
+          name: proxy-role
+      - containsDocument:
+          kind: ClusterRoleBinding
+          apiVersion: rbac.authorization.k8s.io/v1
+          name: manager-rolebinding
+      - containsDocument:
+          kind: ClusterRoleBinding
+          apiVersion: rbac.authorization.k8s.io/v1
+          name: proxy-rolebinding
+      - containsDocument:
+          kind: Service
+          apiVersion: v1
+          name: controller-manager-metrics-service
