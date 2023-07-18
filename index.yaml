@@ -198,6 +198,22 @@ entries:
   core-instance:
   - apiVersion: v2
     appVersion: v1.0.6
+    created: "2023-07-18T12:34:32.414678453Z"
+    description: Calyptia Core Instance chart
+    digest: 85c7390654d21bf033c4f2d4fb9c4af115f978774362d1df69b68a545d03456a
+    home: https://calyptia.com/products/core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-instance
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/core-instance-0.0.5/core-instance-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v2
+    appVersion: v1.0.6
     created: "2023-07-11T15:32:15.662343628Z"
     description: Calyptia Core Instance chart
     digest: 90954fbf7bda9fa34712f4f4c82b9e5aa93972daeb0e9be4660791074c1aa73f
@@ -261,6 +277,22 @@ entries:
     - https://github.com/calyptia/charts/releases/download/core-instance-0.0.1/core-instance-0.0.1.tgz
     version: 0.0.1
   core-operator:
+  - apiVersion: v2
+    appVersion: v1.0.6
+    created: "2023-07-18T12:34:32.536298656Z"
+    description: Calyptia Core Operator chart
+    digest: 01b323c0e7fd23e9aa7154639d243b29ecfeb0299349f28a7a6b374449605904
+    home: https://calyptia.com/products/core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-operator
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/core-operator-0.0.5/core-operator-0.0.5.tgz
+    version: 0.0.5
   - apiVersion: v2
     appVersion: v1.0.6
     created: "2023-07-11T15:32:15.986822879Z"
@@ -579,4 +611,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2023-07-11T15:32:15.986947677Z"
+generated: "2023-07-18T12:34:32.536465264Z"
