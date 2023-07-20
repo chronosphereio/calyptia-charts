@@ -213,6 +213,22 @@ entries:
     version: 0.2.6
   core-instance:
   - apiVersion: v2
+    appVersion: v1.0.9
+    created: "2023-07-20T10:47:55.588642931Z"
+    description: Calyptia Core Instance chart
+    digest: d314d084ce7651ca536675e87ad2ce5c38d39f3647ff46b6d16bf7555970c343
+    home: https://calyptia.com/products/core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-instance
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/core-instance-0.0.7/core-instance-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
     appVersion: v1.0.6
     created: "2023-07-18T12:34:32.414678453Z"
     description: Calyptia Core Instance chart
@@ -293,6 +309,22 @@ entries:
     - https://github.com/calyptia/charts/releases/download/core-instance-0.0.1/core-instance-0.0.1.tgz
     version: 0.0.1
   core-operator:
+  - apiVersion: v2
+    appVersion: v1.0.9
+    created: "2023-07-20T10:47:55.764268034Z"
+    description: Calyptia Core Operator chart
+    digest: efa265fb2a5e06d2b56046e9d837adf851c478d51eb5ae7c07c537eacbef2273
+    home: https://calyptia.com/products/core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-operator
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/core-operator-0.0.7/core-operator-0.0.7.tgz
+    version: 0.0.7
   - apiVersion: v2
     appVersion: v1.0.6
     created: "2023-07-18T12:34:32.536298656Z"
@@ -627,4 +659,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2023-07-19T09:07:30.838708093Z"
+generated: "2023-07-20T10:47:55.764355934Z"
