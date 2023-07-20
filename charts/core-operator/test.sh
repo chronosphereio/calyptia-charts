@@ -5,6 +5,7 @@ export PIPELINE_NAME="${PIPELINE_NAME:-test-pipeline}"
 export MAX_ITERATIONS="${MAX_ITERATIONS:-10}"
 export RETRY_TIMEOUT="${RETRY_TIMEOUT:-2s}"
 
+
 echo "Creating a pipeline" 
 if kubectl create -f - <<EOF
 apiVersion: core.calyptia.com/v1
@@ -64,6 +65,8 @@ fi
 echo "Checking if pipline deployment has been recreated"
 
 counter=0
+
+
 while :
 do
     counter=$((counter +1))
@@ -91,6 +94,7 @@ else
 fi
 
 counter=0
+
 while :
 do
     counter=$((counter +1))
