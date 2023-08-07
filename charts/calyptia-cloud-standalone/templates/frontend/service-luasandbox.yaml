@@ -1,0 +1,21 @@
+{{- if .Values.frontend.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: cloud-lua-sandbox
+  name: cloud-lua-sandbox
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: cloud-lua-sandbox
+      port: 5555
+      targetPort: 5555
+  selector: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: cloud-lua-sandbox
+{{- end }}

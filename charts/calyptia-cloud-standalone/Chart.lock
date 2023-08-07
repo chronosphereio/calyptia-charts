@@ -1,0 +1,9 @@
+dependencies:
+- name: fluent-bit
+  repository: https://fluent.github.io/helm-charts
+  version: 0.37.0
+- name: common
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 2.6.0
+digest: sha256:9680d44a99a6f8115d7bfeaa332e28dc7f01b39e0f80ecdea2d090fdd1bf83f9
+generated: "2023-08-07T10:48:52.147252778+01:00"

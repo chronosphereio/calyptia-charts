@@ -1,0 +1,67 @@
+{{- if .Values.vivo.enabled -}}
+---
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: vivo
+  name: vivo
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: vivo
+  {{- if .Values.vivo.updateStrategy }}
+  strategy: {{- toYaml .Values.vivo.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+        {{- if .Values.vivo.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.vivo.podAnnotations "context" $) | nindent 8 }}
+        {{- end }}
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: vivo
+        {{- if .Values.commonLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.vivo.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.vivo.podLabels "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "vivo.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - image: {{ template "vivo.image" . }}
+          name: vivo
+          ports:
+            - name: forward
+              containerPort: 24224
+            - name: http
+              containerPort: 9880
+            - name: vivo
+              containerPort: 2025
+            - name: fluent-bit
+              containerPort: 2020
+            - name: ui
+              containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: fluent-bit
+            failureThreshold: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: fluent-bit
+            failureThreshold: 5
+            periodSeconds: 5
+          {{- if .Values.vivo.resources }}
+          resources: {{- toYaml .Values.vivo.resources | nindent 12 }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+      restartPolicy: {{ default "Always" .Values.vivo.restartPolicy }}
+{{- end }}

@@ -1,0 +1,21 @@
+{{- if .Values.cloudApi.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.kubernetes.io/name: cloud
+    app.kubernetes.io/instance: calyptia
+  labels:
+    app.kubernetes.io/component: influxdb
+  name: influxdb
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: influxdb
+      port: 8086
+      targetPort: 8086
+  selector: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: influxdb
+{{- end }}

@@ -1,0 +1,58 @@
+{{- if .Values.cloudApi.enabled -}}
+---
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+  name: postgres
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ default 1 .Values.cloudApi.postgres.replicas }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: postgres
+  {{- if .Values.cloudApi.updateStrategy }}
+  strategy: {{- toYaml .Values.cloudApi.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.cloudApi.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.podAnnotations "context" $) | nindent 8 }}
+        {{- end }}
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: postgres
+        {{- if .Values.commonLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.cloudApi.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.podLabels "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "cloud.postgres.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - env:
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: trust
+          image: {{ template "cloud.postgres.image" . }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+          name: postgres
+          ports:
+            - containerPort: 5432
+          {{- if .Values.cloudApi.postgres.resources }}
+          resources: {{- toYaml .Values.cloudApi.postgres.resources | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- if .Values.cloudApi.postgres.extraVolumeMounts }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.postgres.extraVolumeMounts "context" $) | nindent 12 }}
+            {{- end }}
+      volumes:
+        {{- if .Values.cloudApi.postgres.extraVolumes }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.postgres.extraVolumes "context" $) | nindent 8 }}
+        {{- end }}
+      restartPolicy: {{ default "Always" .Values.cloudApi.postgres.restartPolicy }}
+{{- end }}
