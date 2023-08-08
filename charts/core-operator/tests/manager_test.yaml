@@ -13,7 +13,7 @@ tests:
           of: Deployment
       - equal:
           path: metadata.name
-          value: controller-manager
+          value: calyptia-core-controller-manager
       - equal:
           path: spec.template.spec.containers[0].image
           value: test_image:latest

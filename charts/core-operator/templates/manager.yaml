@@ -8,19 +8,25 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: deployment
     app.kubernetes.io/part-of: operator
+    calyptia.core: core-operator
+    calyptia.core.version: v1.0.13
     control-plane: controller-manager
-  name: controller-manager
+  name: calyptia-core-controller-manager
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
+      calyptia.core: core-operator
+      calyptia.core.version: v1.0.13
       control-plane: controller-manager
   template:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: manager
       labels:
+        calyptia.core: core-operator
+        calyptia.core.version: v1.0.13
         control-plane: controller-manager
     spec:
       containers:
@@ -54,5 +60,5 @@ spec:
                 - ALL
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: controller-manager
+      serviceAccountName: calyptia-core-controller-manager
       terminationGracePeriodSeconds: 10
