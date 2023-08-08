@@ -8,72 +8,55 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: serviceaccount
     app.kubernetes.io/part-of: operator
-  name: controller-manager
+    calyptia.core: core-operator
+  name: calyptia-core-controller-manager
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   creationTimestamp: null
-  name: manager-role
+  labels:
+    calyptia.core: core-operator
+  name: calyptia-core-manager-role
 rules:
 - apiGroups:
   - ""
-  resources:
-  - services
-  - pods
-  - configmaps
-  - namespaces
-  - secrets
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
   - apps
+  - batch
+  - policy
+  - core.calyptia.com
+  - core
+  - rbac.authorization.k8s.io
   resources:
+  - namespaces
+  - serviceaccounts
   - deployments
+  - clusterrolebindings
+  - daemonsets
+  - replicasets
+  - pods
   - services
   - configmaps
-  - daemonsets
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - core.calyptia.com
-  resources:
+  - deployments/scale
+  - secrets
+  - nodes/proxy
+  - nodes
+  - jobs
+  - podsecuritypolicies
   - pipelines
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - core.calyptia.com
-  resources:
   - pipelines/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - core.calyptia.com
-  resources:
   - pipelines/status
   verbs:
   - get
+  - list
+  - create
+  - delete
   - patch
   - update
+  - watch
+  - deletecollection
+  - use
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -85,12 +68,54 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: clusterrole
     app.kubernetes.io/part-of: operator
-  name: metrics-reader
+    calyptia.core: core-operator
+  name: calyptia-core-metrics-reader
 rules:
 - nonResourceURLs:
   - /metrics
   verbs:
   - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    calyptia.core: core-operator
+  name: calyptia-core-pod-role
+rules:
+- apiGroups:
+  - ""
+  - apps
+  - batch
+  - policy
+  - core.calyptia.com
+  resources:
+  - namespaces
+  - deployments
+  - daemonsets
+  - replicasets
+  - pods
+  - services
+  - configmaps
+  - deployments/scale
+  - secrets
+  - nodes/proxy
+  - nodes
+  - jobs
+  - podsecuritypolicies
+  - pipelines
+  - pipelines/finalizers
+  - pipelines/status
+  verbs:
+  - get
+  - list
+  - create
+  - delete
+  - patch
+  - update
+  - watch
+  - deletecollection
+  - use
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -102,7 +127,8 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: clusterrole
     app.kubernetes.io/part-of: operator
-  name: proxy-role
+    calyptia.core: core-operator
+  name: calyptia-core-proxy-role
 rules:
 - apiGroups:
   - authentication.k8s.io
@@ -127,14 +153,15 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: clusterrolebinding
     app.kubernetes.io/part-of: operator
-  name: manager-rolebinding
+    calyptia.core: core-operator
+  name: calyptia-core-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: manager-role
+  name: calyptia-core-manager-role
 subjects:
 - kind: ServiceAccount
-  name: controller-manager
+  name: calyptia-core-controller-manager
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -147,14 +174,15 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: clusterrolebinding
     app.kubernetes.io/part-of: operator
-  name: proxy-rolebinding
+    calyptia.core: core-operator
+  name: calyptia-core-proxy-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: proxy-role
+  name: calyptia-core-proxy-role
 subjects:
 - kind: ServiceAccount
-  name: controller-manager
+  name: calyptia-core-controller-manager
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: v1
@@ -167,8 +195,9 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: service
     app.kubernetes.io/part-of: operator
+    calyptia.core: core-operator
     control-plane: controller-manager
-  name: controller-manager-metrics-service
+  name: calyptia-core-controller-manager-metrics-service
   namespace: {{ .Release.Namespace }}
 spec:
   ports:
@@ -177,4 +206,5 @@ spec:
     protocol: TCP
     targetPort: https
   selector:
+    calyptia.core: core-operator
     control-plane: controller-manager

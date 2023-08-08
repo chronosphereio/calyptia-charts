@@ -4,6 +4,8 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.11.1
   creationTimestamp: null
+  labels:
+    calyptia.core: core-operator
   name: pipelines.core.calyptia.com
 spec:
   group: core.calyptia.com
@@ -69,7 +71,7 @@ spec:
                     type: array
                 type: object
               image:
-                default: ghcr.io/calyptia/core/calyptia-fluent-bit:23.7.7
+                default: ghcr.io/calyptia/core/calyptia-fluent-bit:23.8.1
                 type: string
               kind:
                 description: Enums
