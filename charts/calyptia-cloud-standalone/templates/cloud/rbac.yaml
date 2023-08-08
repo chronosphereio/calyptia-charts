@@ -1,0 +1,26 @@
+{{- if .Values.rbac.create }}
+apiVersion: {{ include "common.capabilities.rbac.apiVersion" . }}
+kind: Role
+metadata:
+  name: calyptia-write-role
+  namespace: {{ .Release.Namespace | quote }}
+rules:
+  - apiGroups: [""] # core API group
+    resources: ["pods", "secrets"]
+    verbs: ["get", "watch", "list", "create", "update"]
+---
+apiVersion: {{ include "common.capabilities.rbac.apiVersion" . }}
+kind: RoleBinding
+metadata:
+  name: calyptia-write-binding
+  namespace: {{ .Release.Namespace | quote }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "cloud.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: calyptia-write-role
+---
+{{- end }}

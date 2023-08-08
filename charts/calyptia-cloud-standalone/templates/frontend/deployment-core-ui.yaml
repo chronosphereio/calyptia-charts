@@ -1,0 +1,96 @@
+{{- if .Values.frontend.enabled -}}
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: core
+  name: core
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ default 1 .Values.frontend.replicas}}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: core
+  {{- if .Values.frontend.updateStrategy }}
+  strategy: {{- toYaml .Values.frontend.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+        {{- if .Values.frontend.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.frontend.podAnnotations "context" $) | nindent 8 }}
+        {{- end }}
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: core
+        {{- if .Values.commonLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.frontend.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.frontend.podLabels "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccount: {{ template "frontend.serviceAccountName" . }}
+      {{- include "frontend.imagePullSecrets" . | nindent 6 }}
+      initContainers:
+        # Wait for the auth-secret to be created before continuing
+        - name: token-secret-waiter
+          image: {{ template "cloud.kubectl.image" . }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+          {{- if .Values.frontend.kubectl.resources }}
+          resources: {{- toYaml .Values.frontend.kubectl.resources | nindent 12 }}
+          {{- end }}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              until kubectl get secret -n ${CORE_NAMESPACE} auth-secret; do
+                sleep 30
+              done
+          env:
+            - name: CORE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+      containers:
+        - image: {{ template "frontend.image" . }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+          name: core
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            # The in-cluster 'cloud' service
+            - name: CLOUD_API_URL
+              value: http://cloud-api:5000
+            - name: NEXT_PUBLIC_CLI_INSTRUCTIONS_URL_OVERRIDE
+              value: http://cloud-api:5000
+              # The in-cluster LUA sandbox service
+            - name: LUA_SANDBOX_URL
+              value: http://cloud-lua-sandbox:5555/jsonrpc
+            # Disable various components we do not want - the container should anyway.
+            - name: SENTRY_IGNORE_API_RESOLUTION_ERROR
+              value: '1'
+            - name: SENTRY_ENVIRONMENT
+              value: 'offline'
+            - name: SENTRY_DISABLED
+              value: '1'
+            - name: NEXT_TELEMETRY_DISABLED
+              value: '1'
+          envFrom:
+            - secretRef:
+                name: auth-secret
+          {{- if .Values.frontend.resources }}
+          resources: {{- toYaml .Values.frontend.resources | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+          {{- if .Values.frontend.extraVolumeMounts }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.frontend.extraVolumeMounts "context" $) | nindent 12 }}
+          {{- end }}
+      volumes:
+        {{- if .Values.frontend.extraVolumes }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.frontend.extraVolumes "context" $) | nindent 8 }}
+        {{- end }}
+      restartPolicy: {{ default "Always" .Values.frontend.restartPolicy }}
+{{- end }}

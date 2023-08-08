@@ -1,0 +1,27 @@
+apiVersion: v2
+name: calyptia-standalone
+description: Umbrella chart to configure a Calyptia Core control plane and supporting on-premise appliance.
+home: https://calyptia.com/products/calyptia-core/
+icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+type: application
+version: 0.0.1
+appVersion: "v1.4.0"
+maintainers:
+  - name: Calyptia
+    email: hello@calyptia.com
+    url: www.calyptia.com
+dependencies:
+  # Use the OSS Fluent Bit chart for monitoring
+  - name: fluent-bit
+    version: 0.x.x
+    repository: https://fluent.github.io/helm-charts
+    condition: monitoring.enabled
+  # Core Operator chart
+  # - name: core-operator
+  #   version: 0.0.8
+  #   repository: https://helm.calyptia.com
+  #   condition: core.operator.enabled
+  # Useful helpers: https://github.com/bitnami/charts/tree/main/bitnami/common
+  - name: common
+    version: 2.x.x
+    repository: oci://registry-1.docker.io/bitnamicharts

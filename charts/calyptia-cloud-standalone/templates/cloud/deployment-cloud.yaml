@@ -1,0 +1,107 @@
+{{- if .Values.cloudApi.enabled -}}
+---
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: cloud-api
+  name: cloud-api
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ default 1 .Values.cloudApi.replicas }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: cloud-api
+  {{- if .Values.cloudApi.updateStrategy }}
+  strategy: {{- toYaml .Values.cloudApi.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.cloudApi.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.podAnnotations "context" $) | nindent 8 }}
+        {{- end }}
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: cloud-api
+        {{- if .Values.commonLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.cloudApi.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.podLabels "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccount: {{ template "cloud.serviceAccountName" . }}
+      {{- include "cloud.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - image: {{ template "cloud.image" . }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+          name: cloud-api
+          ports:
+            - name: http
+              containerPort: 5000
+          {{- if .Values.cloudApi.resources }}
+          resources: {{- toYaml .Values.cloudApi.resources | nindent 12 }}
+          {{- end }}
+          env:
+            - name: DEBUG
+              value: 'true'
+            - name: INFLUX_SERVER
+              value: "http://influxdb:8086"
+            - name: POSTGRES_DSN
+              value: "postgresql://postgres@postgres:5432?sslmode=disable"
+            # - name: ALLOWED_ORIGINS
+            #   # value: "https://config-viewer-ui-dev.herokuapp.com,https://visual-ui.herokuapp.com,https://cloud-api.calyptia.com,https://core-jet.vercel.app,https://core-git-*-calyptia.vercel.app"
+            #   value: "*"
+            # Cross-mount a token file
+            - name: DEFAULT_TOKEN_FILE
+              value: /token/token.txt
+          volumeMounts:
+            - mountPath: /token
+              name: token
+          {{- if .Values.cloudApi.extraVolumeMounts }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.extraVolumeMounts "context" $) | nindent 12 }}
+          {{- end }}
+        - name: token-secret-creator
+          image: {{ template "cloud.kubectl.image" . }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+          # Need access to the filesystem - cloud runs as root
+          securityContext:
+            runAsUser: 0
+          {{- if .Values.cloudApi.kubectl.resources }}
+          resources: {{- toYaml .Values.cloudApi.kubectl.resources | nindent 12 }}
+          {{- end }}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              until [[ -f /token/token.txt ]]; do
+                sleep 5
+              done
+              echo 'Token file found'
+              until kubectl create -n ${CORE_NAMESPACE} secret generic auth-secret --from-file=ONPREM_CLOUD_API_PROJECT_TOKEN=/token/token.txt ; do
+                sleep 10
+              done
+              echo 'Secret created - complete'
+              while true; do
+                sleep 30
+              done
+          env:
+            - name: CORE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: token
+              mountPath: /token
+      volumes:
+        - name: token
+          emptyDir:
+            sizeLimit: 1Mi
+        {{- if .Values.cloudApi.extraVolumes }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.extraVolumes "context" $) | nindent 8 }}
+        {{- end }}
+      restartPolicy: {{ default "Always" .Values.cloudApi.restartPolicy }}
+{{- end }}

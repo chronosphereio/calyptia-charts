@@ -1,0 +1,46 @@
+{{- if .Values.frontend.enabled -}}
+---
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: cloud-lua-sandbox
+  name: cloud-lua-sandbox
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ default 1 .Values.frontend.luaSandbox.replicas }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: cloud-lua-sandbox
+  {{- if .Values.frontend.luaSandbox.updateStrategy }}
+  strategy: {{- toYaml .Values.frontend.luaSandbox.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+        {{- if .Values.frontend.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.frontend.podAnnotations "context" $) | nindent 8 }}
+        {{- end }}
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: cloud-lua-sandbox
+        {{- if .Values.commonLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.frontend.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.frontend.podLabels "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "frontend.luaSandbox.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - image: {{ template "frontend.luaSandbox.image" . }}
+          name: cloud-lua-sandbox
+          ports:
+            - containerPort: 5555
+          {{- if .Values.frontend.luaSandbox.resources }}
+          resources: {{- toYaml .Values.frontend.luaSandbox.resources | nindent 12 }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+      restartPolicy: {{ default "Always" .Values.frontend.luaSandbox.restartPolicy }}
+{{- end }}

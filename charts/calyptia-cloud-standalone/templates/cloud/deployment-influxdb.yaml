@@ -1,0 +1,68 @@
+{{- if .Values.cloudApi.enabled -}}
+---
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: influxdb
+  name: influxdb
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ default 1 .Values.cloudApi.influxdb.replicas }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: influxdb
+  {{- if .Values.cloudApi.updateStrategy }}
+  strategy: {{- toYaml .Values.cloudApi.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.cloudApi.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.podAnnotations "context" $) | nindent 8 }}
+        {{- end }}
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: influxdb
+        {{- if .Values.commonLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.cloudApi.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.podLabels "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "cloud.influxdb.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - env:
+            - name: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+              value: cloud-api
+            - name: DOCKER_INFLUXDB_INIT_BUCKET
+              value: cloud-api
+            - name: DOCKER_INFLUXDB_INIT_MODE
+              value: setup
+            - name: DOCKER_INFLUXDB_INIT_ORG
+              value: cloud-api
+            - name: DOCKER_INFLUXDB_INIT_PASSWORD
+              value: my-password
+            - name: DOCKER_INFLUXDB_INIT_USERNAME
+              value: my-user
+          image: {{ template "cloud.influxdb.image" . }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+          name: influxdb
+          ports:
+            - containerPort: 8086
+          {{- if .Values.cloudApi.influxdb.resources }}
+          resources: {{- toYaml .Values.cloudApi.influxdb.resources | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- if .Values.cloudApi.influxdb.extraVolumeMounts }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.influxdb.extraVolumeMounts "context" $) | nindent 12 }}
+            {{- end }}
+      volumes:
+        {{- if .Values.cloudApi.influxdb.extraVolumes }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.influxdb.extraVolumes "context" $) | nindent 8 }}
+        {{- end }}
+      restartPolicy: {{ default "Always" .Values.cloudApi.influxdb.restartPolicy }}
+{{- end }}

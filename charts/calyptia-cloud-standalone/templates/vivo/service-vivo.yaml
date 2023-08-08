@@ -1,0 +1,35 @@
+{{- if .Values.vivo.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: vivo
+    calyptia.vivo.input.http: '9010'
+    calyptia.vivo.input.forward: '9000'
+  name: vivo
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ default "LoadBalancer" .Values.cloudApi.service.type }}
+  ports:
+    - name: "ui"
+      port: {{ default 3000 .Values.frontend.service.port }}
+      targetPort: 3000
+    - name: "forward"
+      port: 9000
+      targetPort: 24224
+    - name: "http"
+      port: 9010
+      targetPort: 9880
+    - name: "vivo"
+      port: 2025
+      targetPort: 2025
+    - name: "fluent-bit"
+      port: 2020
+      targetPort: 2020
+  selector: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: vivo
+{{- end }}

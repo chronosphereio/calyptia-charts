@@ -1,0 +1,392 @@
+# Initial placeholder for config options for the Helm chart
+
+## @param commonLabels Labels to add to all deployed objects
+##
+commonLabels: {}
+## @param commonAnnotations Annotations to add to all deployed objects
+##
+commonAnnotations: {}
+nameOverride: ""
+fullnameOverride: ""
+#
+# floating tag for product version - should override tags below
+# productTag: x.x.x
+#
+# TODO: validate with JSON schema
+# Use 'eks, gke, kind' or empty for unknown
+cloudProvider: ""
+## RBAC configuration
+## @param rbac.create Specifies whether RBAC resources should be created
+##
+rbac:
+  create: true
+#
+#
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+## @section Global parameters
+## @param global.imageRegistry Global Docker image registry
+## @param global.imagePullSecrets Global Docker registry secret names as an array
+## @param global.storageClass Global StorageClass for Persistent Volume(s)
+##
+global:
+  imageRegistry: ""
+  # Use these in the EKS deployment for gcr.io/ghcr.io/docker.io
+  imagePullSecrets: []
+  storageClass: ""
+  pullPolicy: IfNotPresent
+#
+# TODO: switch to functions to render YAML: https://itnext.io/reference-other-values-in-helm-chart-values-file-19d44d9276c7
+cloudApi:
+  enabled: true
+  service:
+    type: LoadBalancer
+    port: 5000
+  name: cloud-api
+  resources:
+    limits:
+      memory: 500Mi
+      cpu: 500m
+    requests: {}
+  images:
+    cloud:
+      registry: gcr.io
+      repository: calyptia-infra/cloud
+      tag: v1.4.0
+      pullSecrets: []
+    kubectl:
+      registry: docker.io
+      repository: bitnami/kubectl
+      tag: 1.25.12
+      pullSecrets: []
+    postgres:
+      registry: docker.io
+      repository: postgres
+      tag: 15.3
+      pullSecrets: []
+    influxdb:
+      registry: docker.io
+      repository: influxdb
+      tag: 2.7.1
+      pullSecrets: []
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+  # All influx config
+  influxdb:
+    # Disable if providing our own - not supported yet
+    enabled: true
+    replicas: 1
+    resources:
+      limits:
+        memory: 500Mi
+        cpu: 500m
+      requests: {}
+  # All postgres config
+  postgres:
+    # Disable if providing our own - not supported yet
+    enabled: true
+    replicas: 1
+    resources:
+      limits:
+        memory: 500Mi
+        cpu: 500m
+      requests: {}
+  kubectl:
+    resources:
+      limits: {}
+      requests: {}
+#
+# Core instances/operator
+core:
+  enabled: true
+  # Not supported yet
+  operator: false
+  images:
+    core:
+      registry: ghcr.io
+      repository: calyptia/core
+      tag: 1.2.4
+      pullSecrets: []
+    coreFluentBit:
+      registry: ghcr.io
+      repository: calyptia/core/calyptia-fluent-bit
+      tag: 23.8.1
+      pullSecrets: []
+    coreOperator:
+      registry: ghcr.io
+      repository: calyptia/core-operator
+      tag: 1.0.10
+      pullSecrets: []
+    coreOperatorSyncTocloud:
+      registry: ghcr.io
+      repository: calyptia/core-operator/sync-to-cloud
+      tag: 1.0.10
+      pullSecrets: []
+    coreOperatorSyncFromCloud:
+      registry: ghcr.io
+      repository: calyptia/core-operator/sync-from-cloud
+      tag: 1.0.10
+      pullSecrets: []
+frontend:
+  enabled: true
+  service:
+    type: LoadBalancer
+    port: 3000
+  name: core
+  images:
+    frontend:
+      registry: ghcr.io
+      repository: calyptia/frontend
+      tag: 1.0.2
+      pullSecrets: []
+    luaSandbox:
+      registry: ghcr.io
+      repository: calyptia/cloud-lua-sandbox
+      tag: 2.1.5
+      pullSecrets: []
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+  resources:
+    limits:
+      memory: 500Mi
+      cpu: 500m
+    requests: {}
+  luaSandbox:
+    replicas: 1
+    resources:
+      limits:
+        memory: 500Mi
+        cpu: 500m
+      requests: {}
+  kubectl:
+    resources:
+      limits: {}
+      requests: {}
+vivo:
+  enabled: true
+  service:
+    type: LoadBalancer
+    port: 3000
+  name: vivo
+  images:
+    vivo:
+      registry: docker.io
+      repository: calyptia/vivo
+      tag: 3.0.1
+      pullSecrets: []
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "250m"
+    limits:
+      memory: "128Mi"
+      cpu: "500m"
+#
+# Following should be done externally, just capture images maybe?
+loadBalancer:
+  # Whether to deploy the metallb load balancer or not
+  # May not be possible in single helm chart as have to wait for it
+  enabled: false
+  # Set this from KIND network
+  ipBase: 172.18
+  namespace: metallb-system
+  # Image configuration though should be doable to update the templates
+  images:
+    controller:
+      registry: quay.io
+      repository: metallb/controller
+      tag: v0.13.10
+      pullSecrets: []
+    speaker:
+      registry: quay.io
+      repository: metallb/speaker
+      tag: v0.13.10
+      pullSecrets: []
+  resources:
+    limits: {}
+    requests: {}
+#
+ingress:
+  enabled: false
+  images:
+    nginx:
+      registry: docker.io
+      repository: nginx
+      tag: 1.25.1
+  config:
+    # Switch to individual sidecars as well per pod
+    nginx: |
+      server {
+        listen 9999;
+        server_name  localhost ingress.${{ .Release.Namespace }};
+
+        location /vivo {
+          proxy_pass http://vivo.${{ .Release.Namespace }}:3000;
+        }
+
+        location ~ /v\d/.* {
+          proxy_pass http://cloud.${{ .Release.Namespace }}:5000;
+        }
+
+        location / {
+          proxy_pass http://core.${{ .Release.Namespace }}:3000;
+        }
+      }
+  resources:
+    limits: {}
+    requests: {}
+#
+monitoring:
+  enabled: true
+#
+#
+# Dependent chart so have to use the values as defined there
+fluent-bit:
+  pullSecrets: []
+  image:
+    repository: ghcr.io/calyptia/calyptia-fluent-bit
+    tag: 23.4.5
+    pullPolicy: IfNotPresent
+  namespace: monitoring-system
+  config:
+    service: |
+      [SERVICE]
+          Daemon Off
+          Flush {{ .Values.flush }}
+          Log_Level {{ .Values.logLevel }}
+          Parsers_File /fluent-bit/etc/parsers.conf
+          Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
+          HTTP_Server On
+          HTTP_Listen 0.0.0.0
+          HTTP_Port 2020
+          Health_Check On
+          Storage.Metrics On
+    inputs: |
+      [INPUT]
+          Name tail
+          Path /var/log/containers/*.log
+          multiline.parser docker, cri
+          Tag kube.*
+          Mem_Buf_Limit 5MB
+          Skip_Long_Lines On
+          # Ensure we do not tail our own logs otherwise it can snowball even with exclusion later
+          Exclude_Path        *{{ include "fluent-bit.name" . }}*.log
+
+      [INPUT]
+          Name systemd
+          Tag host.*
+          Systemd_Filter _SYSTEMD_UNIT=kubelet.service
+          Read_From_Tail On
+
+      [INPUT]
+          name                fluentbit_metrics
+          tag                 metrics.calyptia
+          scrape_on_start     true
+          scrape_interval     30
+
+      [INPUT]
+          name                node_exporter_metrics
+          tag                 metrics.node
+          scrape_interval     30
+          # Ensure these are mounted
+          path.procfs         /host/proc
+          path.sysfs          /host/sys
+    outputs: |
+      [OUTPUT]
+          name                prometheus_exporter
+          match               metrics.*
+          host                0.0.0.0
+          port                2021
+          add_label           node ${NODE_NAME}
+
+      [OUTPUT]
+          name                   forward
+          host                   vivo.calyptia
+          port                   9000
+          match                  *
+  securityContext:
+    runAsNonRoot: false
+    runAsUser: 0
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  podAnnotations:
+    # Exclude our own logs
+    fluentbit.io/exclude: "true"
+    # Set up Prometheus scraping
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: '2021'
+  podLabels: {}
+  flush: 1
+  logLevel: info
+  env:
+    - name: NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    - name: POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+    - name: POD_SERVICE_ACCOUNT
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.serviceAccountName
+  daemonSetVolumes:
+    - name: varlog
+      hostPath:
+        path: /var/log/
+    - name: varlibdockercontainers
+      hostPath:
+        path: /var/lib/docker/containers
+    - name: etcmachineid
+      hostPath:
+        path: /etc/machine-id
+        type: File
+    - name: hostproc
+      hostPath:
+        path: /proc
+    - name: hostsys
+      hostPath:
+        path: /sys
+  daemonSetVolumeMounts:
+    - name: varlog
+      mountPath: /var/log/
+      readOnly: true
+    - name: varlibdockercontainers
+      mountPath: /var/lib/docker/containers
+      readOnly: true
+    - name: etcmachineid
+      mountPath: /etc/machine-id
+      readOnly: true
+    - name: hostproc
+      mountPath: /host/proc
+      readOnly: true
+    - name: hostsys
+      mountPath: /host/sys
+      readOnly: true
+  hotReload:
+    enabled: true
+    image:
+      repository: ghcr.io/jimmidyson/configmap-reload
+      tag: v0.11.1
+      pullPolicy: IfNotPresent
+      pullSecrets: []
