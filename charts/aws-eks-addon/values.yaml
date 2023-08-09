@@ -108,9 +108,8 @@ config:
 
   ## Only included if we have a project token
   calyptia: |
-    [OUTPUT]
+    [CUSTOM]
         Name                calyptia
-        Match               *
         api_key             {{ required "A valid Calyptia project_token is required." .Values.calyptia.project_token }}
         calyptia_host       {{ .Values.calyptia.api_url }}
         calyptia_port       {{ .Values.calyptia.port }}
@@ -151,7 +150,7 @@ serviceAccount:
 # These are all part of the add-on definition
 image:
   repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/calyptia/calyptia-fb
-  tag: 23.4.3
+  tag: 23.4.5
   pullPolicy: Always
 
 # Not intended to be configurable for add-ons
