@@ -1,1 +1,33 @@
 Calyptia Cloud standalone correctly installed.
+
+Run the following to get service endpoints:
+
+* Cloud-API:
+
+IP=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..status.loadBalancer.ingress[0].ip}')
+PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..spec.ports[0].port}')
+CLOUD_ENDPOINT="http://${IP}:${PORT}
+
+* Core/UI:
+
+IP=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=core' -o=jsonpath='{.items..status.loadBalancer.ingress[0].ip}')
+PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=core' -o=jsonpath='{.items..spec.ports[0].port}')
+UI_ENDPOINT="http://${IP}:${PORT}
+
+* Vivo
+
+IP=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=vivo' -o=jsonpath='{.items..status.loadBalancer.ingress[0].ip}')
+PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=vivo' -o=jsonpath='{.items..spec.ports[0].port}')
+VIVO_ENDPOINT="http://${IP}:${PORT}/vivo
+
+To create an instance in the cluster run:
+
+export NAMESPACE={{ .Release.Namespace }}
+helm repo add calyptia https://helm.calyptia.com --force-update
+helm repo update
+helm upgrade --install --namespace core-instance --create-namespace calyptia-core calyptia/core \
+    --set project_token="$(kubectl get secret -n "calyptia" auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)" \
+    --set name=test --set core_instance_tags=test --set api_url="http://cloud-api.$NAMESPACE:5000" \
+    --debug --wait
+
+For outside the cluster, replace the 'api_url' with the CLOUD_ENDPOINT above (it must be routable from the source).
