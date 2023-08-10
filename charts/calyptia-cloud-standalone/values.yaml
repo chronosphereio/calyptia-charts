@@ -12,9 +12,10 @@ fullnameOverride: ""
 # floating tag for product version - should override tags below
 # productTag: x.x.x
 #
-# TODO: validate with JSON schema
+# validate with JSON schema
 # Use 'eks, gke, kind' or empty for unknown
-cloudProvider: ""
+# cloudProvider: ""
+#
 ## RBAC configuration
 ## @param rbac.create Specifies whether RBAC resources should be created
 ##
@@ -37,7 +38,6 @@ global:
   storageClass: ""
   pullPolicy: IfNotPresent
 #
-# TODO: switch to functions to render YAML: https://itnext.io/reference-other-values-in-helm-chart-values-file-19d44d9276c7
 cloudApi:
   enabled: true
   service:
@@ -51,9 +51,9 @@ cloudApi:
     requests: {}
   images:
     cloud:
-      registry: gcr.io
-      repository: calyptia-infra/cloud
-      tag: v1.4.0
+      registry: ghcr.io
+      repository: calyptia/cloud
+      tag: 1.4.1
       pullSecrets: []
     kubectl:
       registry: docker.io
