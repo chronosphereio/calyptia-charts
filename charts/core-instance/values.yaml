@@ -1,5 +1,5 @@
 name: "core-instance"
-clusterLogging: "false"
+clusterLogging: false
 coreInstance: ""
 coreSecret: "core-instance"
 cloudToken: ""
