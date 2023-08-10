@@ -30,7 +30,7 @@ The helm chart provides the following services:
 
 These match up with the hosted names, e.g. cloud-api.calyptia.com and core.calyptia.com.
 
-In addition, a Vivo service is also provided on port 3000.
+In addition, a [Vivo](https://github.com/calyptia/vivo) service is also provided on port 3000.
 
 All services are provided as [`LoadBalancer`](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer) type by default so the external IP can be retrieved via a call to `kubectl -n <namesapce> get svc`.
 
