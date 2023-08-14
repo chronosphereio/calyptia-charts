@@ -108,12 +108,12 @@ core:
     core:
       registry: ghcr.io
       repository: calyptia/core
-      tag: 1.2.4
+      tag: 1.2.5
       pullSecrets: []
     coreFluentBit:
       registry: ghcr.io
       repository: calyptia/core/calyptia-fluent-bit
-      tag: 23.8.1
+      tag: 23.8.2
       pullSecrets: []
     coreOperator:
       registry: ghcr.io
@@ -140,7 +140,7 @@ frontend:
     frontend:
       registry: ghcr.io
       repository: calyptia/frontend
-      tag: 1.0.2
+      tag: 1.0.3
       pullSecrets: []
     luaSandbox:
       registry: ghcr.io
