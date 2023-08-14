@@ -3,6 +3,31 @@ entries:
   calyptia-standalone:
   - apiVersion: v2
     appVersion: v1.4.1
+    created: "2023-08-14T09:07:17.771765196Z"
+    dependencies:
+    - condition: monitoring.enabled
+      name: fluent-bit
+      repository: https://fluent.github.io/helm-charts
+      version: 0.x.x
+    - name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 2.x.x
+    description: Umbrella chart to configure a Calyptia Core control plane and supporting
+      on-premise appliance.
+    digest: 7bff94991bf8db74dc1bea47312948d90a070cca8aee69f104dcbeac83df8d68
+    home: https://calyptia.com/products/calyptia-core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: calyptia-standalone
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/calyptia-standalone-0.0.4/calyptia-standalone-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
+    appVersion: v1.4.1
     created: "2023-08-10T13:33:45.763412878Z"
     dependencies:
     - condition: monitoring.enabled
@@ -896,4 +921,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2023-08-14T08:15:02.504028594Z"
+generated: "2023-08-14T09:07:17.771876511Z"
