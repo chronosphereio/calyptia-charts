@@ -1,6 +1,32 @@
 Calyptia Cloud standalone correctly installed.
 
-Run the following to get service endpoints:
+To get the project token:
+
+kubectl get secret -n {{ .Release.Namespace }} auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode
+
+To create an instance in the cluster run:
+
+export CLOUD_NAMESPACE={{ .Release.Namespace }}
+export INSTANCE_NAMESPACE=core-instance
+export INSTANCE_NAME=test
+export INSTANCE_TAG=test
+
+helm repo add calyptia https://helm.calyptia.com --force-update
+helm repo update
+helm upgrade --install --namespace "$INSTANCE_NAMESPACE" --create-namespace calyptia-core calyptia/core \
+    --set project_token="$(kubectl get secret -n "calyptia" auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)" \
+    --set name="$INSTANCE_NAME" --set core_instance_tags="INSTANCE_TAG" --set api_url="http://cloud-api.$CLOUD_NAMESPACE:5000" \
+    --debug --wait
+
+For outside the cluster, replace the 'api_url' with the CLOUD_ENDPOINT above (it must be routable from the source).
+
+Run the following to get the services:
+
+kubectl get -n {{ .Release.Namespace }} svc
+
+ClusterIP services will need port-forwarding/ingress to use externally.
+
+If using LoadBalancer, run the following to get external service endpoints:
 
 * Cloud-API:
 
@@ -19,15 +45,3 @@ UI_ENDPOINT="http://${IP}:${PORT}
 IP=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=vivo' -o=jsonpath='{.items..status.loadBalancer.ingress[0].ip}')
 PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=vivo' -o=jsonpath='{.items..spec.ports[0].port}')
 VIVO_ENDPOINT="http://${IP}:${PORT}/vivo
-
-To create an instance in the cluster run:
-
-export NAMESPACE={{ .Release.Namespace }}
-helm repo add calyptia https://helm.calyptia.com --force-update
-helm repo update
-helm upgrade --install --namespace core-instance --create-namespace calyptia-core calyptia/core \
-    --set project_token="$(kubectl get secret -n "calyptia" auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)" \
-    --set name=test --set core_instance_tags=test --set api_url="http://cloud-api.$NAMESPACE:5000" \
-    --debug --wait
-
-For outside the cluster, replace the 'api_url' with the CLOUD_ENDPOINT above (it must be routable from the source).
