@@ -3,6 +3,7 @@
 ## Usage
 
 A helm chart is provided to install Calyptia Cloud on-premise.
+It requires pull secrets in place, in this case called `container-registry-creds`.
 
 ```shell
 helm repo add calyptia https://helm.calyptia.com
@@ -11,15 +12,22 @@ helm upgrade --install \
     --create-namespace --namespace calyptia \
     --set global.imagePullSecrets[0]="container-registry-creds" \
     --wait --debug \
-    calyptia-cloud calyptia/calyptia-cloud-standalone
+    calyptia-cloud calyptia/calyptia-standalone
 ```
 
-With access to ghcr.io this can be used (once pull secrets are set), otherwise we provide a package containing all images and the helm chart.
+We provide a package containing all images and this helm chart.
 The consumer is responsible for loading images and setting up a K8S cluster with any relevant pull secrets.
 
-To set up a pull secret, the `setup-pull-secret.sh` script can be used or follow the official documentation here: <https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-by-providing-credentials-on-the-command-line>.
+To set up a pull secret follow the official documentation here: <https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-by-providing-credentials-on-the-command-line>.
 
-The [install.sh] script also handles setting up a pull secret via command line parameters or environment variables.
+```shell
+kubectl create ns calyptia
+kubectl -n calyptia create secret docker-registry "container-registry-creds" \
+    --docker-server="<registry url, e.g. ghcr.io>" \
+    --docker-username="<username for authentication, e.g. Github username>" \
+    --docker-password="<password or token for authentication>" \
+    --docker-email="<email associated with user>"
+```
 
 ### Services
 
@@ -92,7 +100,7 @@ helm upgrade --install \
     --set frontend.service.type="ClusterIP" \
     --set vivo.service.type="ClusterIP" \
     --wait --debug \
-    calyptia-cloud ./chart/
+    calyptia-cloud calyptia/calyptia-standalone
 ```
 
 [LoadBalancer](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer) services are used by default as they are exposed externally then automatically via the cloud providers and other tools like K3S.
