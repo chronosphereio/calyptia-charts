@@ -1,0 +1,24 @@
+{{- if .Values.ingress.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: gateway
+  name: gateway
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: gateway
+  name: gateway
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: gateway
+      port: {{ default 80 .Values.ingress.port }}
+      targetPort: {{ default 80 .Values.ingress.port }}
+  selector: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: gateway
+{{- end -}}

@@ -1,0 +1,54 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: gateway
+  name: gateway
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ default 1 .Values.ingress.replicas}}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: gateway
+  {{- if .Values.ingress.updateStrategy }}
+  strategy: {{- toYaml .Values.ingress.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+        {{- if .Values.ingress.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.ingress.podAnnotations "context" $) | nindent 8 }}
+        {{- end }}
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: gateway
+        {{- if .Values.commonLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.ingress.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.ingress.podLabels "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - image: {{ template "ingress.image" . }}
+          name: ngnix-gateway
+          volumeMounts:
+          - name: nginx-conf
+            mountPath: /etc/nginx/conf.d
+          ports:
+            - containerPort: {{ default 80 .Values.ingress.port }}
+          {{- if .Values.ingress.resources }}
+          resources: {{- toYaml .Values.ingress.resources | nindent 12 }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+      restartPolicy: {{ default "Always" .Values.ingress.restartPolicy }}
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+              - key: gateway.conf
+                path: default.conf
+{{- end -}}
