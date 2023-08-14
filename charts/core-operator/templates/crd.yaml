@@ -71,7 +71,7 @@ spec:
                     type: array
                 type: object
               image:
-                default: ghcr.io/calyptia/core/calyptia-fluent-bit:23.8.1
+                default: ghcr.io/calyptia/core/calyptia-fluent-bit:23.8.2
                 type: string
               kind:
                 description: Enums
