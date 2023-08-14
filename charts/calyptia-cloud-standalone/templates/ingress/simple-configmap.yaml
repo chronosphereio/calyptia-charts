@@ -1,0 +1,16 @@
+{{- if .Values.ingress.enabled -}}
+---
+apiVersion: {{ include "common.capabilities.configmap.apiVersion" . }}
+kind: ConfigMap
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: gateway
+  name: nginx-conf
+  namespace: {{ .Release.Namespace | quote }}
+data:
+  gateway.conf: |
+    {{- (tpl .Values.ingress.config $)  | nindent 4 }}
+{{- end -}}

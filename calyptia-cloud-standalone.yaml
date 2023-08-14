@@ -1,0 +1,974 @@
+---
+# Source: calyptia-standalone/charts/fluent-bit/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: calyptia-cloud-standalone-fluent-bit
+  namespace: calyptia
+  labels:
+    helm.sh/chart: fluent-bit-0.37.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: calyptia-standalone/templates/cloud/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+  name: calyptia-cloud-standalone-calyptia-standalone-cloud
+  namespace: "calyptia"
+---
+# Source: calyptia-standalone/templates/frontend/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+  name: calyptia-cloud-standalone-calyptia-standalone-frontend
+  namespace: "calyptia"
+---
+# Source: calyptia-standalone/charts/fluent-bit/templates/configmap-luascripts.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: calyptia-cloud-standalone-fluent-bit-luascripts
+  namespace: calyptia
+  labels:
+    helm.sh/chart: fluent-bit-0.37.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/managed-by: Helm
+data:
+---
+# Source: calyptia-standalone/charts/fluent-bit/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: calyptia-cloud-standalone-fluent-bit
+  namespace: calyptia
+  labels:
+    helm.sh/chart: fluent-bit-0.37.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/managed-by: Helm
+data:
+  custom_parsers.conf: |
+    [PARSER]
+        Name docker_no_time
+        Format json
+        Time_Keep Off
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+    
+  fluent-bit.conf: |
+    [SERVICE]
+        Daemon Off
+        Flush 1
+        Log_Level info
+        Parsers_File /fluent-bit/etc/parsers.conf
+        Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
+        HTTP_Server On
+        HTTP_Listen 0.0.0.0
+        HTTP_Port 2020
+        Health_Check On
+        Storage.Metrics On
+    
+    [INPUT]
+        Name tail
+        Path /var/log/containers/*.log
+        multiline.parser docker, cri
+        Tag kube.*
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+        # Ensure we do not tail our own logs otherwise it can snowball even with exclusion later
+        Exclude_Path        *fluent-bit*.log
+    
+    [INPUT]
+        Name systemd
+        Tag host.*
+        Systemd_Filter _SYSTEMD_UNIT=kubelet.service
+        Read_From_Tail On
+    
+    [INPUT]
+        name                fluentbit_metrics
+        tag                 metrics.calyptia
+        scrape_on_start     true
+        scrape_interval     30
+    
+    [INPUT]
+        name                node_exporter_metrics
+        tag                 metrics.node
+        scrape_interval     30
+        # Ensure these are mounted
+        path.procfs         /host/proc
+        path.sysfs          /host/sys
+    
+    [FILTER]
+        Name kubernetes
+        Match kube.*
+        Merge_Log On
+        Keep_Log Off
+        K8S-Logging.Parser On
+        K8S-Logging.Exclude On
+    
+    [OUTPUT]
+        name                prometheus_exporter
+        match               metrics.*
+        host                0.0.0.0
+        port                2021
+        add_label           node ${NODE_NAME}
+    
+    [OUTPUT]
+        name                   forward
+        host                   vivo.calyptia
+        port                   9000
+        match                  *
+---
+# Source: calyptia-standalone/charts/fluent-bit/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: calyptia-cloud-standalone-fluent-bit
+  labels:
+    helm.sh/chart: fluent-bit-0.37.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/managed-by: Helm
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+---
+# Source: calyptia-standalone/charts/fluent-bit/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: calyptia-cloud-standalone-fluent-bit
+  labels:
+    helm.sh/chart: fluent-bit-0.37.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: calyptia-cloud-standalone-fluent-bit
+subjects:
+  - kind: ServiceAccount
+    name: calyptia-cloud-standalone-fluent-bit
+    namespace: calyptia
+---
+# Source: calyptia-standalone/templates/cloud/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: calyptia-write-role
+  namespace: "calyptia"
+rules:
+  - apiGroups: [""] # core API group
+    resources: ["pods", "secrets"]
+    verbs: ["get", "watch", "list", "create", "update"]
+---
+# Source: calyptia-standalone/templates/frontend/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: calyptia-read-role
+  namespace: "calyptia"
+rules:
+  - apiGroups: [""] # core API group
+    resources: ["pods", "secrets"]
+    verbs: ["get", "watch", "list"]
+---
+# Source: calyptia-standalone/templates/cloud/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: calyptia-write-binding
+  namespace: "calyptia"
+subjects:
+  - kind: ServiceAccount
+    name: calyptia-cloud-standalone-calyptia-standalone-cloud
+    namespace: "calyptia"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: calyptia-write-role
+---
+# Source: calyptia-standalone/templates/frontend/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: calyptia-read-binding
+  namespace: "calyptia"
+subjects:
+  - kind: ServiceAccount
+    name: calyptia-cloud-standalone-calyptia-standalone-frontend
+    namespace: "calyptia"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: calyptia-read-role
+---
+# Source: calyptia-standalone/charts/fluent-bit/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: calyptia-cloud-standalone-fluent-bit
+  namespace: calyptia
+  labels:
+    helm.sh/chart: fluent-bit-0.37.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 2020
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+---
+# Source: calyptia-standalone/templates/cloud/service-cloud.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: cloud-api
+  name: cloud-api
+  namespace: "calyptia"
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "cloud-api"
+      port: 5000
+      targetPort: 5000
+  selector:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: cloud-api
+---
+# Source: calyptia-standalone/templates/cloud/service-influxdb.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.kubernetes.io/name: cloud
+    app.kubernetes.io/instance: calyptia
+  labels:
+    app.kubernetes.io/component: influxdb
+  name: influxdb
+  namespace: "calyptia"
+spec:
+  type: ClusterIP
+  ports:
+    - name: influxdb
+      port: 8086
+      targetPort: 8086
+  selector:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: influxdb
+---
+# Source: calyptia-standalone/templates/cloud/service-postgres.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.kubernetes.io/name: cloud
+    app.kubernetes.io/instance: calyptia
+  labels:
+    app.kubernetes.io/component: postgres
+  name: postgres
+  namespace: "calyptia"
+spec:
+  type: ClusterIP
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+  selector:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: postgres
+---
+# Source: calyptia-standalone/templates/frontend/service-core-ui.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: core
+  name: core
+  namespace: "calyptia"
+spec:
+  type: LoadBalancer
+  ports:
+    - name: ui
+      port: 3000
+      targetPort: 3000
+  selector:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: core
+---
+# Source: calyptia-standalone/templates/frontend/service-luasandbox.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: cloud-lua-sandbox
+  name: cloud-lua-sandbox
+  namespace: "calyptia"
+spec:
+  type: ClusterIP
+  ports:
+    - name: cloud-lua-sandbox
+      port: 5555
+      targetPort: 5555
+  selector:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: cloud-lua-sandbox
+---
+# Source: calyptia-standalone/templates/vivo/service-vivo.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: vivo
+    calyptia.vivo.input.http: '9010'
+    calyptia.vivo.input.forward: '9000'
+  name: vivo
+  namespace: "calyptia"
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "ui"
+      port: 3000
+      targetPort: 3000
+    - name: "forward"
+      port: 9000
+      targetPort: 24224
+    - name: "http"
+      port: 9010
+      targetPort: 9880
+    - name: "vivo"
+      port: 2025
+      targetPort: 2025
+    - name: "fluent-bit"
+      port: 2020
+      targetPort: 2020
+  selector:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: vivo
+---
+# Source: calyptia-standalone/charts/fluent-bit/templates/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: calyptia-cloud-standalone-fluent-bit
+  namespace: calyptia
+  labels:
+    helm.sh/chart: fluent-bit-0.37.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fluent-bit
+      app.kubernetes.io/instance: calyptia-cloud-standalone
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fluent-bit
+        app.kubernetes.io/instance: calyptia-cloud-standalone
+      annotations:
+        fluentbit.io/exclude: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "2021"
+        prometheus.io/scrape: "true"
+    spec:
+      serviceAccountName: calyptia-cloud-standalone-fluent-bit
+      hostNetwork: false
+      dnsPolicy: ClusterFirst
+      containers:
+        - name: fluent-bit
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+          image: "ghcr.io/calyptia/calyptia-fluent-bit:23.4.5"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_SERVICE_ACCOUNT
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.serviceAccountName
+          command:
+            - /fluent-bit/bin/fluent-bit
+          args:
+            - --workdir=/fluent-bit/etc
+            - --config=/fluent-bit/etc/conf/fluent-bit.conf
+            - --enable-hot-reload
+          ports:
+            - name: http
+              containerPort: 2020
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+            - name: config
+              mountPath: /fluent-bit/etc/conf
+            - name: luascripts
+              mountPath: /fluent-bit/scripts
+            - mountPath: /var/log/
+              name: varlog
+              readOnly: true
+            - mountPath: /var/lib/docker/containers
+              name: varlibdockercontainers
+              readOnly: true
+            - mountPath: /etc/machine-id
+              name: etcmachineid
+              readOnly: true
+            - mountPath: /host/proc
+              name: hostproc
+              readOnly: true
+            - mountPath: /host/sys
+              name: hostsys
+              readOnly: true
+        - name: reloader
+          image: ghcr.io/jimmidyson/configmap-reload:v0.11.1
+          args:
+            - -webhook-url=http://localhost:2020/api/v2/reload
+            - -volume-dir=/watch/config
+            - -volume-dir=/watch/scripts
+          volumeMounts:
+            - name: config
+              mountPath: /watch/config
+            - name: luascripts
+              mountPath: /watch/scripts
+      volumes:
+        - name: config
+          configMap:
+            name: calyptia-cloud-standalone-fluent-bit
+        - name: luascripts
+          configMap:
+            name: calyptia-cloud-standalone-fluent-bit-luascripts
+        - hostPath:
+            path: /var/log/
+          name: varlog
+        - hostPath:
+            path: /var/lib/docker/containers
+          name: varlibdockercontainers
+        - hostPath:
+            path: /etc/machine-id
+            type: File
+          name: etcmachineid
+        - hostPath:
+            path: /proc
+          name: hostproc
+        - hostPath:
+            path: /sys
+          name: hostsys
+---
+# Source: calyptia-standalone/templates/cloud/deployment-cloud.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: cloud-api
+  name: cloud-api
+  namespace: "calyptia"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: calyptia-standalone
+      app.kubernetes.io/instance: calyptia-cloud-standalone
+      app.kubernetes.io/component: cloud-api
+  template:
+    metadata:
+      annotations:
+      labels:
+        app.kubernetes.io/name: calyptia-standalone
+        helm.sh/chart: calyptia-standalone-0.0.7
+        app.kubernetes.io/instance: calyptia-cloud-standalone
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: cloud-api
+    spec:
+      serviceAccount: calyptia-cloud-standalone-calyptia-standalone-cloud
+      
+      containers:
+        - image: ghcr.io/calyptia/cloud:1.4.1
+          imagePullPolicy: "IfNotPresent"
+          name: cloud-api
+          ports:
+            - name: http
+              containerPort: 5000
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests: {}
+          env:
+            - name: DEBUG
+              value: 'true'
+            - name: INFLUX_SERVER
+              value: "http://influxdb:8086"
+            - name: POSTGRES_DSN
+              value: "postgresql://postgres@postgres:5432?sslmode=disable"
+            # - name: ALLOWED_ORIGINS
+            #   # value: "https://config-viewer-ui-dev.herokuapp.com,https://visual-ui.herokuapp.com,https://cloud-api.calyptia.com,https://core-jet.vercel.app,https://core-git-*-calyptia.vercel.app"
+            #   value: "*"
+            # Cross-mount a token file
+            - name: DEFAULT_TOKEN_FILE
+              value: /token/token.txt
+          volumeMounts:
+            - mountPath: /token
+              name: token
+        - name: token-secret-creator
+          image: docker.io/bitnami/kubectl:1.25.12
+          imagePullPolicy: "IfNotPresent"
+          # Need access to the filesystem - cloud runs as root
+          securityContext:
+            runAsUser: 0
+          resources:
+            limits: {}
+            requests: {}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              until [[ -f /token/token.txt ]]; do
+                sleep 5
+              done
+              echo 'Token file found'
+              until kubectl create -n ${CORE_NAMESPACE} secret generic auth-secret --from-file=ONPREM_CLOUD_API_PROJECT_TOKEN=/token/token.txt ; do
+                sleep 10
+              done
+              echo 'Secret created - complete'
+              while true; do
+                sleep 30
+              done
+          env:
+            - name: CORE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: token
+              mountPath: /token
+      volumes:
+        - name: token
+          emptyDir:
+            sizeLimit: 1Mi
+      restartPolicy: Always
+---
+# Source: calyptia-standalone/templates/cloud/deployment-influxdb.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: influxdb
+  name: influxdb
+  namespace: "calyptia"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: calyptia-standalone
+      app.kubernetes.io/instance: calyptia-cloud-standalone
+      app.kubernetes.io/component: influxdb
+  template:
+    metadata:
+      annotations:
+      labels:
+        app.kubernetes.io/name: calyptia-standalone
+        helm.sh/chart: calyptia-standalone-0.0.7
+        app.kubernetes.io/instance: calyptia-cloud-standalone
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: influxdb
+    spec:
+      
+      containers:
+        - env:
+            - name: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+              value: cloud-api
+            - name: DOCKER_INFLUXDB_INIT_BUCKET
+              value: cloud-api
+            - name: DOCKER_INFLUXDB_INIT_MODE
+              value: setup
+            - name: DOCKER_INFLUXDB_INIT_ORG
+              value: cloud-api
+            - name: DOCKER_INFLUXDB_INIT_PASSWORD
+              value: my-password
+            - name: DOCKER_INFLUXDB_INIT_USERNAME
+              value: my-user
+          image: docker.io/influxdb:2.7.1
+          imagePullPolicy: "IfNotPresent"
+          name: influxdb
+          ports:
+            - containerPort: 8086
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests: {}
+          volumeMounts:
+      volumes:
+      restartPolicy: Always
+---
+# Source: calyptia-standalone/templates/cloud/deployment-postgres.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: postgres
+  name: postgres
+  namespace: "calyptia"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: calyptia-standalone
+      app.kubernetes.io/instance: calyptia-cloud-standalone
+      app.kubernetes.io/component: postgres
+  template:
+    metadata:
+      annotations:
+      labels:
+        app.kubernetes.io/name: calyptia-standalone
+        helm.sh/chart: calyptia-standalone-0.0.7
+        app.kubernetes.io/instance: calyptia-cloud-standalone
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: postgres
+    spec:
+      
+      containers:
+        - env:
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: trust
+          image: docker.io/postgres:15.3
+          imagePullPolicy: "IfNotPresent"
+          name: postgres
+          ports:
+            - containerPort: 5432
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests: {}
+          volumeMounts:
+      volumes:
+      restartPolicy: Always
+---
+# Source: calyptia-standalone/templates/frontend/deployment-core-ui.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: core
+  name: core
+  namespace: "calyptia"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: calyptia-standalone
+      app.kubernetes.io/instance: calyptia-cloud-standalone
+      app.kubernetes.io/component: core
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: calyptia-standalone
+        helm.sh/chart: calyptia-standalone-0.0.7
+        app.kubernetes.io/instance: calyptia-cloud-standalone
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: core
+    spec:
+      serviceAccount: calyptia-cloud-standalone-calyptia-standalone-frontend
+      
+      initContainers:
+        # Wait for the auth-secret to be created before continuing
+        - name: token-secret-waiter
+          image: docker.io/bitnami/kubectl:1.25.12
+          imagePullPolicy: "IfNotPresent"
+          resources:
+            limits: {}
+            requests: {}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              until kubectl get secret -n ${CORE_NAMESPACE} auth-secret; do
+                sleep 30
+              done
+          env:
+            - name: CORE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+      containers:
+        - image: ghcr.io/calyptia/frontend:1.0.3
+          imagePullPolicy: "IfNotPresent"
+          name: core
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            # The in-cluster 'cloud' service
+            - name: CLOUD_API_URL
+              value: http://cloud-api:5000
+            - name: NEXT_PUBLIC_CLI_INSTRUCTIONS_URL_OVERRIDE
+              value: http://cloud-api:5000
+              # The in-cluster LUA sandbox service
+            - name: LUA_SANDBOX_URL
+              value: http://cloud-lua-sandbox:5555/jsonrpc
+            # Disable various components we do not want - the container should anyway.
+            - name: SENTRY_IGNORE_API_RESOLUTION_ERROR
+              value: '1'
+            - name: SENTRY_ENVIRONMENT
+              value: 'offline'
+            - name: SENTRY_DISABLED
+              value: '1'
+            - name: NEXT_TELEMETRY_DISABLED
+              value: '1'
+          envFrom:
+            - secretRef:
+                name: auth-secret
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests: {}
+          volumeMounts:
+      volumes:
+      restartPolicy: Always
+---
+# Source: calyptia-standalone/templates/frontend/deployment-luasandbox.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: cloud-lua-sandbox
+  name: cloud-lua-sandbox
+  namespace: "calyptia"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: calyptia-standalone
+      app.kubernetes.io/instance: calyptia-cloud-standalone
+      app.kubernetes.io/component: cloud-lua-sandbox
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: calyptia-standalone
+        helm.sh/chart: calyptia-standalone-0.0.7
+        app.kubernetes.io/instance: calyptia-cloud-standalone
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: cloud-lua-sandbox
+    spec:
+      
+      containers:
+        - image: ghcr.io/calyptia/cloud-lua-sandbox:2.1.5
+          name: cloud-lua-sandbox
+          ports:
+            - containerPort: 5555
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests: {}
+          imagePullPolicy: "IfNotPresent"
+      restartPolicy: Always
+---
+# Source: calyptia-standalone/templates/vivo/deployment-vivo.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.0.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: vivo
+  name: vivo
+  namespace: "calyptia"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: calyptia-standalone
+      app.kubernetes.io/instance: calyptia-cloud-standalone
+      app.kubernetes.io/component: vivo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: calyptia-standalone
+        helm.sh/chart: calyptia-standalone-0.0.7
+        app.kubernetes.io/instance: calyptia-cloud-standalone
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: vivo
+    spec:
+      
+      containers:
+        - image: docker.io/calyptia/vivo:3.0.1
+          name: vivo
+          ports:
+            - name: forward
+              containerPort: 24224
+            - name: http
+              containerPort: 9880
+            - name: vivo
+              containerPort: 2025
+            - name: fluent-bit
+              containerPort: 2020
+            - name: ui
+              containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: fluent-bit
+            failureThreshold: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: fluent-bit
+            failureThreshold: 5
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 250m
+              memory: 64Mi
+          imagePullPolicy: "IfNotPresent"
+      restartPolicy: Always
+---
+# Source: calyptia-standalone/charts/fluent-bit/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "calyptia-cloud-standalone-fluent-bit-test-connection"
+  namespace: calyptia
+  labels:
+    helm.sh/chart: fluent-bit-0.37.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: "busybox:latest"
+      imagePullPolicy: Always
+      command: ['wget']
+      args: ['calyptia-cloud-standalone-fluent-bit:2020']
+  restartPolicy: Never

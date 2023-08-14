@@ -213,6 +213,7 @@ loadBalancer:
 #
 ingress:
   enabled: false
+  port: 80
   images:
     nginx:
       registry: docker.io
@@ -222,19 +223,23 @@ ingress:
     # Switch to individual sidecars as well per pod
     nginx: |
       server {
-        listen 9999;
-        server_name  localhost ingress.${{ .Release.Namespace }};
+        listen {{ .Values.ingress.port }};
+        server_name localhost gateway.{{ .Release.Namespace }};
 
         location /vivo {
-          proxy_pass http://vivo.${{ .Release.Namespace }}:3000;
+          proxy_pass http://vivo.{{ .Release.Namespace }}:{{ .Values.vivo.service.port }};
         }
 
-        location ~ /v\d/.* {
-          proxy_pass http://cloud.${{ .Release.Namespace }}:5000;
+        location ~ /(healthz|prometheus_metrics|v\d/.*) {
+          proxy_pass http://cloud.{{ .Release.Namespace }}:{{ .Values.cloudApi.service.port }};
+        }
+
+        location /jsonrpc {
+          proxy_pass http://cloud-lua-sandbox.{{ .Release.Namespace }}:5555/jsonrpc;
         }
 
         location / {
-          proxy_pass http://core.${{ .Release.Namespace }}:3000;
+          proxy_pass http://core.{{ .Release.Namespace }}:{{ .Values.frontend.service.port }};
         }
       }
   resources:
