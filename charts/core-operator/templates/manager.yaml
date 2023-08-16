@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/name: deployment
     app.kubernetes.io/part-of: operator
     calyptia.core: core-operator
-    calyptia.core.version: v1.0.13
+    calyptia.core.version: v1.0.14
     control-plane: controller-manager
   name: calyptia-core-controller-manager
   namespace: {{ .Release.Namespace }}
@@ -18,7 +18,7 @@ spec:
   selector:
     matchLabels:
       calyptia.core: core-operator
-      calyptia.core.version: v1.0.13
+      calyptia.core.version: v1.0.14
       control-plane: controller-manager
   template:
     metadata:
@@ -26,7 +26,7 @@ spec:
         kubectl.kubernetes.io/default-container: manager
       labels:
         calyptia.core: core-operator
-        calyptia.core.version: v1.0.13
+        calyptia.core.version: v1.0.14
         control-plane: controller-manager
     spec:
       containers:
