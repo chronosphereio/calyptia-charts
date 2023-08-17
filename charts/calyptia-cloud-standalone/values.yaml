@@ -33,8 +33,9 @@ rbac:
 ##
 global:
   imageRegistry: ""
-  # Use these in the EKS deployment for gcr.io/ghcr.io/docker.io
-  imagePullSecrets: []
+  # Add any custom pull secrets required
+  imagePullSecrets:
+    - regcreds
   storageClass: ""
   pullPolicy: IfNotPresent
 #
@@ -247,13 +248,63 @@ ingress:
     requests: {}
 #
 monitoring:
-  enabled: true
+  enabled: false
+
 #
 #
 # Dependent chart so have to use the values as defined there
+loki-stack:
+  enterprise:
+    enabled: false
+  loki:
+    enabled: true
+    auth_enabled: false
+    # Note this uses the same global.override support we do
+    # image:
+    #   registry: docker.io
+    #   repository: grafana/loki
+    #   tag: 5.12.0
+  minio:
+    enabled: true
+    # image:
+    #   repository: quay.io/minio/minio
+    #   tag: 4.0.12
+    #   pullPolicy: IfNotPresent
+
+    imagePullSecrets:
+      - regcreds
+  fluent-bit:
+    enabled: false
+  grafana:
+    enabled: true
+  promtail:
+    enabled: false
+  filebeat:
+    enabled: false
+  logstash:
+    enabled: false
+  prometheus:
+    enabled: true
+    alertmanager:
+      enabled: true
+    kube-state-metrics:
+      enabled: true
+    prometheus-node-exporter:
+      enabled: true
+    prometheus-pushgateway:
+      enabled: true
+    server:
+      enabled: true
+      extraFlags:
+        - web.enable-lifecycle
+        - web.enable-remote-write-receiver
+      persistentVolume:
+        enabled: false
 fluent-bit:
-  pullSecrets: []
+  pullSecrets:
+    - regcreds
   image:
+    # Have to customise separately
     repository: ghcr.io/calyptia/calyptia-fluent-bit
     tag: 23.4.5
     pullPolicy: IfNotPresent
@@ -273,20 +324,21 @@ fluent-bit:
           Storage.Metrics On
     inputs: |
       [INPUT]
-          Name tail
-          Path /var/log/containers/*.log
-          multiline.parser docker, cri
-          Tag kube.*
-          Mem_Buf_Limit 5MB
-          Skip_Long_Lines On
+          Name                tail
+          Path                /var/log/containers/*.log
+          multiline.parser    docker, cri
+          Tag                 kube.*
+          Mem_Buf_Limit       5MB
+          Skip_Long_Lines     On
           # Ensure we do not tail our own logs otherwise it can snowball even with exclusion later
           Exclude_Path        *{{ include "fluent-bit.name" . }}*.log
+          Path_Key            filename
 
       [INPUT]
-          Name systemd
-          Tag host.*
-          Systemd_Filter _SYSTEMD_UNIT=kubelet.service
-          Read_From_Tail On
+          Name                systemd
+          Tag                 host.*
+          Systemd_Filter      _SYSTEMD_UNIT=kubelet.service
+          Read_From_Tail      On
 
       [INPUT]
           name                fluentbit_metrics
@@ -301,6 +353,16 @@ fluent-bit:
           # Ensure these are mounted
           path.procfs         /host/proc
           path.sysfs          /host/sys
+
+    filters: |
+      [FILTER]
+          Name kubernetes
+          Match kube.*
+          Merge_Log On
+          Keep_Log Off
+          K8S-Logging.Parser On
+          K8S-Logging.Exclude On
+
     outputs: |
       [OUTPUT]
           name                prometheus_exporter
@@ -310,10 +372,26 @@ fluent-bit:
           add_label           node ${NODE_NAME}
 
       [OUTPUT]
-          name                   forward
-          host                   vivo.calyptia
-          port                   9000
-          match                  *
+          name                forward
+          # FQDN - same namespace
+          host                vivo
+          port                9000
+          match               *
+
+      [OUTPUT]
+          name                loki
+          match               *
+          # FQDN - same namespace
+          host                calyptia-cloud-loki
+          auto_kubernetes_labels on
+
+      [OUTPUT]
+          name                prometheus_remote_write
+          host                calyptia-cloud-prometheus-server
+          match               *
+          uri                 /api/v1/write
+          add_label           job fluentbit
+
   securityContext:
     runAsNonRoot: false
     runAsUser: 0
@@ -391,7 +469,9 @@ fluent-bit:
   hotReload:
     enabled: true
     image:
+      # Have to customise separately
       repository: ghcr.io/jimmidyson/configmap-reload
       tag: v0.11.1
       pullPolicy: IfNotPresent
-      pullSecrets: []
+      pullSecrets:
+        - regcreds

@@ -4,7 +4,7 @@ description: Umbrella chart to configure a Calyptia Core control plane and suppo
 home: https://calyptia.com/products/calyptia-core/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 0.0.7
+version: 0.1.0
 appVersion: "v1.4.1"
 maintainers:
   - name: Calyptia
@@ -16,6 +16,7 @@ dependencies:
     version: 0.x.x
     repository: https://fluent.github.io/helm-charts
     condition: monitoring.enabled
+    alias: fluent-bit
   # Core Operator chart
   # - name: core-operator
   #   version: 0.0.8
@@ -25,3 +26,9 @@ dependencies:
   - name: common
     version: 2.x.x
     repository: oci://registry-1.docker.io/bitnamicharts
+    alias: common
+  - name: loki-stack
+    repository: https://grafana.github.io/helm-charts
+    version: 2.9.10
+    alias: loki-stack
+    condition: monitoring.enabled
