@@ -23,7 +23,11 @@ jobs:
 
       - name: Add dependency charts
         run: |
-          helm repo add fluent https://fluent.github.io/helm-charts
+          helm repo add fluent https://fluent.github.io/helm-charts --force-update
+          helm repo add calyptia https://helm.calyptia.com --force-update
+          helm repo add grafana https://grafana.github.io/helm-charts --force-update
+          helm repo add prometheus https://prometheus-community.github.io/helm-charts --force-update
+          helm repo update
         shell: bash
 
       - name: Run chart-releaser
