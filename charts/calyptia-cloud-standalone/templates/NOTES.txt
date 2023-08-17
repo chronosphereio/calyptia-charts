@@ -27,21 +27,40 @@ kubectl get -n {{ .Release.Namespace }} svc
 ClusterIP services will need port-forwarding/ingress to use externally.
 
 If using LoadBalancer, run the following to get external service endpoints:
+{{- if contains "LoadBalancer" .Values.cloudApi.service.type }}
 
 * Cloud-API:
 
 IP=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..status.loadBalancer.ingress[0].ip}')
 PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..spec.ports[0].port}')
 CLOUD_ENDPOINT="http://${IP}:${PORT}
+{{- end }}
+{{- if contains "LoadBalancer" .Values.frontend.service.type }}
 
 * Core/UI:
 
 IP=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=core' -o=jsonpath='{.items..status.loadBalancer.ingress[0].ip}')
 PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=core' -o=jsonpath='{.items..spec.ports[0].port}')
 UI_ENDPOINT="http://${IP}:${PORT}
+{{- end }}
+{{- if contains "LoadBalancer" .Values.vivo.service.type }}
 
 * Vivo
 
 IP=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=vivo' -o=jsonpath='{.items..status.loadBalancer.ingress[0].ip}')
 PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=vivo' -o=jsonpath='{.items..spec.ports[0].port}')
 VIVO_ENDPOINT="http://${IP}:${PORT}/vivo
+{{- end }}
+
+{{- if .Values.monitoring.enabled }}
+* Grafana
+
+The admin login is in the 'calyptia-cloud-grafana' secret:
+
+kubectl get secret -n {{ .Release.Namespace }} calyptia-cloud-grafana -o jsonpath='{.data.admin-password}'| base64 --decode
+
+To access it, port-forward the 'calyptia-cloud-grafana' service on port 80, e.g. for http://localhost:3000
+
+kubectl port-forward -n {{ .Release.Namespace }} svc/calyptia-cloud-grafana 3000:80
+
+{{- end }}

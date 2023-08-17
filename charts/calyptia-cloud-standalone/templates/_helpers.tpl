@@ -59,6 +59,13 @@ Return the proper frontend.luaSandbox.image image name
 {{- end -}}
 
 {{/*
+Return the proper ingress.image image name
+*/}}
+{{- define "ingress.image" -}}
+{{ include "common.images.image" (dict "imageRoot" .Values.ingress.images.nginx "global" .Values.global) }}
+{{- end -}}
+
+{{/*
 Returns the proper service account name depending if an explicit service account name is set
 in the values file. If the name is not set it will default to either common.names.fullname if serviceAccount.create
 is true or default otherwise.

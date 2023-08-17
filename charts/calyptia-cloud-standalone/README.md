@@ -109,3 +109,44 @@ If using `LoadBalancer` then external IP for a service can be retrieved via a ca
 
 If using `ClusterIP` then data needs to be ingested into the cluster somehow, a simple technique is to use port-forwarding, e.g. `kubectl -n <namespace> port-forward svc/<service> <port>:<port>`.
 This will expose the port locally for use.
+
+## Troubleshooting
+
+We provide an optional monitoring stack that can be deployed by the helm chart:
+
+```shell
+helm ...  --set monitoring.enabled=true ...
+```
+
+This uses the Grafana Loki-Stack helm chart to deploy everything so can be configured via all the options available in the stack.
+
+By default we set up a Prometheus-Loki-Grafana stack (PLG) in the same namespace along with a Fluent Bit daemonset sending it logs and metrics.
+
+To access Grafana (the helm chart will give you the details as well post installation):
+
+The admin login is in the 'calyptia-cloud-grafana' secret:
+
+```shell
+kubectl get secret -n {{ .Release.Namespace }} calyptia-cloud-grafana -o jsonpath='{.data.admin-password}'| base64 --decode
+```
+
+To access it, port-forward the 'calyptia-cloud-grafana' service on port 80, e.g. for <http://localhost:3000>
+
+```shell
+kubectl port-forward -n {{ .Release.Namespace }} svc/calyptia-cloud-grafana 3000:80
+```
+
+From Grafana you can access logs and metrics for everything supported.
+
+## Shell script
+
+From the Calyptia package, we also provide a [`support.sh`](../support.sh) script locally to scrape all relevant information from the cluster and automatically create an archive to upload to [our support portal](https://support.zendesk.com).
+
+```shell
+$ ./support.sh
+Running support script: 2023-08-16T14:47:19Z
+Output stored here: /tmp/tmp.76NbwCR3Od
+Cluster info dumped to /tmp/tmp.76NbwCR3Od/cluster
+Creating tarball: /tmp/calyptia-support-calyptia-laptop-2023-08-16T14-47-19Z.tgz
+Support script complete: /tmp/calyptia-support-calyptia-laptop-2023-08-16T14-47-19Z.tgz
+```
