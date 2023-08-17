@@ -112,15 +112,24 @@ This will expose the port locally for use.
 
 ## Troubleshooting
 
-We provide an optional monitoring stack that can be deployed by the helm chart:
+### Calyptia Fluent Bit LTS
+
+We provide a Calyptia Fluent Bit LTS daemonset to send all logs and metrics to configurable end points.
+By default this sends to the in-cluster Vivo and Grafana stack (if present) but it can be configured to forward to other destinations as well.
+
+The Fluent Bit daemonset can be disabled by setting `monitoring.fluent-bit: false` in the configuration.
+
+### Grafana stack
+
+We provide an optional Prometheus-Loki-Grafana stack (PLG) monitoring stack that can be deployed by the helm chart:
 
 ```shell
-helm ...  --set monitoring.enabled=true ...
+helm ...  --set monitoring.grafana=true ...
 ```
 
 This uses the Grafana Loki-Stack helm chart to deploy everything so can be configured via all the options available in the stack.
 
-By default we set up a Prometheus-Loki-Grafana stack (PLG) in the same namespace along with a Fluent Bit daemonset sending it logs and metrics.
+By default we set up the PLG stack in the same namespace along with a Fluent Bit daemonset sending it logs and metrics.
 
 To access Grafana (the helm chart will give you the details as well post installation):
 
@@ -138,7 +147,7 @@ kubectl port-forward -n {{ .Release.Namespace }} svc/calyptia-cloud-grafana 3000
 
 From Grafana you can access logs and metrics for everything supported.
 
-## Shell script
+### Shell script
 
 From the Calyptia package, we also provide a [`support.sh`](../support.sh) script locally to scrape all relevant information from the cluster and automatically create an archive to upload to [our support portal](https://support.zendesk.com).
 

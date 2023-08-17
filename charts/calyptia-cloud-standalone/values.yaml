@@ -248,7 +248,8 @@ ingress:
     requests: {}
 #
 monitoring:
-  enabled: false
+  fluentBit: true
+  grafana: false
 
 #
 #
@@ -308,20 +309,20 @@ fluent-bit:
     repository: ghcr.io/calyptia/calyptia-fluent-bit
     tag: 23.4.5
     pullPolicy: IfNotPresent
-  namespace: monitoring-system
+  namespace: calyptia-monitoring
   config:
     service: |
       [SERVICE]
-          Daemon Off
-          Flush {{ .Values.flush }}
-          Log_Level {{ .Values.logLevel }}
-          Parsers_File /fluent-bit/etc/parsers.conf
-          Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
-          HTTP_Server On
-          HTTP_Listen 0.0.0.0
-          HTTP_Port 2020
-          Health_Check On
-          Storage.Metrics On
+          Daemon              Off
+          Flush               1
+          Log_Level           info
+          Parsers_File        /fluent-bit/etc/parsers.conf
+          Parsers_File        /fluent-bit/etc/conf/custom_parsers.conf
+          HTTP_Server         On
+          HTTP_Listen         0.0.0.0
+          HTTP_Port           2020
+          Health_Check        On
+          Storage.Metrics     On
     inputs: |
       [INPUT]
           Name                tail
@@ -356,14 +357,18 @@ fluent-bit:
 
     filters: |
       [FILTER]
-          Name kubernetes
-          Match kube.*
-          Merge_Log On
-          Keep_Log Off
-          K8S-Logging.Parser On
+          Name                kubernetes
+          Match               kube.*
+          Merge_Log           On
+          Keep_Log            Off
+          K8S-Logging.Parser  On
           K8S-Logging.Exclude On
 
     outputs: |
+      [OUTPUT]
+          name                stdout
+          match               *
+
       [OUTPUT]
           name                prometheus_exporter
           match               metrics.*
@@ -371,9 +376,9 @@ fluent-bit:
           port                2021
           add_label           node ${NODE_NAME}
 
+      # The following may not be present
       [OUTPUT]
           name                forward
-          # FQDN - same namespace
           host                vivo
           port                9000
           match               *
@@ -381,7 +386,6 @@ fluent-bit:
       [OUTPUT]
           name                loki
           match               *
-          # FQDN - same namespace
           host                calyptia-cloud-loki
           auto_kubernetes_labels on
 
@@ -391,7 +395,11 @@ fluent-bit:
           match               *
           uri                 /api/v1/write
           add_label           job fluentbit
-
+  extraPorts:
+    - port: 2021
+      containerPort: 2021
+      name: metrics
+      protocol: TCP
   securityContext:
     runAsNonRoot: false
     runAsUser: 0

@@ -52,7 +52,7 @@ PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/compone
 VIVO_ENDPOINT="http://${IP}:${PORT}/vivo
 {{- end }}
 
-{{- if .Values.monitoring.enabled }}
+{{- if .Values.monitoring.grafana }}
 * Grafana
 
 The admin login is in the 'calyptia-cloud-grafana' secret:
@@ -62,5 +62,12 @@ kubectl get secret -n {{ .Release.Namespace }} calyptia-cloud-grafana -o jsonpat
 To access it, port-forward the 'calyptia-cloud-grafana' service on port 80, e.g. for http://localhost:3000
 
 kubectl port-forward -n {{ .Release.Namespace }} svc/calyptia-cloud-grafana 3000:80
+
+{{- end }}
+
+{{- if .Values.monitoring.fluentBit }}
+
+A Calyptia Fluent Bit LTS daemonset is deployed with a customisable configuration to forward logs and metrics.
+To modify the configuration, refer to '.fluent-bit.config' values in the Helm chart.
 
 {{- end }}
