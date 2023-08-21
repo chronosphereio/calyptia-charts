@@ -110,6 +110,7 @@ config:
   calyptia: |
     [CUSTOM]
         Name                calyptia
+        Match               *
         api_key             {{ required "A valid Calyptia project_token is required." .Values.calyptia.project_token }}
         calyptia_host       {{ .Values.calyptia.api_url }}
         calyptia_port       {{ .Values.calyptia.port }}
