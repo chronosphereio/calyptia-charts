@@ -39,6 +39,14 @@ global:
   storageClass: ""
   pullPolicy: IfNotPresent
 #
+## Define this to automatically set up image pull secrets
+# imageCredentials:
+#   secretName: regcreds
+#   registry: ghcr.io
+#   username: calyptia-ci
+#   password: <TOKEN>
+#   email: ci@calyptia.com
+#
 cloudApi:
   enabled: true
   service:
@@ -50,6 +58,24 @@ cloudApi:
       memory: 500Mi
       cpu: 500m
     requests: {}
+  startupProbe:
+    httpGet:
+      path: /
+      port: http
+    failureThreshold: 30
+    periodSeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+    failureThreshold: 1
+    periodSeconds: 60
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+    failureThreshold: 3
+    periodSeconds: 60
   images:
     cloud:
       registry: ghcr.io
@@ -157,6 +183,24 @@ frontend:
       memory: 500Mi
       cpu: 500m
     requests: {}
+  startupProbe:
+    httpGet:
+      path: /
+      port: http
+    failureThreshold: 30
+    periodSeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+    failureThreshold: 1
+    periodSeconds: 60
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+    failureThreshold: 3
+    periodSeconds: 60
   luaSandbox:
     replicas: 1
     resources:
@@ -187,6 +231,18 @@ vivo:
     limits:
       memory: "128Mi"
       cpu: "500m"
+  readinessProbe:
+    httpGet:
+      path: /api/v1/health
+      port: fluent-bit
+    failureThreshold: 3
+    periodSeconds: 5
+  livenessProbe:
+    httpGet:
+      path: /api/v1/health
+      port: fluent-bit
+    failureThreshold: 5
+    periodSeconds: 5
 #
 # Following should be done externally, just capture images maybe?
 loadBalancer:
@@ -376,7 +432,7 @@ fluent-bit:
           port                2021
           add_label           node ${NODE_NAME}
 
-      # The following may not be present
+      # The following may not be present so we use configurable env vars to match
       [OUTPUT]
           name                forward
           host                vivo
@@ -395,6 +451,7 @@ fluent-bit:
           match               *
           uri                 /api/v1/write
           add_label           job fluentbit
+
   extraPorts:
     - port: 2021
       containerPort: 2021

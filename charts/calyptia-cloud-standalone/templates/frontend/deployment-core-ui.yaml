@@ -88,6 +88,15 @@ spec:
           {{- if .Values.frontend.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.frontend.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
+          {{- if .Values.frontend.startupProbe }}
+          startupProbe: {{- toYaml .Values.frontend.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.frontend.readinessProbe }}
+          readinessProbe: {{- toYaml .Values.frontend.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.frontend.livenessProbe }}
+          livenessProbe: {{- toYaml .Values.frontend.livenessProbe | nindent 12 }}
+          {{- end }}
       volumes:
         {{- if .Values.frontend.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.frontend.extraVolumes "context" $) | nindent 8 }}

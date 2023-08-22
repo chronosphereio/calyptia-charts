@@ -37,10 +37,20 @@ spec:
         - image: {{ template "frontend.luaSandbox.image" . }}
           name: cloud-lua-sandbox
           ports:
-            - containerPort: 5555
+            - name: http
+              containerPort: 5555
           {{- if .Values.frontend.luaSandbox.resources }}
           resources: {{- toYaml .Values.frontend.luaSandbox.resources | nindent 12 }}
           {{- end }}
           imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+          {{- if .Values.frontend.luaSandbox.startupProbe }}
+          startupProbe: {{- toYaml .Values.frontend.luaSandbox.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.frontend.luaSandbox.readinessProbe }}
+          readinessProbe: {{- toYaml .Values.frontend.luaSandbox.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.frontend.luaSandbox.livenessProbe }}
+          livenessProbe: {{- toYaml .Values.frontend.luaSandbox.livenessProbe | nindent 12 }}
+          {{- end }}
       restartPolicy: {{ default "Always" .Values.frontend.luaSandbox.restartPolicy }}
 {{- end }}

@@ -4,9 +4,9 @@ dependencies:
   version: 0.37.1
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 2.8.0
+  version: 2.9.0
 - name: loki-stack
   repository: https://grafana.github.io/helm-charts
   version: 2.9.10
-digest: sha256:95ab170237d1b13ddc5a0fc0663947201e73615dea52607e00d3e5cb38ced970
-generated: "2023-08-17T20:47:52.262157154+01:00"
+digest: sha256:905c7aff133a6d9496f546f54d81feb2f02d349ccaed0a211132b74452b31c03
+generated: "2023-08-22T16:43:11.650907513+01:00"

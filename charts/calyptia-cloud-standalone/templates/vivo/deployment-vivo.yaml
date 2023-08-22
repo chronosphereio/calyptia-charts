@@ -11,7 +11,7 @@ metadata:
   name: vivo
   namespace: {{ .Release.Namespace | quote }}
 spec:
-  replicas: 1
+  replicas: {{ default 1 .Values.vivo.replicas}}
   selector:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
       app.kubernetes.io/component: vivo
@@ -47,18 +47,12 @@ spec:
               containerPort: 2020
             - name: ui
               containerPort: 3000
-          readinessProbe:
-            httpGet:
-              path: /api/v1/health
-              port: fluent-bit
-            failureThreshold: 3
-            periodSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /api/v1/health
-              port: fluent-bit
-            failureThreshold: 5
-            periodSeconds: 5
+          {{- if .Values.vivo.readinessProbe }}
+          readinessProbe: {{- toYaml .Values.vivo.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.vivo.livenessProbe }}
+          livenessProbe: {{- toYaml .Values.vivo.livenessProbe | nindent 12 }}
+          {{- end }}
           {{- if .Values.vivo.resources }}
           resources: {{- toYaml .Values.vivo.resources | nindent 12 }}
           {{- end }}

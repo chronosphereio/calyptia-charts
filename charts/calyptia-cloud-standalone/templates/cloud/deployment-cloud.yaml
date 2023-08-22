@@ -64,6 +64,15 @@ spec:
           {{- if .Values.cloudApi.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
+          {{- if .Values.cloudApi.startupProbe }}
+          startupProbe: {{- toYaml .Values.cloudApi.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.cloudApi.readinessProbe }}
+          readinessProbe: {{- toYaml .Values.cloudApi.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.cloudApi.livenessProbe }}
+          livenessProbe: {{- toYaml .Values.cloudApi.livenessProbe | nindent 12 }}
+          {{- end }}
         - name: token-secret-creator
           image: {{ template "cloud.kubectl.image" . }}
           imagePullPolicy: {{ .Values.global.pullPolicy | quote }}

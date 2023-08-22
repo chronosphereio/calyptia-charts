@@ -3,14 +3,18 @@
 ## Usage
 
 A helm chart is provided to install Calyptia Cloud on-premise.
-It requires pull secrets in place, in this case called `container-registry-creds`.
+It requires either pull secrets in place, called `regcreds` by default, or pass the configuration to create a namespace-level secret:
 
 ```shell
 helm repo add calyptia https://helm.calyptia.com
 helm repo update
 helm upgrade --install \
     --create-namespace --namespace calyptia \
-    --set global.imagePullSecrets[0]="container-registry-creds" \
+    --set imageCredentials.secretName="<registry url, e.g. ghcr.io>" \
+    --set imageCredentials.registry=ghcr.io \
+    --set imageCredentials.username="<username for authentication, e.g. Github username>" \
+    --set imageCredentials.password="<password or token for authentication>" \
+    --set imageCredentials.email="<email associated with user>"
     --wait --debug \
     calyptia-cloud calyptia/calyptia-standalone
 ```
@@ -22,11 +26,23 @@ To set up a pull secret follow the official documentation here: <https://kuberne
 
 ```shell
 kubectl create ns calyptia
-kubectl -n calyptia create secret docker-registry "container-registry-creds" \
+kubectl -n calyptia create secret docker-registry "regcreds" \
     --docker-server="<registry url, e.g. ghcr.io>" \
     --docker-username="<username for authentication, e.g. Github username>" \
     --docker-password="<password or token for authentication>" \
     --docker-email="<email associated with user>"
+```
+
+To use a pre-created secret:
+
+```shell
+helm repo add calyptia https://helm.calyptia.com
+helm repo update
+helm upgrade --install \
+    --create-namespace --namespace calyptia \
+    --set global.imagePullSecrets[0]="regcreds" \
+    --wait --debug \
+    calyptia-cloud calyptia/calyptia-standalone
 ```
 
 ### Services

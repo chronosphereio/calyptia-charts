@@ -18,7 +18,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
   name: calyptia-cloud-standalone-calyptia-standalone-cloud
@@ -30,7 +30,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
   name: calyptia-cloud-standalone-calyptia-standalone-frontend
@@ -134,7 +134,7 @@ data:
         port                2021
         add_label           node ${NODE_NAME}
     
-    # The following may not be present
+    # The following may not be present so we use configurable env vars to match
     [OUTPUT]
         name                forward
         host                vivo
@@ -281,7 +281,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -295,7 +295,7 @@ spec:
       targetPort: 5000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -319,7 +319,7 @@ spec:
       targetPort: 8086
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
@@ -343,7 +343,7 @@ spec:
       targetPort: 5432
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: postgres
@@ -354,7 +354,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -368,7 +368,7 @@ spec:
       targetPort: 3000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -379,7 +379,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -393,7 +393,7 @@ spec:
       targetPort: 5555
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -404,7 +404,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -432,7 +432,7 @@ spec:
       targetPort: 2020
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -585,7 +585,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -603,7 +603,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.1
+        helm.sh/chart: calyptia-standalone-0.1.2
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: cloud-api
@@ -640,6 +640,24 @@ spec:
           volumeMounts:
             - mountPath: /token
               name: token
+          startupProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+          readinessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 60
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 60
         - name: token-secret-creator
           image: docker.io/bitnami/kubectl:1.25.12
           imagePullPolicy: "IfNotPresent"
@@ -684,7 +702,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
@@ -702,7 +720,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.1
+        helm.sh/chart: calyptia-standalone-0.1.2
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: influxdb
@@ -744,7 +762,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: postgres
@@ -762,7 +780,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.1
+        helm.sh/chart: calyptia-standalone-0.1.2
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: postgres
@@ -794,7 +812,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -811,7 +829,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.1
+        helm.sh/chart: calyptia-standalone-0.1.2
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: core
@@ -874,6 +892,24 @@ spec:
               memory: 500Mi
             requests: {}
           volumeMounts:
+          startupProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+          readinessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 60
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 60
       volumes:
       restartPolicy: Always
 ---
@@ -883,7 +919,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -900,7 +936,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.1
+        helm.sh/chart: calyptia-standalone-0.1.2
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: cloud-lua-sandbox
@@ -912,7 +948,8 @@ spec:
         - image: ghcr.io/calyptia/cloud-lua-sandbox:2.1.5
           name: cloud-lua-sandbox
           ports:
-            - containerPort: 5555
+            - name: http
+              containerPort: 5555
           resources:
             limits:
               cpu: 500m
@@ -927,7 +964,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.1
+    helm.sh/chart: calyptia-standalone-0.1.2
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -944,7 +981,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.1
+        helm.sh/chart: calyptia-standalone-0.1.2
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: vivo
@@ -967,16 +1004,16 @@ spec:
             - name: ui
               containerPort: 3000
           readinessProbe:
+            failureThreshold: 3
             httpGet:
               path: /api/v1/health
               port: fluent-bit
-            failureThreshold: 3
             periodSeconds: 5
           livenessProbe:
+            failureThreshold: 5
             httpGet:
               path: /api/v1/health
               port: fluent-bit
-            failureThreshold: 5
             periodSeconds: 5
           resources:
             limits:
