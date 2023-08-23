@@ -60,3 +60,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of OpenShift SecurityContextConstraints to use
+*/}}
+{{- define "calyptia-core-chart.openShiftSccName" -}}
+{{- if not .Values.openShift.securityContextConstraints.create -}}
+{{- printf "%s" .Values.openShift.securityContextConstraints.existingName -}}
+{{- else -}}
+{{- printf "%s" (default (include "calyptia-core-chart.fullname" .) .Values.openShift.securityContextConstraints.name) -}}
+{{- end -}}
+{{- end -}}
