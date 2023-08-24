@@ -53,6 +53,8 @@ spec:
               value: "{{ .Values.tls | default "on" }}"
             - name: AGGREGATOR_SIDECAR_URL
               value: "{{ .Values.sidecar_url }}"
+            - name: CORE_INSTANCE_SERVICE_ACCOUNT_NAME
+              value: "{{ include "calyptia-core-chart.serviceAccountName" . }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
