@@ -49,3 +49,13 @@ autoscaling: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+# OpenShift-specific configuration
+openShift:
+  enabled: false
+  securityContextConstraints:
+    create: true
+    name: ""
+    annotations: {}
+    # Use existing SCC in cluster, rather then create new one
+    existingName: ""
