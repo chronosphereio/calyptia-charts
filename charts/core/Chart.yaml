@@ -4,8 +4,8 @@ description: A helm chart to deploy Calyptia Inc. core on Kubernetes
 home: https://calyptia.com/products/calyptia-core/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 1.2.9
-appVersion: 1.2.9
+version: 1.3.3
+appVersion: 1.3.3
 maintainers:
   - name: Calyptia
     email: hello@calyptia.com
