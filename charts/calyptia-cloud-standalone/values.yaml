@@ -80,7 +80,7 @@ cloudApi:
     cloud:
       registry: ghcr.io
       repository: calyptia/cloud
-      tag: 1.4.1
+      tag: 1.4.5
       pullSecrets: []
     kubectl:
       registry: docker.io
@@ -135,12 +135,12 @@ core:
     core:
       registry: ghcr.io
       repository: calyptia/core
-      tag: 1.2.5
+      tag: 1.3.5
       pullSecrets: []
     coreFluentBit:
       registry: ghcr.io
       repository: calyptia/core/calyptia-fluent-bit
-      tag: 23.8.2
+      tag: 23.8.9
       pullSecrets: []
     coreOperator:
       registry: ghcr.io
@@ -172,7 +172,7 @@ frontend:
     luaSandbox:
       registry: ghcr.io
       repository: calyptia/cloud-lua-sandbox
-      tag: 2.1.5
+      tag: 2.1.7
       pullSecrets: []
   serviceAccount:
     create: true
@@ -306,7 +306,6 @@ ingress:
 monitoring:
   fluentBit: true
   grafana: false
-
 #
 #
 # Dependent chart so have to use the values as defined there
@@ -410,7 +409,6 @@ fluent-bit:
           # Ensure these are mounted
           path.procfs         /host/proc
           path.sysfs          /host/sys
-
     filters: |
       [FILTER]
           Name                kubernetes
@@ -419,7 +417,6 @@ fluent-bit:
           Keep_Log            Off
           K8S-Logging.Parser  On
           K8S-Logging.Exclude On
-
     outputs: |
       [OUTPUT]
           name                stdout
@@ -451,7 +448,6 @@ fluent-bit:
           match               *
           uri                 /api/v1/write
           add_label           job fluentbit
-
   extraPorts:
     - port: 2021
       containerPort: 2021
