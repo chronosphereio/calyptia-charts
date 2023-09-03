@@ -9,4 +9,4 @@ dependencies:
   repository: https://grafana.github.io/helm-charts
   version: 2.9.10
 digest: sha256:b9f800b326de4279173ecbe8ca39bddc5c4cd2e6828e3fb6c847270abb8b51ed
-generated: "2023-09-02T12:27:11.133787661+01:00"
+generated: "2023-09-02T12:38:07.002303699+01:00"
