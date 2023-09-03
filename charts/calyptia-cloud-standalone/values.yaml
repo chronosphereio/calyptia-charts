@@ -32,6 +32,7 @@ rbac:
 ## @param global.storageClass Global StorageClass for Persistent Volume(s)
 ##
 global:
+  # Note that this overrides any specific ones below
   imageRegistry: ""
   # Add any custom pull secrets required
   imagePullSecrets:
