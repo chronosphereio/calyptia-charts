@@ -3,9 +3,11 @@
 apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
+  annotations:
   {{- if .Values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
+    kubectl.kubernetes.io/default-container: cloud-api
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: cloud-api
   name: cloud-api
@@ -49,9 +51,17 @@ spec:
             - name: DEBUG
               value: 'true'
             - name: INFLUX_SERVER
+            {{- if .Values.cloudApi.influxdb.enabled }}
               value: "http://influxdb:8086"
+            {{- else }}
+              value: {{ required "Provide InfluxDB server via cloudApi.influxdb.server" .Values.cloudApi.influxdb.server }}
+            {{- end }}
             - name: POSTGRES_DSN
+            {{- if .Values.cloudApi.postgres.enabled }}
               value: "postgresql://postgres@postgres:5432?sslmode=disable"
+            {{- else }}
+              value: {{ required "Provide postgres connection string (DSN) via cloudApi.postgres.connectionString" .Values.cloudApi.postgres.connectionString }}
+            {{- end }}
             # - name: ALLOWED_ORIGINS
             #   # value: "https://config-viewer-ui-dev.herokuapp.com,https://visual-ui.herokuapp.com,https://cloud-api.calyptia.com,https://core-jet.vercel.app,https://core-git-*-calyptia.vercel.app"
             #   value: "*"

@@ -126,6 +126,58 @@ If using `LoadBalancer` then external IP for a service can be retrieved via a ca
 If using `ClusterIP` then data needs to be ingested into the cluster somehow, a simple technique is to use port-forwarding, e.g. `kubectl -n <namespace> port-forward svc/<service> <port>:<port>`.
 This will expose the port locally for use.
 
+### Postgres configuration
+
+Calyptia Cloud uses Postgres to maintain all the configuration information.
+The chart provides a default deployment of Postgres in-cluster but this is not recommended for production.
+A separate Postgres deployment (hosted or otherwise) should be used with high availability support.
+
+To switch to an externally (i.e. not by this chart) provided Postgres, modify the following options:
+
+```yaml
+cloudApi:
+  postgres:
+    enabled: false # Set to false to prevent deployment of the default in-cluster version
+    # Set this if providing separately
+    connectionString: # e.g. postgresql://postgres@postgres:5432?sslmode=disable for in-cluster
+```
+
+Ensure to provide the `connectionString` as required to use the Postgres along with any authentication or other requirements in the cluster.
+Calyptia Cloud will use the provided string directly to connect to the Postgres instance.
+
+### InfluxDB configuration
+
+Calyptia Cloud uses InfluxDB to capture metrics on the various workloads deployed.
+
+The chart provides a default deployment of InfluxDB in-cluster but this is not recommended for production.
+A separate InfluxDB deployment (hosted or otherwise) should be used with high availability support.
+
+To switch to an externally (i.e. not by this chart) provided InfluxDB, modify the following options:
+
+```yaml
+cloudApi:
+  influxdb:
+    enabled: false # Set to false to prevent deployment of the default in-cluster version
+    # Set this if providing separately
+    server: # e.g. http://influxdb:8086
+```
+
+Ensure the `server` URL is routable from the cluster.
+Calyptia Cloud will use the provided string directly to connect to the InfluxDB instance.
+
+### Workload configuration
+
+The chart automatically deploys the Calyptia Core operator into the same namespace to manage workloads too.
+To disable this, modify the following options:
+
+```yaml
+operator:
+  enabled: true
+```
+
+Once the operator is deployed, the [`core-instance`](https://github.com/calyptia/charts/tree/master/charts/core-instance) chart can be used to add workloads to the cluster.
+Alternatively the legacy [`core`](https://github.com/calyptia/charts/tree/master/charts/core) chart can also be used without operator support.
+
 ## Troubleshooting
 
 ### Calyptia Fluent Bit LTS
