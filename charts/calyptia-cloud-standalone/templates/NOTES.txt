@@ -1,4 +1,7 @@
 Calyptia Cloud standalone correctly installed.
+{{- if .Values.operator.enabled }}
+Calyptia Core Operator correctly installed.
+{{- end }}
 
 To get the project token:
 
@@ -6,19 +9,29 @@ kubectl get secret -n {{ .Release.Namespace }} auth-secret -o jsonpath='{.data.O
 
 To create an instance in the cluster run:
 
+helm repo add calyptia https://helm.calyptia.com --force-update
+helm repo update
+
 export CLOUD_NAMESPACE={{ .Release.Namespace }}
 export INSTANCE_NAMESPACE=core-instance
 export INSTANCE_NAME=test
-export INSTANCE_TAG=test
-
-helm repo add calyptia https://helm.calyptia.com --force-update
-helm repo update
-helm upgrade --install --namespace "$INSTANCE_NAMESPACE" --create-namespace calyptia-core calyptia/core \
-    --set project_token="$(kubectl get secret -n "calyptia" auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)" \
-    --set name="$INSTANCE_NAME" --set core_instance_tags="INSTANCE_TAG" --set api_url="http://cloud-api.$CLOUD_NAMESPACE:5000" \
+{{- if .Values.operator.enabled }}
+helm upgrade --install --namespace "$INSTANCE_NAMESPACE" --create-namespace calyptia-core-instance calyptia/core-instance \
+    --set cloudToken="$(kubectl get secret -n "$CLOUD_NAMESPACE" auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)" \
+    --set coreInstance="$INSTANCE_NAME" --set cloudUrl="http://cloud-api.${CLOUD_NAMESPACE}:5000" \
     --debug --wait
 
-For outside the cluster, replace the 'api_url' with the CLOUD_ENDPOINT above (it must be routable from the source).
+If deploying outside of this cluster, replace the 'cloudUrl' with the CLOUD_ENDPOINT above (it must be routable from the source).
+{{- else }}
+export INSTANCE_TAG=test
+
+helm upgrade --install --namespace "$INSTANCE_NAMESPACE" --create-namespace calyptia-core calyptia/core \
+    --set project_token="$(kubectl get secret -n "$CLOUD_NAMESPACE" auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)" \
+    --set name="$INSTANCE_NAME" --set core_instance_tags="$INSTANCE_TAG" --set api_url="http://cloud-api.$CLOUD_NAMESPACE:5000" \
+    --debug --wait
+
+If deploying outside of this cluster, replace the 'api_url' with the CLOUD_ENDPOINT above (it must be routable from the source).
+{{- end }}
 
 Run the following to get the services:
 
@@ -26,7 +39,6 @@ kubectl get -n {{ .Release.Namespace }} svc
 
 ClusterIP services will need port-forwarding/ingress to use externally.
 
-If using LoadBalancer, run the following to get external service endpoints:
 {{- if contains "LoadBalancer" .Values.cloudApi.service.type }}
 
 * Cloud-API:
@@ -34,6 +46,7 @@ If using LoadBalancer, run the following to get external service endpoints:
 IP=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..status.loadBalancer.ingress[0].ip}')
 PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..spec.ports[0].port}')
 CLOUD_ENDPOINT="http://${IP}:${PORT}
+curl -sSfL "$CLOUD_ENDPOINT"
 {{- end }}
 {{- if contains "LoadBalancer" .Values.frontend.service.type }}
 
@@ -52,7 +65,7 @@ PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/compone
 VIVO_ENDPOINT="http://${IP}:${PORT}/vivo
 {{- end }}
 
-{{- if .Values.monitoring.grafana }}
+{{- if and (.Values.monitoring.enabled ) (.Values.monitoring.grafana) }}
 * Grafana
 
 The admin login is in the 'calyptia-cloud-grafana' secret:
@@ -65,9 +78,9 @@ kubectl port-forward -n {{ .Release.Namespace }} svc/calyptia-cloud-grafana 3000
 
 {{- end }}
 
-{{- if .Values.monitoring.fluentBit }}
+{{- if and (.Values.monitoring.enabled ) (.Values.monitoring.fluentBit) }}
 
 A Calyptia Fluent Bit LTS daemonset is deployed with a customisable configuration to forward logs and metrics.
-To modify the configuration, refer to '.fluent-bit.config' values in the Helm chart.
+To modify the configuration, refer to '.fluentBit.config' values in the Helm chart.
 
 {{- end }}

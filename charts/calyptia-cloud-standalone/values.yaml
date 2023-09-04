@@ -1,20 +1,9 @@
 # Initial placeholder for config options for the Helm chart
 
-## @param commonLabels Labels to add to all deployed objects
-##
 commonLabels: {}
-## @param commonAnnotations Annotations to add to all deployed objects
-##
 commonAnnotations: {}
 nameOverride: ""
 fullnameOverride: ""
-#
-# floating tag for product version - should override tags below
-# productTag: x.x.x
-#
-# validate with JSON schema
-# Use 'eks, gke, kind' or empty for unknown
-# cloudProvider: ""
 #
 ## RBAC configuration
 ## @param rbac.create Specifies whether RBAC resources should be created
@@ -104,8 +93,10 @@ cloudApi:
     annotations: {}
   # All influx config
   influxdb:
-    # Disable if providing our own - not supported yet
+    # Disable if providing separately
     enabled: true
+    # Set this if providing separately
+    # server: http://influxdb:8086
     replicas: 1
     resources:
       limits:
@@ -114,24 +105,27 @@ cloudApi:
       requests: {}
   # All postgres config
   postgres:
-    # Disable if providing our own - not supported yet
+    # Disable if providing separately
     enabled: true
+    # Set this if providing separately
+    # connectionString: postgresql://postgres@postgres:5432?sslmode=disable
     replicas: 1
     resources:
       limits:
         memory: 500Mi
         cpu: 500m
       requests: {}
+  # Used for creating the auth-secret
   kubectl:
     resources:
       limits: {}
       requests: {}
 #
-# Core instances/operator
-core:
+# Core instances/operator running in same cluster
+operator:
+  # Enable to deploy the Core operator
   enabled: true
-  # Not supported yet
-  operator: false
+  # Primarily this is to manage the images themselves for air-gapped installation
   images:
     core:
       registry: ghcr.io
@@ -146,18 +140,20 @@ core:
     coreOperator:
       registry: ghcr.io
       repository: calyptia/core-operator
-      tag: 1.0.10
+      tag: 1.0.15
       pullSecrets: []
     coreOperatorSyncTocloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-to-cloud
-      tag: 1.0.10
+      tag: 1.0.15
       pullSecrets: []
     coreOperatorSyncFromCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-from-cloud
-      tag: 1.0.10
+      tag: 1.0.15
       pullSecrets: []
+#
+# Core UI
 frontend:
   enabled: true
   service:
@@ -244,31 +240,6 @@ vivo:
       port: fluent-bit
     failureThreshold: 5
     periodSeconds: 5
-#
-# Following should be done externally, just capture images maybe?
-loadBalancer:
-  # Whether to deploy the metallb load balancer or not
-  # May not be possible in single helm chart as have to wait for it
-  enabled: false
-  # Set this from KIND network
-  ipBase: 172.18
-  namespace: metallb-system
-  # Image configuration though should be doable to update the templates
-  images:
-    controller:
-      registry: quay.io
-      repository: metallb/controller
-      tag: v0.13.10
-      pullSecrets: []
-    speaker:
-      registry: quay.io
-      repository: metallb/speaker
-      tag: v0.13.10
-      pullSecrets: []
-  resources:
-    limits: {}
-    requests: {}
-#
 ingress:
   enabled: false
   port: 80
@@ -309,6 +280,13 @@ monitoring:
   grafana: false
 #
 #
+# Dependent chart config: https://github.com/calyptia/charts/tree/master/charts/core-operator
+core-operator:
+  # operatorImage: ghcr.io/calyptia/core-operator:1.0.15
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/"
+    prometheus.io/port: '8081'
 # Dependent chart so have to use the values as defined there
 loki-stack:
   enterprise:

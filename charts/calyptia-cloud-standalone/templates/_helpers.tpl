@@ -66,6 +66,13 @@ Return the proper ingress.image image name
 {{- end -}}
 
 {{/*
+Return the proper operator.image image name
+*/}}
+{{- define "operator.image" -}}
+{{ include "common.images.image" (dict "imageRoot" .Values.operator.images.coreOperator "global" .Values.global) }}
+{{- end -}}
+
+{{/*
 Returns the proper service account name depending if an explicit service account name is set
 in the values file. If the name is not set it will default to either common.names.fullname if serviceAccount.create
 is true or default otherwise.
@@ -141,8 +148,8 @@ Return the proper Container Registry Secret Names
 {{ include "common.images.pullSecrets" (dict "images" (list .Values.vivo.images.vivo) "global" .Values.global) }}
 {{- end -}}
 
-{{- define "createImagePullSecret" }}
+{{- define "createImagePullSecret" -}}
 {{- with .Values.imageCredentials }}
 {{- printf "{\"auths\":{\"%s\":{\"username\":\"%s\",\"password\":\"%s\",\"email\":\"%s\",\"auth\":\"%s\"}}}" .registry .username .password .email (printf "%s:%s" .username .password | b64enc) | b64enc }}
-{{- end }}
-{{- end }}
+{{- end -}}
+{{- end -}}
