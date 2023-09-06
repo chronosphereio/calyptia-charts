@@ -515,3 +515,14 @@ fluent-bit:
       pullPolicy: IfNotPresent
       pullSecrets:
         - regcreds
+  # Until we cope with configurable outputs, ignore the health endpoint
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+    failureThreshold: 6
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+    failureThreshold: 3
