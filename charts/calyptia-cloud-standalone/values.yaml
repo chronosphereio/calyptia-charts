@@ -256,11 +256,11 @@ ingress:
         server_name localhost gateway.{{ .Release.Namespace }};
 
         location /vivo {
-          proxy_pass http://vivo.{{ .Release.Namespace }}:{{ .Values.vivo.service.port }};
+          proxy_pass http://vivo.{{ .Release.Namespace }}:{{ .Values.vivo.service.port }}/vivo;
         }
 
         location ~ /(healthz|prometheus_metrics|v\d/.*) {
-          proxy_pass http://cloud.{{ .Release.Namespace }}:{{ .Values.cloudApi.service.port }};
+          proxy_pass http://cloud-api.{{ .Release.Namespace }}:{{ .Values.cloudApi.service.port }};
         }
 
         location /jsonrpc {
