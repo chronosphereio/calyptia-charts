@@ -21,10 +21,10 @@ metadata:
   name: calyptia-cloud-standalone-fluent-bit
   namespace: calyptia
   labels:
-    helm.sh/chart: fluent-bit-0.37.1
+    helm.sh/chart: fluent-bit-0.38.0
     app.kubernetes.io/name: fluent-bit
     app.kubernetes.io/instance: calyptia-cloud-standalone
-    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/version: "2.1.9"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: calyptia-standalone/templates/cloud/serviceaccount.yaml
@@ -33,7 +33,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
   name: calyptia-cloud-standalone-calyptia-standalone-cloud
@@ -45,7 +45,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
   name: calyptia-cloud-standalone-calyptia-standalone-frontend
@@ -58,10 +58,10 @@ metadata:
   name: calyptia-cloud-standalone-fluent-bit-luascripts
   namespace: calyptia
   labels:
-    helm.sh/chart: fluent-bit-0.37.1
+    helm.sh/chart: fluent-bit-0.38.0
     app.kubernetes.io/name: fluent-bit
     app.kubernetes.io/instance: calyptia-cloud-standalone
-    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/version: "2.1.9"
     app.kubernetes.io/managed-by: Helm
 data:
 ---
@@ -72,10 +72,10 @@ metadata:
   name: calyptia-cloud-standalone-fluent-bit
   namespace: calyptia
   labels:
-    helm.sh/chart: fluent-bit-0.37.1
+    helm.sh/chart: fluent-bit-0.38.0
     app.kubernetes.io/name: fluent-bit
     app.kubernetes.io/instance: calyptia-cloud-standalone
-    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/version: "2.1.9"
     app.kubernetes.io/managed-by: Helm
 data:
   custom_parsers.conf: |
@@ -774,10 +774,10 @@ kind: ClusterRole
 metadata:
   name: calyptia-cloud-standalone-fluent-bit
   labels:
-    helm.sh/chart: fluent-bit-0.37.1
+    helm.sh/chart: fluent-bit-0.38.0
     app.kubernetes.io/name: fluent-bit
     app.kubernetes.io/instance: calyptia-cloud-standalone
-    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/version: "2.1.9"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups:
@@ -840,10 +840,10 @@ kind: ClusterRoleBinding
 metadata:
   name: calyptia-cloud-standalone-fluent-bit
   labels:
-    helm.sh/chart: fluent-bit-0.37.1
+    helm.sh/chart: fluent-bit-0.38.0
     app.kubernetes.io/name: fluent-bit
     app.kubernetes.io/instance: calyptia-cloud-standalone
-    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/version: "2.1.9"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -938,10 +938,10 @@ metadata:
   name: calyptia-cloud-standalone-fluent-bit
   namespace: calyptia
   labels:
-    helm.sh/chart: fluent-bit-0.37.1
+    helm.sh/chart: fluent-bit-0.38.0
     app.kubernetes.io/name: fluent-bit
     app.kubernetes.io/instance: calyptia-cloud-standalone
-    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/version: "2.1.9"
     app.kubernetes.io/managed-by: Helm
 spec:
   type: ClusterIP
@@ -964,7 +964,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -978,7 +978,7 @@ spec:
       targetPort: 5000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -1002,7 +1002,7 @@ spec:
       targetPort: 8086
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
@@ -1026,7 +1026,7 @@ spec:
       targetPort: 5432
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: postgres
@@ -1037,7 +1037,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -1051,7 +1051,7 @@ spec:
       targetPort: 3000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -1062,7 +1062,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -1076,7 +1076,7 @@ spec:
       targetPort: 5555
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -1087,7 +1087,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -1115,7 +1115,7 @@ spec:
       targetPort: 2020
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -1127,10 +1127,10 @@ metadata:
   name: calyptia-cloud-standalone-fluent-bit
   namespace: calyptia
   labels:
-    helm.sh/chart: fluent-bit-0.37.1
+    helm.sh/chart: fluent-bit-0.38.0
     app.kubernetes.io/name: fluent-bit
     app.kubernetes.io/instance: calyptia-cloud-standalone
-    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/version: "2.1.9"
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
@@ -1193,12 +1193,14 @@ spec:
               containerPort: 2021
               protocol: TCP
           livenessProbe:
+            failureThreshold: 3
             httpGet:
               path: /
               port: http
           readinessProbe:
+            failureThreshold: 6
             httpGet:
-              path: /api/v1/health
+              path: /
               port: http
           resources:
             limits:
@@ -1336,7 +1338,7 @@ metadata:
     kubectl.kubernetes.io/default-container: cloud-api
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -1354,7 +1356,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.4
+        helm.sh/chart: calyptia-standalone-0.1.5
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: cloud-api
@@ -1453,7 +1455,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
@@ -1471,7 +1473,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.4
+        helm.sh/chart: calyptia-standalone-0.1.5
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: influxdb
@@ -1513,7 +1515,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: postgres
@@ -1531,7 +1533,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.4
+        helm.sh/chart: calyptia-standalone-0.1.5
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: postgres
@@ -1563,7 +1565,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -1580,7 +1582,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.4
+        helm.sh/chart: calyptia-standalone-0.1.5
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: core
@@ -1670,7 +1672,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -1687,7 +1689,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.4
+        helm.sh/chart: calyptia-standalone-0.1.5
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: cloud-lua-sandbox
@@ -1715,7 +1717,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.4
+    helm.sh/chart: calyptia-standalone-0.1.5
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -1732,7 +1734,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.4
+        helm.sh/chart: calyptia-standalone-0.1.5
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: vivo
@@ -1783,10 +1785,10 @@ metadata:
   name: "calyptia-cloud-standalone-fluent-bit-test-connection"
   namespace: calyptia
   labels:
-    helm.sh/chart: fluent-bit-0.37.1
+    helm.sh/chart: fluent-bit-0.38.0
     app.kubernetes.io/name: fluent-bit
     app.kubernetes.io/instance: calyptia-cloud-standalone
-    app.kubernetes.io/version: "2.1.8"
+    app.kubernetes.io/version: "2.1.9"
     app.kubernetes.io/managed-by: Helm
   annotations:
     "helm.sh/hook": test-success

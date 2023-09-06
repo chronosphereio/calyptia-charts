@@ -1,4 +1,4 @@
-# Calyptia Core Standalone Applicane helm chart
+# Calyptia Core Standalone application helm chart
 
 ## Usage
 
@@ -95,7 +95,7 @@ This configuration can be applied per-image as well to customise each individual
 
 ### Service configuration
 
-Every Calyptia component has a common set of configuration, e.g. for the `cloud-api` component we cna control whether it is deployed and what type of service to use:
+Every Calyptia component has a common set of configuration, e.g. for the `cloud-api` component we can control whether it is deployed and what type of service to use:
 
 ```yaml
 cloudApi:
