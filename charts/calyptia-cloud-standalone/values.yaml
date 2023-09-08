@@ -70,7 +70,7 @@ cloudApi:
     cloud:
       registry: ghcr.io
       repository: calyptia/cloud
-      tag: 1.4.5
+      tag: 1.4.8
       pullSecrets: []
     kubectl:
       registry: docker.io
@@ -130,27 +130,27 @@ operator:
     core:
       registry: ghcr.io
       repository: calyptia/core
-      tag: 1.3.5
+      tag: 1.4.0
       pullSecrets: []
     coreFluentBit:
       registry: ghcr.io
       repository: calyptia/core/calyptia-fluent-bit
-      tag: 23.8.9
+      tag: 23.9.6
       pullSecrets: []
     coreOperator:
       registry: ghcr.io
       repository: calyptia/core-operator
-      tag: 1.0.15
+      tag: 1.1.2
       pullSecrets: []
     coreOperatorSyncTocloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-to-cloud
-      tag: 1.0.15
+      tag: 1.1.2
       pullSecrets: []
     coreOperatorSyncFromCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-from-cloud
-      tag: 1.0.15
+      tag: 1.1.2
       pullSecrets: []
 #
 # Core UI
@@ -164,7 +164,7 @@ frontend:
     frontend:
       registry: ghcr.io
       repository: calyptia/frontend
-      tag: 1.0.3
+      tag: 1.0.4
       pullSecrets: []
     luaSandbox:
       registry: ghcr.io
@@ -319,7 +319,7 @@ reloader:
 #
 # Dependent chart config: https://github.com/calyptia/charts/tree/master/charts/core-operator
 core-operator:
-  # operatorImage: ghcr.io/calyptia/core-operator:1.0.15
+  # operatorImage: ghcr.io/calyptia/core-operator:1.1.2
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/path: "/"

@@ -10,8 +10,8 @@ helm repo add calyptia https://helm.calyptia.com
 helm repo update
 helm upgrade --install \
     --create-namespace --namespace calyptia \
-    --set imageCredentials.secretName="<registry url, e.g. ghcr.io>" \
-    --set imageCredentials.registry=ghcr.io \
+    --set imageCredentials.secretName=regcreds \
+    --set imageCredentials.registry="<registry url, e.g. ghcr.io>" \
     --set imageCredentials.username="<username for authentication, e.g. Github username>" \
     --set imageCredentials.password="<password or token for authentication>" \
     --set imageCredentials.email="<email associated with user>"
