@@ -96,16 +96,19 @@ spec:
           args:
             - "-c"
             - |
+              if kubectl delete -n ${CORE_NAMESPACE} secret auth-secret ; then
+                echo 'Deleted existing token'
+              fi
               until [[ -f /token/token.txt ]]; do
                 sleep 5
               done
               echo 'Token file found'
               until kubectl create -n ${CORE_NAMESPACE} secret generic auth-secret --from-file=ONPREM_CLOUD_API_PROJECT_TOKEN=/token/token.txt ; do
-                sleep 10
+                sleep 5
               done
               echo 'Secret created - complete'
               while true; do
-                sleep 30
+                sleep 5
               done
           env:
             - name: CORE_NAMESPACE

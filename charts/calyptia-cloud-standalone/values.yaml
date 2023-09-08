@@ -278,7 +278,44 @@ ingress:
 monitoring:
   fluentBit: true
   grafana: false
-#
+# Auto reload support
+reloader:
+  enabled: true
+  reloadOnCreate: true
+  syncAfterRestart: true
+  rbac:
+    create: true
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+  images:
+    reloader:
+      registry: ghcr.io
+      repository: stakater/reloader
+      tag: v1.0.40
+      pullSecrets: []
+  livenessProbe:
+    httpGet:
+      path: /live
+      port: http
+    timeoutSeconds: 5
+    failureThreshold: 5
+    periodSeconds: 10
+    successThreshold: 1
+    initialDelaySeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /metrics
+      port: http
+    timeoutSeconds: 5
+    failureThreshold: 5
+    periodSeconds: 10
+    successThreshold: 1
+    initialDelaySeconds: 10
+  resources:
+    limits: {}
+    requests: {}
 #
 # Dependent chart config: https://github.com/calyptia/charts/tree/master/charts/core-operator
 core-operator:

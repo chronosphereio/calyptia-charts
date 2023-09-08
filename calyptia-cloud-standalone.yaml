@@ -33,7 +33,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
   name: calyptia-cloud-standalone-calyptia-standalone-cloud
@@ -45,10 +45,23 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
   name: calyptia-cloud-standalone-calyptia-standalone-frontend
+  namespace: "calyptia"
+---
+# Source: calyptia-standalone/templates/reloader/service-account.yaml
+# https://github.com/stakater/Reloader/blob/master/deployments/kubernetes/manifests/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.1.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+  name: calyptia-cloud-standalone-calyptia-standalone-reloader
   namespace: "calyptia"
 ---
 # Source: calyptia-standalone/charts/fluent-bit/templates/configmap-luascripts.yaml
@@ -863,7 +876,7 @@ metadata:
 rules:
   - apiGroups: [""] # core API group
     resources: ["pods", "secrets"]
-    verbs: ["get", "watch", "list", "create", "update"]
+    verbs: ["get", "watch", "list", "create", "update", "delete"]
 ---
 # Source: calyptia-standalone/templates/frontend/rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -875,6 +888,53 @@ rules:
   - apiGroups: [""] # core API group
     resources: ["pods", "secrets"]
     verbs: ["get", "watch", "list"]
+---
+# Source: calyptia-standalone/templates/reloader/rbac.yaml
+# https://github.com/stakater/Reloader/blob/master/deployments/kubernetes/manifests/clusterrole.yaml
+# https://github.com/stakater/Reloader/blob/master/deployments/kubernetes/manifests/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: reloader-reloader-role
+  namespace: "calyptia"
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+      - configmaps
+    verbs:
+      - list
+      - get
+      - watch
+  - apiGroups:
+      - "apps"
+    resources:
+      - deployments
+      - daemonsets
+      - statefulsets
+    verbs:
+      - list
+      - get
+      - update
+      - patch
+  - apiGroups:
+      - "extensions"
+    resources:
+      - deployments
+      - daemonsets
+    verbs:
+      - list
+      - get
+      - update
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
 ---
 # Source: calyptia-standalone/templates/cloud/rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -905,6 +965,21 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: calyptia-read-role
+---
+# Source: calyptia-standalone/templates/reloader/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: reloader-reloader-role-binding
+  namespace: "calyptia"
+subjects:
+  - kind: ServiceAccount
+    name: calyptia-cloud-standalone-calyptia-standalone-reloader
+    namespace: "calyptia"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: reloader-reloader-role
 ---
 # Source: calyptia-standalone/charts/core-operator/templates/rbac.yaml
 apiVersion: v1
@@ -964,7 +1039,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -978,7 +1053,7 @@ spec:
       targetPort: 5000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -987,10 +1062,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    app.kubernetes.io/name: cloud
-    app.kubernetes.io/instance: calyptia
   labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.1.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
   name: influxdb
   namespace: "calyptia"
@@ -1002,7 +1078,7 @@ spec:
       targetPort: 8086
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
@@ -1026,7 +1102,7 @@ spec:
       targetPort: 5432
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: postgres
@@ -1037,7 +1113,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -1051,7 +1127,7 @@ spec:
       targetPort: 3000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -1062,7 +1138,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -1076,7 +1152,7 @@ spec:
       targetPort: 5555
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -1087,7 +1163,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -1115,7 +1191,7 @@ spec:
       targetPort: 2020
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -1338,7 +1414,7 @@ metadata:
     kubectl.kubernetes.io/default-container: cloud-api
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -1356,7 +1432,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.6
+        helm.sh/chart: calyptia-standalone-0.1.7
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: cloud-api
@@ -1424,16 +1500,19 @@ spec:
           args:
             - "-c"
             - |
+              if kubectl delete -n ${CORE_NAMESPACE} secret auth-secret ; then
+                echo 'Deleted existing token'
+              fi
               until [[ -f /token/token.txt ]]; do
                 sleep 5
               done
               echo 'Token file found'
               until kubectl create -n ${CORE_NAMESPACE} secret generic auth-secret --from-file=ONPREM_CLOUD_API_PROJECT_TOKEN=/token/token.txt ; do
-                sleep 10
+                sleep 5
               done
               echo 'Secret created - complete'
               while true; do
-                sleep 30
+                sleep 5
               done
           env:
             - name: CORE_NAMESPACE
@@ -1455,7 +1534,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
@@ -1473,7 +1552,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.6
+        helm.sh/chart: calyptia-standalone-0.1.7
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: influxdb
@@ -1515,7 +1594,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: postgres
@@ -1533,7 +1612,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.6
+        helm.sh/chart: calyptia-standalone-0.1.7
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: postgres
@@ -1563,9 +1642,11 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    reloader.stakater.com/auto: "true"
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -1582,7 +1663,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.6
+        helm.sh/chart: calyptia-standalone-0.1.7
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: core
@@ -1672,7 +1753,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -1689,7 +1770,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.6
+        helm.sh/chart: calyptia-standalone-0.1.7
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: cloud-lua-sandbox
@@ -1711,13 +1792,91 @@ spec:
           imagePullPolicy: "IfNotPresent"
       restartPolicy: Always
 ---
+# Source: calyptia-standalone/templates/reloader/deployment-reloader.yaml
+# https://github.com/stakater/Reloader/blob/master/deployments/kubernetes/manifests/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: http
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.1.7
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: reloader
+  name: reloader
+  namespace: "calyptia"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: calyptia-standalone
+      app.kubernetes.io/instance: calyptia-cloud-standalone
+      app.kubernetes.io/component: reloader
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: calyptia-standalone
+        helm.sh/chart: calyptia-standalone-0.1.7
+        app.kubernetes.io/instance: calyptia-cloud-standalone
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: reloader
+    spec:
+      
+      imagePullSecrets:
+        - name: regcreds
+      containers:
+        - image: ghcr.io/stakater/reloader:v1.0.40
+          name: reloader
+          ports:
+            - name: http
+              containerPort: 9090
+          resources:
+            limits: {}
+            requests: {}
+          imagePullPolicy: "IfNotPresent"
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /metrics
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /live
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          args:
+          - "--reload-on-create=true"
+          - "--sync-after-restart=true"
+      restartPolicy: Always
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+      serviceAccountName: calyptia-cloud-standalone-calyptia-standalone-reloader
+---
 # Source: calyptia-standalone/templates/vivo/deployment-vivo.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.6
+    helm.sh/chart: calyptia-standalone-0.1.7
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -1734,7 +1893,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.6
+        helm.sh/chart: calyptia-standalone-0.1.7
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: vivo
