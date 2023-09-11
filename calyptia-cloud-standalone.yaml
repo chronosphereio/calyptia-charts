@@ -33,7 +33,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
   name: calyptia-cloud-standalone-calyptia-standalone-cloud
@@ -45,7 +45,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
   name: calyptia-cloud-standalone-calyptia-standalone-frontend
@@ -58,7 +58,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
   name: calyptia-cloud-standalone-calyptia-standalone-reloader
@@ -142,6 +142,30 @@ data:
         # Ensure these are mounted
         path.procfs         /host/proc
         path.sysfs          /host/sys
+    # These will give us duplicate metrics for each image run from the daemonset
+    # [INPUT]
+    #     name                prometheus_scrape
+    #     tag                 metrics.cloud-api
+    #     host                cloud-api.calyptia
+    #     port                5000
+    #     metrics_path        /prometheus_metrics
+    #     scrape_interval     30s
+    
+    # [INPUT]
+    #     name                prometheus_scrape
+    #     tag                 metrics.vivo
+    #     host                vivo.calyptia
+    #     port                2020
+    #     metrics_path        /api/v2/metrics/prometheus
+    #     scrape_interval     30s
+    
+    # [INPUT]
+    #     name                prometheus_scrape
+    #     tag                 metrics.reloader
+    #     host                reloader.calyptia
+    #     port                9090
+    #     metrics_path        /metrics
+    #     scrape_interval     30s
     
     [FILTER]
         Name                kubernetes
@@ -181,6 +205,7 @@ data:
         match               *
         uri                 /api/v1/write
         add_label           job fluentbit
+        add_label           node ${NODE_NAME}
 ---
 # Source: calyptia-standalone/charts/core-operator/templates/crd.yaml
 apiVersion: apiextensions.k8s.io/v1
@@ -1037,9 +1062,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/prometheus_metrics"
+    prometheus.io/port: "5000"
+    # Set up Dynatrace scraping
+    metrics.dynatrace.com/scrape: "true"
+    metrics.dynatrace.com/path: "/prometheus_metrics"
+    metrics.dynatrace.com/port: "5000"
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -1053,7 +1086,7 @@ spec:
       targetPort: 5000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -1064,7 +1097,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
@@ -1078,7 +1111,7 @@ spec:
       targetPort: 8086
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
@@ -1087,10 +1120,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    app.kubernetes.io/name: cloud
-    app.kubernetes.io/instance: calyptia
   labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.1.9
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: postgres
   name: postgres
   namespace: "calyptia"
@@ -1102,7 +1136,7 @@ spec:
       targetPort: 5432
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: postgres
@@ -1113,7 +1147,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -1127,7 +1161,7 @@ spec:
       targetPort: 3000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -1138,7 +1172,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -1152,18 +1186,59 @@ spec:
       targetPort: 5555
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
+---
+# Source: calyptia-standalone/templates/reloader/sevice-reloader.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: '9090'
+    # Set up Dynatrace scraping
+    metrics.dynatrace.com/scrape: "true"
+    metrics.dynatrace.com/path: "/metrics"
+    metrics.dynatrace.com/port: '9090'
+  labels:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.1.9
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: reloader
+  name: reloader
+  namespace: "calyptia"
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9090
+      targetPort: 9090
+  selector:
+    app.kubernetes.io/name: calyptia-standalone
+    helm.sh/chart: calyptia-standalone-0.1.9
+    app.kubernetes.io/instance: calyptia-cloud-standalone
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: reloader
 ---
 # Source: calyptia-standalone/templates/vivo/service-vivo.yaml
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/api/v2/metrics/prometheus"
+    prometheus.io/port: '2020'
+    # Set up Dynatrace scraping
+    metrics.dynatrace.com/scrape: "true"
+    metrics.dynatrace.com/path: "/api/v2/metrics/prometheus"
+    metrics.dynatrace.com/port: '2020'
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -1191,7 +1266,7 @@ spec:
       targetPort: 2020
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -1220,6 +1295,9 @@ spec:
         app.kubernetes.io/instance: calyptia-cloud-standalone
       annotations:
         fluentbit.io/exclude: "true"
+        metrics.dynatrace.com/path: /metrics
+        metrics.dynatrace.com/port: "2021"
+        metrics.dynatrace.com/scrape: "true"
         prometheus.io/path: /metrics
         prometheus.io/port: "2021"
         prometheus.io/scrape: "true"
@@ -1414,7 +1492,7 @@ metadata:
     kubectl.kubernetes.io/default-container: cloud-api
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-api
@@ -1432,7 +1510,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.8
+        helm.sh/chart: calyptia-standalone-0.1.9
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: cloud-api
@@ -1534,7 +1612,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
@@ -1552,7 +1630,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.8
+        helm.sh/chart: calyptia-standalone-0.1.9
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: influxdb
@@ -1594,7 +1672,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: postgres
@@ -1612,7 +1690,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.8
+        helm.sh/chart: calyptia-standalone-0.1.9
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: postgres
@@ -1646,7 +1724,7 @@ metadata:
     reloader.stakater.com/auto: "true"
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: core
@@ -1663,7 +1741,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.8
+        helm.sh/chart: calyptia-standalone-0.1.9
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: core
@@ -1753,7 +1831,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: cloud-lua-sandbox
@@ -1770,7 +1848,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.8
+        helm.sh/chart: calyptia-standalone-0.1.9
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: cloud-lua-sandbox
@@ -1797,13 +1875,9 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/path: "/metrics"
-    prometheus.io/port: http
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: reloader
@@ -1820,7 +1894,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.8
+        helm.sh/chart: calyptia-standalone-0.1.9
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: reloader
@@ -1876,7 +1950,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-0.1.8
+    helm.sh/chart: calyptia-standalone-0.1.9
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: vivo
@@ -1893,7 +1967,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-0.1.8
+        helm.sh/chart: calyptia-standalone-0.1.9
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: vivo

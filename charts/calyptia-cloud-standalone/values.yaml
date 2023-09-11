@@ -324,6 +324,10 @@ core-operator:
     prometheus.io/scrape: "true"
     prometheus.io/path: "/"
     prometheus.io/port: '8081'
+    # Set up Dynatrace scraping
+    metrics.dynatrace.com/scrape: "true"
+    metrics.dynatrace.com/path: "/"
+    metrics.dynatrace.com/port: '8081'
 # Dependent chart so have to use the values as defined there
 loki-stack:
   enterprise:
@@ -425,6 +429,30 @@ fluent-bit:
           # Ensure these are mounted
           path.procfs         /host/proc
           path.sysfs          /host/sys
+      # These will give us duplicate metrics for each image run from the daemonset
+      # [INPUT]
+      #     name                prometheus_scrape
+      #     tag                 metrics.cloud-api
+      #     host                cloud-api.calyptia
+      #     port                5000
+      #     metrics_path        /prometheus_metrics
+      #     scrape_interval     30s
+
+      # [INPUT]
+      #     name                prometheus_scrape
+      #     tag                 metrics.vivo
+      #     host                vivo.calyptia
+      #     port                2020
+      #     metrics_path        /api/v2/metrics/prometheus
+      #     scrape_interval     30s
+
+      # [INPUT]
+      #     name                prometheus_scrape
+      #     tag                 metrics.reloader
+      #     host                reloader.calyptia
+      #     port                9090
+      #     metrics_path        /metrics
+      #     scrape_interval     30s
     filters: |
       [FILTER]
           Name                kubernetes
@@ -464,6 +492,8 @@ fluent-bit:
           match               *
           uri                 /api/v1/write
           add_label           job fluentbit
+          add_label           node ${NODE_NAME}
+
   extraPorts:
     - port: 2021
       containerPort: 2021
@@ -486,6 +516,10 @@ fluent-bit:
     prometheus.io/scrape: "true"
     prometheus.io/path: "/metrics"
     prometheus.io/port: '2021'
+    # Set up Dynatrace scraping
+    metrics.dynatrace.com/scrape: "true"
+    metrics.dynatrace.com/path: "/metrics"
+    metrics.dynatrace.com/port: '2021'
   podLabels: {}
   flush: 1
   logLevel: info

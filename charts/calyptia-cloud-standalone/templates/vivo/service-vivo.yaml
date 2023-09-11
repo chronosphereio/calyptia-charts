@@ -3,8 +3,16 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/api/v2/metrics/prometheus"
+    prometheus.io/port: '2020'
+    # Set up Dynatrace scraping
+    metrics.dynatrace.com/scrape: "true"
+    metrics.dynatrace.com/path: "/api/v2/metrics/prometheus"
+    metrics.dynatrace.com/port: '2020'
   {{- if .Values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: vivo
