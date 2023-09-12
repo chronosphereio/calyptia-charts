@@ -6,7 +6,8 @@ Helm's [documentation](https://helm.sh/docs) to get started.
 Once Helm has been set up correctly, add the repo as follows:
 
 ```shell
-helm repo add calyptia https://helm.calyptia.com
+helm repo add calyptia https://helm.calyptia.com --force-update
+helm repo update
 ```
 
 If you had already added this repo earlier, run `helm repo update` to retrieve
@@ -16,7 +17,7 @@ the latest versions of the packages.  You can then run `helm search repo
 To install the calyptia-core chart:
 
 ```shell
-helm install calyptia-core calyptia/core
+helm upgrade --install calyptia-core calyptia/core
 ```
 
 To uninstall the chart:

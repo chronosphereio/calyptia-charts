@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "calyptia-core-chart.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ default 1 .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "calyptia-core-chart.selectorLabels" . | nindent 6 }}
@@ -36,25 +36,23 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: CORE_INSTANCE_TAGS
-              value: {{ .Values.core_instance_tags }}
+              value: {{ .Values.coreInstance.tags }}
             - name: CORE_INSTANCE_ENVIRONMENT
-              value: {{ .Values.core_instance_environment | default "default" }}
+              value: {{ default "default" .Values.coreInstance.environment }}
             - name: CORE_INSTANCE_CLUSTER_LOGGING
-              value: "{{ .Values.cluster_logging | default "false" }}"
+              value: {{ default false .Values.coreInstance.clusterLogging | quote }}
             - name: AGGREGATOR_NAME
               value: {{ .Values.name }}
             - name: PROJECT_TOKEN
-              value: {{ required "A valid Calyptia project_token is required." .Values.project_token }}
+              value: {{ required "A valid Calyptia coreInstance.projectToken is required." .Values.coreInstance.projectToken }}
             - name: AGGREGATOR_FLUENTBIT_CLOUD_URL
-              value: {{ .Values.api_url | default "https://cloud-api.calyptia.com/" }}
+              value: {{ default "https://cloud-api.calyptia.com/" .Values.coreInstance.apiUrl }}
             - name: AGGREGATOR_FLUENTBIT_TLS_VERIFY
-              value: "{{ .Values.tls_verify | default "on" }}"
+              value: {{ default true .Values.coreInstance.tlsVerify | quote }}
             - name: AGGREGATOR_FLUENTBIT_TLS
-              value: "{{ .Values.tls | default "on" }}"
-            - name: AGGREGATOR_SIDECAR_URL
-              value: "{{ .Values.sidecar_url }}"
+              value: {{ default true .Values.coreInstance.tls | quote }}
             - name: CORE_INSTANCE_SERVICE_ACCOUNT_NAME
-              value: "{{ include "calyptia-core-chart.serviceAccountName" . }}"
+              value: {{ include "calyptia-core-chart.serviceAccountName" . }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
