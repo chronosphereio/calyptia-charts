@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "calyptia-core-chart.labels" . | nindent 4 }}
 spec:
-  replicas: {{ default 1 .Values.replicaCount }}
+  replicas: {{ default 1 .Values.coreInstance.replicaCount }}
   selector:
     matchLabels:
       {{- include "calyptia-core-chart.selectorLabels" . | nindent 6 }}
