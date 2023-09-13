@@ -4,19 +4,13 @@ description: Umbrella chart to configure a Calyptia Core control plane and suppo
 home: https://calyptia.com/products/calyptia-core/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 0.1.9
+version: 0.1.10
 appVersion: "v1.4.8"
 maintainers:
   - name: Calyptia
     email: hello@calyptia.com
     url: www.calyptia.com
 dependencies:
-  # Use the OSS Fluent Bit chart for monitoring
-  - name: fluent-bit
-    version: 0.x.x
-    repository: https://fluent.github.io/helm-charts
-    condition: monitoring.fluentBit
-    alias: fluent-bit
   # Core Operator chart
   - name: core-operator
     version: 0.x.x
@@ -39,3 +33,14 @@ dependencies:
   #   repository: https://stakater.github.io/stakater-charts
   #   alias: reloader
   #   condition: reloader.enabled
+  # Use the OSS Fluent Bit chart for monitoring
+  - name: fluent-bit
+    version: 0.x.x
+    repository: https://fluent.github.io/helm-charts
+    condition: monitoring.fluentBit
+    alias: monitoring-daemonset
+  - name: fluent-bit
+    version: 0.x.x
+    repository: https://fluent.github.io/helm-charts
+    condition: monitoring.fluentBit
+    alias: monitoring-aggregator

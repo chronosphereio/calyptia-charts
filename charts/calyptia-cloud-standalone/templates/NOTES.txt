@@ -65,7 +65,8 @@ PORT=$(kubectl get -n {{ .Release.Namespace }} svc -l 'app.kubernetes.io/compone
 VIVO_ENDPOINT="http://${IP}:${PORT}/vivo
 {{- end }}
 
-{{- if and (.Values.monitoring.enabled ) (.Values.monitoring.grafana) }}
+{{- if .Values.monitoring.grafana }}
+
 * Grafana
 
 The admin login is in the 'calyptia-cloud-grafana' secret:
@@ -77,10 +78,23 @@ To access it, port-forward the 'calyptia-cloud-grafana' service on port 80, e.g.
 kubectl port-forward -n {{ .Release.Namespace }} svc/calyptia-cloud-grafana 3000:80
 
 {{- end }}
+{{- if .Values.monitoring.grafana }}
 
-{{- if and (.Values.monitoring.enabled ) (.Values.monitoring.fluentBit) }}
+* Monitoring
 
-A Calyptia Fluent Bit LTS daemonset is deployed with a customisable configuration to forward logs and metrics.
-To modify the configuration, refer to '.fluentBit.config' values in the Helm chart.
+A Core Fluent Bit daemonset is deployed to gather logs and node metrics to send to the supported outputs.
+This generates a K8S config map:
 
+kubectl describe -n {{ .Release.Namespace }} configmap monitoring-daemonset
+
+A different configuration can be provided via the '.monitoring-daemonset.existingConfigMap' Helm chart value.
+
+A Core Fluent Bit deployment is also provided to gather service-level metrics to send to the supported outputs.
+This generates a K8S config map:
+
+kubectl describe -n {{ .Release.Namespace }} configmap monitoring-aggregator
+
+A different configuration can be provided via the '.monitoring-aggregator.existingConfigMap' Helm chart value.
+
+Each of these provides Prometheus metrics via port 2021 `/metrics` endpoint.
 {{- end }}

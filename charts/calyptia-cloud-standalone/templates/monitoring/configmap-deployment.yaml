@@ -1,0 +1,87 @@
+{{ if .Values.monitoring.fluentBit }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: monitoring
+  name: monitoring-aggregator
+  namespace: {{ .Release.Namespace | quote }}
+data:
+    fluent-bit.conf: |-
+        [SERVICE]
+            Daemon              Off
+            Flush               1
+            Log_Level           info
+            Parsers_File        /fluent-bit/etc/parsers.conf
+            Parsers_File        /fluent-bit/etc/conf/custom_parsers.conf
+            HTTP_Server         On
+            HTTP_Listen         0.0.0.0
+            HTTP_Port           2020
+            Health_Check        On
+            Storage.Metrics     On
+
+        [INPUT]
+            name                fluentbit_metrics
+            tag                 metrics.calyptia
+            scrape_on_start     true
+            scrape_interval     30
+
+        # These will give us duplicate metrics for each image run from the daemonset
+        [INPUT]
+            name                prometheus_scrape
+            tag                 metrics.cloud-api
+            host                cloud-api.calyptia
+            port                5000
+            metrics_path        /prometheus_metrics
+            scrape_interval     30s
+
+        [INPUT]
+            name                prometheus_scrape
+            tag                 metrics.vivo
+            host                vivo.calyptia
+            port                2020
+            metrics_path        /api/v2/metrics/prometheus
+            scrape_interval     30s
+
+        [INPUT]
+            name                prometheus_scrape
+            tag                 metrics.reloader
+            host                reloader.calyptia
+            port                9090
+            metrics_path        /metrics
+            scrape_interval     30s
+
+        [INPUT]
+            name                prometheus_scrape
+            tag                 metrics.operator
+            host                calyptia-core-controller-manager-metrics-service.calyptia
+            port                8443
+            metrics_path        /metrics
+            scrape_interval     30s
+
+        [OUTPUT]
+            name                prometheus_exporter
+            match               metrics.*
+            host                0.0.0.0
+            port                2021
+
+        # The following may not be present
+        {{- if .Values.vivo.enabled }}
+        [OUTPUT]
+            name                forward
+            host                vivo
+            port                9000
+            match               *
+        {{- end }}
+        {{- if .Values.monitoring.grafana }}
+        [OUTPUT]
+            name                prometheus_remote_write
+            host                calyptia-cloud-prometheus-server
+            match               *
+            uri                 /api/v1/write
+            add_label           job calyptia
+        {{- end }}
+{{ end }}
