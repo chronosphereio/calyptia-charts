@@ -70,7 +70,7 @@ cloudApi:
     cloud:
       registry: ghcr.io
       repository: calyptia/cloud
-      tag: 1.4.9
+      tag: 1.5.0
       pullSecrets: []
     kubectl:
       registry: docker.io
@@ -169,7 +169,7 @@ frontend:
     luaSandbox:
       registry: ghcr.io
       repository: calyptia/cloud-lua-sandbox
-      tag: 2.1.7
+      tag: 2.1.8
       pullSecrets: []
   serviceAccount:
     create: true
