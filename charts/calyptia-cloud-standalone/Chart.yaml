@@ -5,7 +5,7 @@ home: https://calyptia.com/products/calyptia-core/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
 version: 0.1.12
-appVersion: "v1.4.8"
+appVersion: "v1.5.0"
 maintainers:
   - name: Calyptia
     email: hello@calyptia.com
