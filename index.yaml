@@ -2,6 +2,47 @@ apiVersion: v1
 entries:
   calyptia-standalone:
   - apiVersion: v2
+    appVersion: v1.4.8
+    created: "2023-09-14T12:18:28.485047296Z"
+    dependencies:
+    - condition: operator.enabled
+      name: core-operator
+      repository: https://helm.calyptia.com
+      version: 0.x.x
+    - alias: common
+      name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 2.x.x
+    - alias: loki-stack
+      condition: monitoring.grafana
+      name: loki-stack
+      repository: https://grafana.github.io/helm-charts
+      version: 2.9.10
+    - alias: monitoring-daemonset
+      condition: monitoring.fluentBit
+      name: fluent-bit
+      repository: https://fluent.github.io/helm-charts
+      version: 0.x.x
+    - alias: monitoring-aggregator
+      condition: monitoring.fluentBit
+      name: fluent-bit
+      repository: https://fluent.github.io/helm-charts
+      version: 0.x.x
+    description: Umbrella chart to configure a Calyptia Core control plane and supporting
+      on-premise appliance.
+    digest: a53a45991593da51c722ecf4e8d298fcf72781edad20d442369a1f9db6fc60f9
+    home: https://calyptia.com/products/calyptia-core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: calyptia-standalone
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/calyptia-standalone-0.1.12/calyptia-standalone-0.1.12.tgz
+    version: 0.1.12
+  - apiVersion: v2
     appVersion: v1.4.9
     created: "2023-09-13T13:17:50.800181755Z"
     dependencies:
@@ -1638,4 +1679,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2023-09-13T13:17:50.800452957Z"
+generated: "2023-09-14T12:18:28.485273598Z"
