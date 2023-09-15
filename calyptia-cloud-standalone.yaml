@@ -49,6 +49,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
   name: calyptia-cloud-standalone-calyptia-standalone-cloud
   namespace: "calyptia"
 ---
@@ -61,6 +62,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
   name: calyptia-cloud-standalone-calyptia-standalone-frontend
   namespace: "calyptia"
 ---
@@ -74,6 +76,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
   name: calyptia-cloud-standalone-calyptia-standalone-reloader
   namespace: "calyptia"
 ---
@@ -86,6 +89,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: monitoring
   name: monitoring-daemonset
   namespace: "calyptia"
@@ -170,6 +174,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: monitoring
   name: monitoring-aggregator
   namespace: "calyptia"
@@ -1183,6 +1188,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: cloud-api
   name: cloud-api
   namespace: "calyptia"
@@ -1197,6 +1203,7 @@ spec:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: cloud-api
 ---
 # Source: calyptia-standalone/templates/cloud/service-influxdb.yaml
@@ -1208,6 +1215,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: influxdb
   name: influxdb
   namespace: "calyptia"
@@ -1222,6 +1230,7 @@ spec:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: influxdb
 ---
 # Source: calyptia-standalone/templates/cloud/service-postgres.yaml
@@ -1233,6 +1242,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: postgres
   name: postgres
   namespace: "calyptia"
@@ -1247,6 +1257,7 @@ spec:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: postgres
 ---
 # Source: calyptia-standalone/templates/frontend/service-core-ui.yaml
@@ -1258,6 +1269,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: core
   name: core
   namespace: "calyptia"
@@ -1272,6 +1284,7 @@ spec:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: core
 ---
 # Source: calyptia-standalone/templates/frontend/service-luasandbox.yaml
@@ -1283,6 +1296,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: cloud-lua-sandbox
   name: cloud-lua-sandbox
   namespace: "calyptia"
@@ -1297,6 +1311,7 @@ spec:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: cloud-lua-sandbox
 ---
 # Source: calyptia-standalone/templates/reloader/sevice-reloader.yaml
@@ -1316,6 +1331,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: reloader
   name: reloader
   namespace: "calyptia"
@@ -1330,6 +1346,7 @@ spec:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: reloader
 ---
 # Source: calyptia-standalone/templates/vivo/service-vivo.yaml
@@ -1349,6 +1366,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: vivo
     calyptia.vivo.input.http: '9010'
     calyptia.vivo.input.forward: '9000'
@@ -1377,6 +1395,7 @@ spec:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: vivo
 ---
 # Source: calyptia-standalone/charts/monitoring-daemonset/templates/daemonset.yaml
@@ -1645,6 +1664,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: cloud-api
   name: cloud-api
   namespace: "calyptia"
@@ -1663,6 +1683,7 @@ spec:
         helm.sh/chart: calyptia-standalone-0.1.12
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: "v1.5.0"
         app.kubernetes.io/component: cloud-api
     spec:
       serviceAccount: calyptia-cloud-standalone-calyptia-standalone-cloud
@@ -1765,6 +1786,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: influxdb
   name: influxdb
   namespace: "calyptia"
@@ -1783,6 +1805,7 @@ spec:
         helm.sh/chart: calyptia-standalone-0.1.12
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: "v1.5.0"
         app.kubernetes.io/component: influxdb
     spec:
       
@@ -1825,6 +1848,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: postgres
   name: postgres
   namespace: "calyptia"
@@ -1843,6 +1867,7 @@ spec:
         helm.sh/chart: calyptia-standalone-0.1.12
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: "v1.5.0"
         app.kubernetes.io/component: postgres
     spec:
       
@@ -1877,6 +1902,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: core
   name: core
   namespace: "calyptia"
@@ -1894,6 +1920,7 @@ spec:
         helm.sh/chart: calyptia-standalone-0.1.12
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: "v1.5.0"
         app.kubernetes.io/component: core
     spec:
       serviceAccount: calyptia-cloud-standalone-calyptia-standalone-frontend
@@ -1984,6 +2011,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: cloud-lua-sandbox
   name: cloud-lua-sandbox
   namespace: "calyptia"
@@ -2001,6 +2029,7 @@ spec:
         helm.sh/chart: calyptia-standalone-0.1.12
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: "v1.5.0"
         app.kubernetes.io/component: cloud-lua-sandbox
     spec:
       
@@ -2030,6 +2059,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: reloader
   name: reloader
   namespace: "calyptia"
@@ -2047,6 +2077,7 @@ spec:
         helm.sh/chart: calyptia-standalone-0.1.12
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: "v1.5.0"
         app.kubernetes.io/component: reloader
     spec:
       
@@ -2103,6 +2134,7 @@ metadata:
     helm.sh/chart: calyptia-standalone-0.1.12
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v1.5.0"
     app.kubernetes.io/component: vivo
   name: vivo
   namespace: "calyptia"
@@ -2120,6 +2152,7 @@ spec:
         helm.sh/chart: calyptia-standalone-0.1.12
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: "v1.5.0"
         app.kubernetes.io/component: vivo
     spec:
       
