@@ -1,2 +1,2 @@
-operatorImage: "ghcr.io/calyptia/core-operator:v1.1.3"
+operatorImage: "ghcr.io/calyptia/core-operator:v2.0.0"
 noCRD: false
