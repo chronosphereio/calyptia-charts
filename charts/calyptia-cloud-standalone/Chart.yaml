@@ -4,8 +4,8 @@ description: Umbrella chart to configure a Calyptia Core control plane and suppo
 home: https://calyptia.com/products/calyptia-core/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 0.1.13
-appVersion: "v1.5.1"
+version: 0.1.14
+appVersion: "v1.5.2"
 maintainers:
   - name: Calyptia
     email: hello@calyptia.com
