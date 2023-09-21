@@ -140,17 +140,17 @@ operator:
     coreOperator:
       registry: ghcr.io
       repository: calyptia/core-operator
-      tag: 2.0.0
+      tag: 2.0.1
       pullSecrets: []
     coreOperatorSyncTocloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-to-cloud
-      tag: 2.0.0
+      tag: 2.0.1
       pullSecrets: []
     coreOperatorSyncFromCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-from-cloud
-      tag: 2.0.0
+      tag: 2.0.1
       pullSecrets: []
 #
 # Core UI
@@ -164,7 +164,7 @@ frontend:
     frontend:
       registry: ghcr.io
       repository: calyptia/frontend
-      tag: 1.0.8
+      tag: 1.0.9
       pullSecrets: []
     luaSandbox:
       registry: ghcr.io
