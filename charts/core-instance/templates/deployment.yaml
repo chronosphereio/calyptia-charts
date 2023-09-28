@@ -6,7 +6,6 @@ metadata:
   annotations:
     {{ toYaml .Values.annotations | indent 4 }}
 spec:
-  serviceAccount: "{{-  printf "calyptia-core-instance-%s-sa" .Release.Name  -}}"
   replicas: {{ default 1 .Values.replicas }}
   selector:
     matchLabels:
@@ -17,6 +16,7 @@ spec:
       labels:
         app.kubernetes.io/part-of: calyptia
     spec:
+      serviceAccount: "{{-  printf "calyptia-core-instance-%s-sa" .Release.Name  -}}"
       containers:
       - env:
         - name: CORE_INSTANCE
