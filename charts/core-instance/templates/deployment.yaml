@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: {{ .Values.name }}
+  name: "{{-  printf "calyptia-core-instance-%s" .Release.Name  -}}"  
   namespace: {{ .Release.Namespace }}
   annotations:
     {{ toYaml .Values.annotations | indent 4 }}
@@ -33,7 +33,6 @@ spec:
         - name: NO_TLS_VERIFY
           value: {{ .Values.notls | quote}}
         image: {{ .Values.fromcloudImage }} 
-        imagePullPolicy: Always
         name: from-cloud
       - env:
         - name: CORE_INSTANCE

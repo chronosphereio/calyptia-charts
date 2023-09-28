@@ -1,0 +1,68 @@
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: operator
+    app.kubernetes.io/instance: controller-manager
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: serviceaccount
+    app.kubernetes.io/part-of: operator
+    calyptia.core: core-operator
+  name: "{{-  printf "calyptia-core-instance-%s-sa" .Release.Name  -}}"
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  labels:
+    calyptia.core: core-operator
+  name:  "{{-  printf "calyptia-core-instance-%s-role" .Release.Name  -}}" 
+rules:
+- apiGroups:
+  - ""
+  - apps
+  - batch
+  - policy
+  - core.calyptia.com
+  - core
+  - rbac.authorization.k8s.io
+  resources:
+  - namespaces 
+  - secrets
+  - pipelines
+  - pipelines/finalizers
+  - pipelines/status
+  verbs:
+  - get
+  - list
+  - create
+  - delete
+  - patch
+  - update
+  - watch
+  - deletecollection
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: operator
+    app.kubernetes.io/instance: manager-rolebinding
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrolebinding
+    app.kubernetes.io/part-of: operator
+    calyptia.core: core-operator
+  name: "{{-  printf "calyptia-core-instance-%s-rolebinding" .Release.Name  -}}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "{{-  printf "calyptia-core-instance-%s-role" .Release.Name  -}}" 
+subjects:
+- kind: ServiceAccount
+  name: "{{-  printf "calyptia-core-instance-%s-sa" .Release.Name  -}}"
+  namespace: {{ .Release.Namespace }}

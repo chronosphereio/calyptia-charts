@@ -21,7 +21,7 @@ tests:
       # From Cloud
       - equal:
           path: metadata.name
-          value: test_core-instance
+          value: calyptia-core-instance-RELEASE-NAME
       - equal:
           path: metadata.namespace
           value: test
