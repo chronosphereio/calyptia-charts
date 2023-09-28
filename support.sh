@@ -4,6 +4,26 @@
 OUTPUT_DIR=${OUTPUT_DIR:-$(mktemp -d)}
 TAR_NAME=${TAR_NAME:-/tmp/calyptia-support-$HOSTNAME-$(date -u +"%Y-%m-%dT%H-%M-%SZ").tgz}
 
+# Set this to a token to use for working with the Calyptia configuration
+CALYPTIA_CLOUD_TOKEN=${CALYPTIA_CLOUD_TOKEN:-}
+# Set this to the location of the cloud-api endpoint to use
+CALYPTIA_CLOUD_URL=${CALYPTIA_CLOUD_URL:-}
+
+# Finds a random, unused port on the system and echos it.
+# Returns 1 and echos -1 if it can't find one.
+function find_unused_port() {
+    local portnum
+    while true; do
+        portnum=$(shuf -i 1025-65535 -n 1)
+        if ! lsof -Pi ":$portnum" -sTCP:LISTEN; then
+            echo "$portnum"
+            return 0
+        fi
+    done
+    echo -1
+    return 1
+}
+
 echo "Running support script: $(date -u +"%Y-%m-%dT%H:%M:%SZ") $*"
 
 if ! command -v kubectl &> /dev/null; then
@@ -11,7 +31,9 @@ if ! command -v kubectl &> /dev/null; then
     exit 1
 fi
 
-echo "Output stored here: $OUTPUT_DIR"
+echo "Output stored here (add extra information beforehand to be tarred up): $OUTPUT_DIR"
+# Ensure we have the directory
+mkdir -p "$OUTPUT_DIR"
 
 \kubectl get nodes -o yaml > "$OUTPUT_DIR"/kubectl-nodes.yaml
 \kubectl get pods --all-namespaces -o yaml > "$OUTPUT_DIR"/kubectl-all-pods.yaml
@@ -26,9 +48,44 @@ do
     # Get YAML for everything in the namespace
     for resource_type in $(\kubectl api-resources --namespaced --verbs=list -o name | tr "\n" " ");
     do
-        mkdir -p "${OUTPUT_DIR}/${namespace}"
-        \kubectl get -n "$namespace" "$resource_type" --show-kind --ignore-not-found -o yaml > "${OUTPUT_DIR}/${namespace}"/"$resource_type".yaml
+        mkdir -p "${OUTPUT_DIR}/namespaces/${namespace}"
+        \kubectl get -n "$namespace" "$resource_type" --show-kind --ignore-not-found -o yaml > "${OUTPUT_DIR}/namespaces/${namespace}"/"$resource_type".yaml
     done
+
+    # Attempt to discover token and url for cloud-api in cluster
+    if [[ -z "$CALYPTIA_CLOUD_TOKEN" ]]; then
+        if \kubectl get --namespace "$namespace" secret auth-secret &>/dev/null; then
+            CALYPTIA_CLOUD_TOKEN=$(kubectl get --namespace "$namespace" secret auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)
+            export CALYPTIA_CLOUD_TOKEN
+            # Detain the token for comparison in the pod specs
+            echo -n "$CALYPTIA_CLOUD_TOKEN" > "${OUTPUT_DIR}"/token.txt
+        fi
+    fi
+
+    if [[ -z "$CALYPTIA_CLOUD_URL" ]]; then
+        if \kubectl get --namespace "$namespace" svc -l 'app.kubernetes.io/component=cloud-api' | grep -qv "No resources found"; then
+            if [[ $(\kubectl get --namespace "$namespace" svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..spec.type}') == 'LoadBalancer' ]]; then
+                service_lb_ip=$(kubectl get -n "$namespace" svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..status.loadBalancer.ingress[0].ip}')
+                if [[ -z "$service_lb_ip" ]]; then
+                    service_lb_ip=$(kubectl get -n "$namespace" svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..status.loadBalancer.ingress[0].hostname}')
+                fi
+                service_lb_port=$(kubectl get -n "$namespace" svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..spec.ports[0].port}')
+
+                CALYPTIA_CLOUD_URL="http://${service_lb_ip}:${service_lb_port}"
+                export CALYPTIA_CLOUD_URL
+            else
+                # port-forwarding required
+                local_port=$(find_unused_port)
+                if [[ "$local_port" != '-1' ]]; then
+                    \kubectl port-forward --namespace "$namespace" \
+                        svc/"$(\kubectl get --namespace "$namespace" svc -l 'app.kubernetes.io/component=cloud-api' -o=jsonpath='{.items..metadata.name}')" \
+                        "$local_port:5000" &
+                    export PF_PID=$!
+                    export CALYPTIA_CLOUD_URL="http://127.0.0.1:$local_port"
+                fi
+            fi
+        fi
+    fi
 done
 
 # Grab all images used in the cluster: https://kubernetes.io/docs/tasks/access-application-cluster/list-all-running-container-images/
@@ -37,9 +94,9 @@ done
     sort |\
     uniq -c &> "$OUTPUT_DIR"/kubectl-all-images.log
 
-# Finally grab extra logs for failing pods
 for namespace in $(\kubectl get namespaces --output=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
 do
+    # Finally grab extra logs for failing pods
     for pod in $(\kubectl get pods --field-selector=status.phase!=Running,status.phase!=Succeeded --namespace "$namespace" --output=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
     do
         pod_output_dir="${OUTPUT_DIR}/failing/${namespace}"/"${pod}"
@@ -52,6 +109,41 @@ do
         \kubectl logs --namespace "$namespace" "$pod" &> "$pod_output_dir"/current.log
     done
 done
+
+# Attempt to dump some Calyptia configuration details using the URL and token provided
+if command -v calyptia &> /dev/null && [[ -n "$CALYPTIA_CLOUD_URL" ]] && [[ -n "$CALYPTIA_CLOUD_TOKEN" ]]; then
+    for core in $(calyptia --token "$CALYPTIA_CLOUD_TOKEN" --cloud-url "$CALYPTIA_CLOUD_URL" get core_instances -o json | jq -r '.[].id')
+    do
+        for pipeline in $(calyptia get pipelines "$CALYPTIA_CLOUD_TOKEN" --cloud-url "$CALYPTIA_CLOUD_URL" --core-instance "$core" -o json | jq -r '.[].id')
+        do
+            mkdir -p "$OUTPUT_DIR/instances/${core}/${pipeline}"
+            \curl -H "Authorization: Bearer ${CALYPTIA_CLOUD_TOKEN}" -sSfL "${CALYPTIA_CLOUD_URL}/v1/pipelines/${pipeline}/metadata" &> "$OUTPUT_DIR/instances/${core}/${pipeline}"/metadata.json
+        done
+    done
+else
+    echo "Unable to extract any Calyptia instance configuration details, ensure Calyptia CLI is installed and CALYPTIA_CLOUD_URL/CALYPTIA_CLOUD_TOKEN are set."
+fi
+
+# Kill any port-forwarding without output
+[[ -n "${PF_PID:-}" ]] && kill -9 "$PF_PID" && wait "$PF_PID" 2>/dev/null
+
+# Grab any helm values directly
+if command -v jq && command -v gunzip && command -v base64; then
+    for helm_json in $(kubectl get secrets -A -l owner=helm -o json | jq -c .items[])
+    do
+        helm_name=$(echo "$helm_json" | jq '.metadata.name')
+        mkdir -p "$OUTPUT_DIR/helm/$helm_name"
+        # Extract the template and values used
+        echo "$helm_json" | jq -r '.data.release' | base64 -d | base64 -d | gunzip -c - | jq -c '.' &> "$OUTPUT_DIR/helm/$helm_name"/all.json
+        jq '.config' "$OUTPUT_DIR/helm/$helm_name"/all.json &> "$OUTPUT_DIR/helm/$helm_name"/values.json
+        jq -r '.chart.templates[].data' "$OUTPUT_DIR/helm/$helm_name"/all.json | base64 -d &> "$OUTPUT_DIR/helm/$helm_name"/template.yaml
+    done
+else
+    echo "Unable to extract helm values as missing jq, gunzip or base64 commands"
+fi
+
+# Grab any K3S logs for on-prem deployment
+journalctl -q -u k3s &> "$OUTPUT_DIR"/k3s-service.log
 
 # Create a tarball for simple upload
 echo "Creating tarball: $TAR_NAME"
