@@ -8,7 +8,6 @@ fromcloudImage: "ghcr.io/calyptia/core-operator/sync-from-cloud:v2.0.4"
 tocloudImage: "ghcr.io/calyptia/core-operator/sync-to-cloud:v2.0.4"
 notls: "true"
 interval: "15s"
-serviceAccount: "calyptia-core-controller-manager"
 metricsPort: "15334"
 
 annotations: {}
