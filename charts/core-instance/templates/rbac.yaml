@@ -19,7 +19,7 @@ metadata:
   creationTimestamp: null
   labels:
     calyptia.core: core-operator
-  name:  "{{-  printf "calyptia-core-instance-%s-role" .Release.Name  -}}" 
+  name:  "{{-  printf "calyptia-core-instance-%s-role" .Release.Name  -}}"
 rules:
 - apiGroups:
   - ""
@@ -30,7 +30,7 @@ rules:
   - core
   - rbac.authorization.k8s.io
   resources:
-  - namespaces 
+  - namespaces
   - secrets
   - pipelines
   - pipelines/finalizers
@@ -61,7 +61,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: "{{-  printf "calyptia-core-instance-%s-role" .Release.Name  -}}" 
+  name: "{{-  printf "calyptia-core-instance-%s-role" .Release.Name  -}}"
 subjects:
 - kind: ServiceAccount
   name: "{{-  printf "calyptia-core-instance-%s-sa" .Release.Name  -}}"
