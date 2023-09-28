@@ -1,20 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
-  name: "{{-  printf "calyptia-core-instance-%s" .Release.Name  -}}"  
+metadata:
+  name: "{{-  printf "calyptia-core-instance-%s" .Release.Name  -}}"
   namespace: {{ .Release.Namespace }}
   annotations:
     {{ toYaml .Values.annotations | indent 4 }}
 spec:
-  replicas: 1
+  serviceAccount: "{{-  printf "calyptia-core-instance-%s-sa" .Release.Name  -}}"
+  replicas: {{ default 1 .Values.replicas }}
   selector:
     matchLabels:
-      app.kubernetes.io/part-of: calyptia      
+      app.kubernetes.io/part-of: calyptia
   template:
     metadata:
       creationTimestamp: null
       labels:
-            app.kubernetes.io/part-of: calyptia
+        app.kubernetes.io/part-of: calyptia
     spec:
       containers:
       - env:
@@ -23,16 +24,16 @@ spec:
         - name: NAMESPACE
           value: {{ .Release.Namespace }}
         - name: CLOUD_URL
-          value: {{.Values.cloudUrl}} 
+          value: {{.Values.cloudUrl}}
         - name: TOKEN
           value: {{ .Values.cloudToken}}
         - name: INTERVAL
           value: {{ .Values.interval}}
         - name: CLUSTER_LOGGING
-          value: {{ .Values.clusterLogging | quote}}  
+          value: {{ .Values.clusterLogging | quote}}
         - name: NO_TLS_VERIFY
           value: {{ .Values.notls | quote}}
-        image: {{ .Values.fromcloudImage }} 
+        image: {{ .Values.fromcloudImage }}
         name: from-cloud
       - env:
         - name: CORE_INSTANCE
@@ -40,7 +41,7 @@ spec:
         - name: NAMESPACE
           value: {{ .Release.Namespace }}
         - name: CLOUD_URL
-          value: {{.Values.cloudUrl}} 
+          value: {{.Values.cloudUrl}}
         - name: TOKEN
           value: {{ .Values.cloudToken}}
         - name: INTERVAL
@@ -51,5 +52,3 @@ spec:
           value: {{ .Values.metricsPort | toYaml}}
         image: {{ .Values.tocloudImage }}
         name: to-cloud
-      serviceAccount: {{ .Values.serviceAccount }}
-      
