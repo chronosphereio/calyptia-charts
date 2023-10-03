@@ -1,54 +1,75 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{-  printf "calyptia-core-instance-%s" .Release.Name  -}}"
+  name: "{{- printf "calyptia-core-instance-%s" .Release.Name | trunc 63 | trimSuffix "-" -}}"
   namespace: {{ .Release.Namespace }}
-  annotations:
-    {{ toYaml .Values.annotations | indent 4 }}
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
-    matchLabels:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
       app.kubernetes.io/part-of: calyptia
+      calyptia.core: core-instance
+      instance: "{{- printf "calyptia-core-instance-%s" .Release.Name -}}"
   template:
     metadata:
-      creationTimestamp: null
-      labels:
+      annotations:
+        kubectl.kubernetes.io/default-container: from-cloud
+        {{- if .Values.commonAnnotations }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+        {{- end }}
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
         app.kubernetes.io/part-of: calyptia
+        calyptia.core: core-instance
+        instance: "{{- printf "calyptia-core-instance-%s" .Release.Name -}}"
     spec:
-      serviceAccount: "{{-  printf "calyptia-core-instance-%s-sa" .Release.Name  -}}"
+      serviceAccount: {{ template "instance.serviceAccountName" . }}
       containers:
       - env:
         - name: CORE_INSTANCE
-          value: {{ .Values.coreInstance}}
+          value: {{ default .Release.Name .Values.coreInstance | quote }}
         - name: NAMESPACE
-          value: {{ .Release.Namespace }}
+          value: {{ .Release.Namespace | quote }}
         - name: CLOUD_URL
-          value: {{.Values.cloudUrl}}
+          value: {{ default "https://cloud-api.calyptia.com" .Values.cloudUrl | quote }}
         - name: TOKEN
-          value: {{ .Values.cloudToken}}
+          value: "{{ required "cloudToken must be provided" .Values.cloudToken }}"
         - name: INTERVAL
-          value: {{ .Values.interval}}
+          value: {{ default "15s" .Values.interval | quote }}
         - name: CLUSTER_LOGGING
-          value: {{ .Values.clusterLogging | quote}}
+          value: {{ default false .Values.clusterLogging | quote }}
         - name: NO_TLS_VERIFY
-          value: {{ .Values.notls | quote}}
-        image: {{ .Values.fromcloudImage }}
+          value: {{ default false .Values.notls | quote }}
+        image: {{ template "fromCloud.image" . }}
+        imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: from-cloud
+        {{- if .Values.fromCloud.resources }}
+        resources: {{- toYaml .Values.fromCloud.resources | nindent 12 }}
+        {{- end }}
       - env:
         - name: CORE_INSTANCE
-          value: {{ .Values.coreInstance}}
+          value: {{ default .Release.Name .Values.coreInstance | quote }}
         - name: NAMESPACE
-          value: {{ .Release.Namespace }}
+          value: {{ .Release.Namespace | quote }}
         - name: CLOUD_URL
-          value: {{.Values.cloudUrl}}
+          value: {{ default "https://cloud-api.calyptia.com" .Values.cloudUrl | quote }}
         - name: TOKEN
-          value: {{ .Values.cloudToken}}
+          value: "{{ required "cloudToken must be provided" .Values.cloudToken }}"
         - name: INTERVAL
-          value: {{ .Values.interval}}
+          value: {{ default "15s" .Values.interval | quote }}
         - name: NO_TLS_VERIFY
-          value: {{ .Values.notls | quote}}
+          value: {{ default false .Values.notls | quote }}
         - name: METRICS_PORT
-          value: {{ .Values.metricsPort | toYaml}}
-        image: {{ .Values.tocloudImage }}
+          value: {{ .Values.metricsPort | toYaml }}
+        image: {{ template "toCloud.image" . }}
+        imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: to-cloud
+        {{- if .Values.toCloud.resources }}
+        resources: {{- toYaml .Values.toCloud.resources | nindent 12 }}
+        {{- end }}
+        ports:
+          - containerPort: {{ .Values.metricsPort | int }}
+            name: metrics

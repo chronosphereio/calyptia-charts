@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: metrics
+    prometheus.io/scrape: "true"
+  {{- if .Values.commonAnnotations }}
+  {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+  name: "{{-  printf "calyptia-core-instance-metrics-%s" .Release.Name | trunc 63 | trimSuffix "-" -}}"
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  ports:
+  - name: metrics
+    port: {{ .Values.metricsPort | int }}
+    protocol: TCP
+    targetPort: metrics
+  selector:
+    app.kubernetes.io/part-of: calyptia
+    calyptia.core: core-instance
+    instance: "{{- printf "calyptia-core-instance-%s" .Release.Name -}}"
