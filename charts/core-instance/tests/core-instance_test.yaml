@@ -1,4 +1,4 @@
-suite: test my RBAC
+suite: Test core instance
 release:
   namespace: test
 templates:
@@ -6,17 +6,23 @@ templates:
 
 tests:
   - it: checks kind
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
     asserts:
       - isKind:
           of: Deployment
   - it: checks the setup
     set:
-      operatorImage: test_image:latest
       name: test_core-instance
       cloudUrl: test_url
       coreInstance: ci-1234
       cloudToken: xxx
-      fromcloudImage: fromcloudImage:latest
+      images:
+        fromCloud:
+          registry: custom.io
+          repository: test/fromCloud
+          tag: 1.2.3
     asserts:
       # From Cloud
       - equal:
@@ -62,7 +68,7 @@ tests:
             name: NO_TLS_VERIFY
       - equal:
           path: spec.template.spec.containers[0].image
-          value: fromcloudImage:latest
+          value: custom.io/test/fromCloud:1.2.3
       # To Cloud
       - equal:
           path: spec.template.spec.containers[1].env[0]

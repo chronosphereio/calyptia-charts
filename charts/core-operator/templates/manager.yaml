@@ -1,35 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: manager
     app.kubernetes.io/created-by: operator
-    app.kubernetes.io/instance: controller-manager
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: deployment
-    app.kubernetes.io/part-of: operator
     calyptia.core: core-operator
     control-plane: controller-manager
   name: calyptia-core-controller-manager
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace | quote }}
 spec:
-  replicas: 1
+  replicas: {{ default 1 .Values.replicas }}
   selector:
-    matchLabels:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
       calyptia.core: core-operator
       control-plane: controller-manager
   template:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: manager
-      labels:
+        {{- if .Values.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.podAnnotations "context" $) | nindent 8 }}
+        {{- end }}
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        {{- if .Values.commonLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.podLabels "context" $) | nindent 8 }}
+        {{- end }}
         calyptia.core: core-operator
         control-plane: controller-manager
     spec:
       containers:
         - command:
             - /manager
-          image: {{ .Values.operatorImage }}
+          image: {{ template "operator.image" . }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -40,6 +49,8 @@ spec:
           ports:
             - containerPort: 8443
               name: https
+            - containerPort: 8081
+              name: http
           readinessProbe:
             httpGet:
               path: /readyz
@@ -60,5 +71,6 @@ spec:
                 - ALL
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: calyptia-core-controller-manager
+      serviceAccount: {{ template "operator.serviceAccountName" . }}
+      {{- include "operator.imagePullSecrets" . | nindent 6 }}
       terminationGracePeriodSeconds: 10

@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
 ---
 suite: test my manager
 templates:
@@ -7,7 +8,11 @@ release:
 tests:
   - it: checks kind
     set:
-      operatorImage: test_image:latest
+      images:
+        operator:
+          registry: custom.io
+          repository: test/operator
+          tag: 1.2.3
     asserts:
       - isKind:
           of: Deployment
@@ -16,7 +21,7 @@ tests:
           value: calyptia-core-controller-manager
       - equal:
           path: spec.template.spec.containers[0].image
-          value: test_image:latest
+          value: custom.io/test/operator:1.2.3
       - equal:
           path: metadata.namespace
           value: test

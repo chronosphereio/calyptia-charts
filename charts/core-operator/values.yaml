@@ -1,2 +1,58 @@
-operatorImage: "ghcr.io/calyptia/core-operator:v2.0.6"
-noCRD: false
+# Deprecated
+# operatorImage: "ghcr.io/calyptia/core-operator:v2.0.6"
+images:
+  operator:
+    registry: ghcr.io
+    repository: calyptia/core-operator
+    tag: 2.0.6
+    pullSecrets: []
+  hotReload:
+    registry: ghcr.io
+    repository: calyptia/configmap-reload
+    tag: 0.11.1
+    pullSecrets: []
+
+commonAnnotations: {}
+commonLabels: {}
+podAnnotations: {}
+podLabels: {}
+nameOverride: ""
+fullnameOverride: ""
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+#
+## RBAC configuration
+## @param rbac.create Specifies whether RBAC resources should be created
+##
+rbac:
+  create: true
+#
+#
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+## @section Global parameters
+## @param global.imageRegistry Global Docker image registry
+## @param global.imagePullSecrets Global Docker registry secret names as an array
+## @param global.storageClass Global StorageClass for Persistent Volume(s)
+##
+global:
+  # Note that this overrides any specific ones below
+  imageRegistry: ""
+  # Add any custom pull secrets required
+  imagePullSecrets:
+    - regcreds
+  storageClass: ""
+  pullPolicy: IfNotPresent
+#
+## Define this to automatically set up image pull secrets
+# imageCredentials:
+#   secretName: regcreds
+#   registry: ghcr.io
+#   username: calyptia-ci
+#   password: <TOKEN>
+#   email: ci@calyptia.com
+#
+replicas: 1
