@@ -10,10 +10,8 @@ metadata:
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
-    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+    matchLabels:
       app.kubernetes.io/part-of: calyptia
-      calyptia.core: core-instance
-      instance: "{{- printf "calyptia-core-instance-%s" .Release.Name -}}"
   template:
     metadata:
       annotations:
@@ -21,10 +19,8 @@ spec:
         {{- if .Values.commonAnnotations }}
         {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
         {{- end }}
-      labels: {{- include "common.labels.standard" . | nindent 8 }}
+      labels:
         app.kubernetes.io/part-of: calyptia
-        calyptia.core: core-instance
-        instance: "{{- printf "calyptia-core-instance-%s" .Release.Name -}}"
     spec:
       serviceAccount: {{ template "instance.serviceAccountName" . }}
       containers:
@@ -43,6 +39,8 @@ spec:
           value: {{ default false .Values.clusterLogging | quote }}
         - name: NO_TLS_VERIFY
           value: {{ default false .Values.notls | quote }}
+        - name: HOTRELOADIMAGE
+          value: {{ template "hotReload.image" . }}
         image: {{ template "fromCloud.image" . }}
         imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: from-cloud

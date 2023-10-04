@@ -23,6 +23,10 @@ tests:
           registry: custom.io
           repository: test/fromCloud
           tag: 1.2.3
+        hotReload:
+          registry: custom.io
+          repository: test/hotreload
+          tag: 1.2.3        
     asserts:
       # From Cloud
       - equal:
@@ -66,6 +70,11 @@ tests:
           value:
             value: "true"
             name: NO_TLS_VERIFY
+      - equal:
+          path: spec.template.spec.containers[0].env[7]
+          value:
+            value: custom.io/test/hotreload:1.2.3
+            name: HOTRELOADIMAGE
       - equal:
           path: spec.template.spec.containers[0].image
           value: custom.io/test/fromCloud:1.2.3

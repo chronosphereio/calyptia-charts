@@ -11,7 +11,7 @@ cloudUrl: "https://cloud-api.calyptia.com"
 images:
   fromCloud:
     registry: ghcr.io
-    repository: calyptia/core-operator/sync-to-cloud
+    repository: calyptia/core-operator/sync-from-cloud
     tag: 2.0.6
     pullSecrets: []
   toCloud:
