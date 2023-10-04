@@ -135,22 +135,22 @@ operator:
     coreFluentBit:
       registry: ghcr.io
       repository: calyptia/core/calyptia-fluent-bit
-      tag: 23.9.8
+      tag: 23.9.9
       pullSecrets: []
     coreOperator:
       registry: ghcr.io
       repository: calyptia/core-operator
-      tag: 2.0.2
+      tag: 2.0.6
       pullSecrets: []
     coreOperatorSyncTocloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-to-cloud
-      tag: 2.0.2
+      tag: 2.0.6
       pullSecrets: []
     coreOperatorSyncFromCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-from-cloud
-      tag: 2.0.2
+      tag: 2.0.6
       pullSecrets: []
 #
 # Core UI
@@ -164,7 +164,7 @@ frontend:
     frontend:
       registry: ghcr.io
       repository: calyptia/frontend
-      tag: 1.0.9
+      tag: 1.0.10
       pullSecrets: []
     luaSandbox:
       registry: ghcr.io
@@ -319,7 +319,7 @@ reloader:
 #
 # Dependent chart config: https://github.com/calyptia/charts/tree/master/charts/core-operator
 core-operator:
-  # operatorImage: ghcr.io/calyptia/core-operator:1.1.3
+  # operatorImage: ghcr.io/calyptia/core-operator:2.0.4
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/path: "/"
@@ -382,7 +382,7 @@ monitoring-daemonset:
   image:
     # Have to customise separately
     repository: ghcr.io/calyptia/core/calyptia-fluent-bit
-    tag: 23.9.8
+    tag: 23.9.9
     pullPolicy: IfNotPresent
   # Modify this to use any other CM you want
   existingConfigMap: monitoring-daemonset
@@ -466,7 +466,7 @@ monitoring-aggregator:
     - regcreds
   image:
     repository: ghcr.io/calyptia/core/calyptia-fluent-bit
-    tag: 23.9.8
+    tag: 23.9.9
     pullPolicy: IfNotPresent
   # Modify this to use any other CM you want
   existingConfigMap: monitoring-aggregator
