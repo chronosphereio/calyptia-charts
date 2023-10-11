@@ -3,6 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.11.1
+  creationTimestamp: null
   labels:
     calyptia.core: core-operator
   name: pipelines.core.calyptia.com
@@ -179,8 +180,11 @@ spec:
                 type: object
               hotReload:
                 type: boolean
+              hotReloadImage:
+                default: ghcr.io/calyptia/configmap-reload:v0.11.1
+                type: string
               image:
-                default: ghcr.io/calyptia/core/calyptia-fluent-bit:23.9.9
+                default: ghcr.io/calyptia/core/calyptia-fluent-bit:23.10.2
                 type: string
               kind:
                 description: Enums
@@ -204,7 +208,6 @@ spec:
                   type: object
                 type: array
               replicasCount:
-                default: 1
                 format: int32
                 type: integer
               resources:
@@ -241,6 +244,7 @@ spec:
                 type: object
             required:
             - kind
+            - replicasCount
             type: object
           status:
             description: PipelineStatus defines the observed state of Pipeline
