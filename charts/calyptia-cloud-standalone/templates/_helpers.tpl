@@ -66,14 +66,7 @@ Return the proper ingress.image image name
 {{- end -}}
 
 {{/*
-Return the proper operator.image image name
-*/}}
-{{- define "operator.image" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.operator.images.coreOperator "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper operator.image image name
+Return the proper reloader.image image name
 */}}
 {{- define "reloader.image" -}}
 {{ include "common.images.image" (dict "imageRoot" .Values.reloader.images.reloader "global" .Values.global) }}

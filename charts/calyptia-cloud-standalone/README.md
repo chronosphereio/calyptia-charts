@@ -45,7 +45,35 @@ helm upgrade --install \
     calyptia-cloud calyptia/calyptia-standalone
 ```
 
-### Services
+## Upgrade
+
+To upgrade the chart, the two main things to ensure are:
+
+1. The Postgres database state does not change.
+1. The CRDs for the operator are not removed.
+
+The chart includes a Postgres database default deployment in-cluster but this is not recommended for production and provides no guarantees.
+An external database (external to this chart, it could be in-cluster) with high availability should be provided.
+See the section below on Postgres configuration for this.
+
+If the Postgres state changes (e.g. if the pod is re-deployed) then all authentication and configuration details are lost.
+Postgres volumes can be set up using the `cloudApi.postgres.extraVolumes` and `cloudApi.postgres.extraVolumesMounts` settings.
+
+The chart auto-deploys the Calyptia Core operator chart by default.
+This includes CRD configuration but note Helm has caveats on managing existing CRDs.
+Any upgrade should first ensure the correct CRDs are installed via `kubectl replace -f crd.yaml`.
+The CRD YAML files are available on the specific release being installed here: <https://github.com/calyptia/core-operator-releases/>
+
+If CRDs are removed then all workloads associated with them will also be destroyed.
+CRD removal can be prevented with the following annotation:
+
+```shell
+kubectl annotate crd pipelines.core.calyptia.com helm.sh/resource-policy=keep
+```
+
+The recommendation would be to deploy the Core Operator separately and disable it in this chart to maintain full control over lifecycle.
+
+## Services
 
 The helm chart provides the following services:
 
@@ -144,6 +172,28 @@ cloudApi:
 
 Ensure to provide the `connectionString` as required to use the Postgres along with any authentication or other requirements in the cluster.
 Calyptia Cloud will use the provided string directly to connect to the Postgres instance.
+
+An example using in-cluster Bitnami chart is shown below.
+
+First of all, deploy the Postgres chart with fixed configuration in this case for credentials (not recommended):
+
+```shell
+helm upgrade --install \
+  --create-namespace --namespace "external" \
+  --set auth.postgresPassword='adminpassword' \
+  --set primary.persistence.enabled=false \
+  external-postgres oci://registry-1.docker.io/bitnamicharts/postgresql
+```
+
+Now we can deploy the chart using the separate Postgres configuration:
+
+```shell
+helm upgrade --install \
+  ...
+  --set cloudApi.postgres.enabled=false \
+  --set cloudApi.postgres.connectionString='postgresql://postgres:adminpassword@external-postgres-postgresql.external:5432?sslmode=disable' \
+  ...
+```
 
 ### InfluxDB configuration
 
