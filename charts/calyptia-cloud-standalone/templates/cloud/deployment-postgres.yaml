@@ -16,7 +16,7 @@ spec:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
       app.kubernetes.io/component: postgres
   {{- if .Values.cloudApi.updateStrategy }}
-  strategy: {{- toYaml .Values.cloudApi.updateStrategy | nindent 4 }}
+  strategy: {{- toYaml .Values.cloudApi.postgres.updateStrategy | nindent 4 }}
   {{- end }}
   template:
     metadata:

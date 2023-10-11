@@ -22,6 +22,31 @@ helm upgrade --install --namespace "$INSTANCE_NAMESPACE" --create-namespace caly
     --debug --wait
 
 If deploying outside of this cluster, replace the 'cloudUrl' with the CLOUD_ENDPOINT above (it must be routable from the source).
+
+Once you have an instance you can also deploy a pipeline via CRD (although this is not recommended)
+
+kubectl apply -f - <<EOF
+apiVersion: core.calyptia.com/v1
+kind: Pipeline
+metadata:
+  name: out-test
+spec:
+  kind: deployment
+  hotReload: true
+  replicasCount: 1
+  fluentbit:
+    config: |-
+      pipeline:
+        inputs:
+          - name: dummy
+            tag: dummy
+        outputs:
+          - name: stdout
+            match: "*"
+EOF
+
+This will spin up a pod to handle the pipeline as a test, however this should be done via the Calyptia CLI or UI to properly control and manage it.
+
 {{- else }}
 export INSTANCE_TAG=test
 
