@@ -296,7 +296,7 @@ core-operator:
     operator:
       registry: ghcr.io
       repository: calyptia/core-operator
-      tag: 2.0.13
+      tag: 2.0.15
       pullSecrets: []
     hotReload:
       registry: ghcr.io
@@ -307,12 +307,12 @@ core-operator:
     toCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-to-cloud
-      tag: 2.0.13
+      tag: 2.0.15
       pullSecrets: []
     fromCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-from-cloud
-      tag: 2.0.13
+      tag: 2.0.15
       pullSecrets: []
     coreFluentBit:
       registry: ghcr.io
