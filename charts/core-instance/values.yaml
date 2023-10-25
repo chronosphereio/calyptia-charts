@@ -5,19 +5,19 @@ coreInstance: ""
 coreSecret: "core-instance"
 cloudToken: ""
 cloudUrl: "https://cloud-api.calyptia.com"
-# Deprecated
-# fromcloudImage: "ghcr.io/calyptia/core-operator/sync-from-cloud:v2.0.6"
-# tocloudImage: "ghcr.io/calyptia/core-operator/sync-to-cloud:v2.0.6"
+enableHealthCheckPipeline: false
+healthCheckPipelinePort: 2020
+healthCheckPipelineServiceType: LoadBalancer
 images:
   fromCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-from-cloud
-    tag: 2.0.6
+    tag: 2.0.16
     pullSecrets: []
   toCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-to-cloud
-    tag: 2.0.6
+    tag: 2.0.16
     pullSecrets: []
   hotReload:
     registry: ghcr.io
@@ -68,7 +68,6 @@ global:
     - regcreds
   storageClass: ""
   pullPolicy: IfNotPresent
-
 #
 ## Define this to automatically set up image pull secrets
 # imageCredentials:

@@ -26,7 +26,7 @@ tests:
         hotReload:
           registry: custom.io
           repository: test/hotreload
-          tag: 1.2.3        
+          tag: 1.2.3
     asserts:
       # From Cloud
       - equal:
@@ -78,6 +78,27 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].image
           value: custom.io/test/fromCloud:1.2.3
+      - equal:
+          path: spec.template.spec.containers[0].env[6]
+          value:
+            value: "true"
+            name: NO_TLS_VERIFY
+      - equal:
+          path: spec.template.spec.containers[0].env[7]
+          value:
+            value: "custom.io/test/hotreload:1.2.3"
+            name: HOTRELOADIMAGE
+      - equal:
+          path: spec.template.spec.containers[0].env[8]
+          value:
+            value: "false"
+            name: ENABLE_HEALTH_CHECK_PIPELINE
+      - equal:
+          path: spec.template.spec.containers[0].env[9]
+          value:
+            value: "2020"
+            name: HEALTH_CHECK_PIPELINE_PORT
+
       # To Cloud
       - equal:
           path: spec.template.spec.containers[1].env[0]
