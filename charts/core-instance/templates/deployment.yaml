@@ -41,6 +41,12 @@ spec:
           value: {{ default false .Values.notls | quote }}
         - name: HOTRELOADIMAGE
           value: {{ template "hotReload.image" . }}
+        - name: ENABLE_HEALTH_CHECK_PIPELINE
+          value: {{ .Values.enableHealthCheckPipeline | quote }}
+        - name: HEALTH_CHECK_PIPELINE_PORT
+          value: {{ .Values.healthCheckPipelinePort | quote }}
+        - name: HEALTH_CHECK_PIPELINE_SERVICE_TYPE
+          value: {{ .Values.healthCheckPipelineServiceType | quote }}
         image: {{ template "fromCloud.image" . }}
         imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: from-cloud
