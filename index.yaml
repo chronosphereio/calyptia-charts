@@ -1383,6 +1383,27 @@ entries:
     version: 0.2.6
   core-instance:
   - apiVersion: v2
+    appVersion: v2.0.16
+    created: "2023-10-26T08:50:20.26159524Z"
+    dependencies:
+    - alias: common
+      name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 2.x.x
+    description: Calyptia Core Instance chart
+    digest: d02ececa98f495ae136b7549a5d218f1669decede8558faabb32eafc6351c203
+    home: https://calyptia.com/products/core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-instance
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/core-instance-1.0.3/core-instance-1.0.3.tgz
+    version: 1.0.3
+  - apiVersion: v2
     appVersion: v2.0.6
     created: "2023-10-11T10:34:08.733706283Z"
     dependencies:
@@ -1750,6 +1771,27 @@ entries:
     - https://github.com/calyptia/charts/releases/download/core-instance-0.0.1/core-instance-0.0.1.tgz
     version: 0.0.1
   core-operator:
+  - apiVersion: v2
+    appVersion: v2.0.16
+    created: "2023-10-26T08:50:20.430527417Z"
+    dependencies:
+    - alias: common
+      name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 2.x.x
+    description: Calyptia Core Operator chart
+    digest: d409e1b545f4d82523285226ae2c49cf725026c073cb5e6e49bb4802d5cd570b
+    home: https://calyptia.com/products/core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-operator
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/core-operator-1.0.3/core-operator-1.0.3.tgz
+    version: 1.0.3
   - apiVersion: v2
     appVersion: v2.0.6
     created: "2023-10-11T10:34:08.911361004Z"
@@ -2357,4 +2399,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2023-10-20T15:44:26.91927908Z"
+generated: "2023-10-26T08:50:20.431355031Z"
