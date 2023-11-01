@@ -8,7 +8,7 @@ Once Helm has been set up correctly, add the repo as follows:
 ```shell
 helm repo add calyptia https://helm.calyptia.com/
 ```
-  
+
 If you had already added this repo earlier, run `helm repo update` to retrieve
 the latest versions of the packages.  You can then run `helm search repo
 calyptia` to see the charts.
@@ -91,11 +91,13 @@ Note that a valid project token is required.
 #### Install core-operator with core-instance
 
 core-operator
-```shell 
+
+```shell
 helm install core-operator calyptia/core-operator
 ```
 
 core-instance
+
 ```shell
 helm install core-inst calyptia/core-instance --set coreInstance=<your-core-instance> --set cloudToken=<your-token>
 ```
