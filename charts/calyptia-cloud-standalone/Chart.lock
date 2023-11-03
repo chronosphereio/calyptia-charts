@@ -1,10 +1,10 @@
 dependencies:
 - name: core-operator
   repository: https://helm.calyptia.com
-  version: 1.0.2
+  version: 1.0.4
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 2.13.2
+  version: 2.13.3
 - name: loki-stack
   repository: https://grafana.github.io/helm-charts
   version: 2.9.10
@@ -14,5 +14,5 @@ dependencies:
 - name: fluent-bit
   repository: https://fluent.github.io/helm-charts
   version: 0.39.0
-digest: sha256:bbc3212d28f94c24fc4f282bcf08663586cc122b0fa756f17ebc0b7d31d1e702
-generated: "2023-10-11T11:59:26.290425884+01:00"
+digest: sha256:09e981284a486da93904fd9ea9421736522421a52201b1498e882479ef425ab7
+generated: "2023-11-01T12:13:50.85418763Z"
