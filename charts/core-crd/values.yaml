@@ -1,0 +1,17 @@
+images:
+  hotReload:
+    registry: ghcr.io
+    repository: calyptia/configmap-reload
+    tag: 0.11.1
+    pullSecrets: []
+  fluentBit:
+    registry: ghcr.io
+    repository: calyptia/core/calyptia-fluent-bit
+    tag: 23.10.2
+    pullSecrets: []
+  ingestCheck:
+    registry: ghcr.io
+    repository: calyptia/core/ingest-check
+    tag: 0.0.7
+    pullSecrets: []
+cloudUrl: https://cloud-api.calyptia.com

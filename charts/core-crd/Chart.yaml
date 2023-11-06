@@ -1,8 +1,6 @@
 apiVersion: v2
-name: core-instance
-description: Calyptia Core Instance chart
-home: https://calyptia.com/products/core/
-icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+name: core-crd
+description: A Helm chart for Kubernetes
 type: application
 version: 2.0.0
 appVersion: "v2.0.18"
