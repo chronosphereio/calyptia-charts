@@ -1,43 +1,5 @@
 {{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  {{- if .Values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
-  {{- end }}
-  labels: {{- include "common.labels.standard" . | nindent 4 }}
-    calyptia.core: core-operator
-  name: "{{-  printf "calyptia-core-instance-%s-role" .Release.Name  -}}"
-rules:
-- apiGroups:
-  - ""
-  - apps
-  - batch
-  - policy
-  - core.calyptia.com
-  - core
-  - rbac.authorization.k8s.io
-  resources:
-  - namespaces
-  - secrets
-  - ingestchecks
-  - ingestchecks/finalizers
-  - ingestchecks/status
-  - pipelines
-  - pipelines/finalizers
-  - pipelines/status
-  verbs:
-  - get
-  - list
-  - create
-  - delete
-  - patch
-  - update
-  - watch
-  - deletecollection
-  - use
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   {{- if .Values.commonAnnotations }}
@@ -51,13 +13,37 @@ metadata:
     app.kubernetes.io/name: clusterrolebinding
     app.kubernetes.io/part-of: operator
     calyptia.core: core-operator
-  name: "{{-  printf "calyptia-core-instance-%s-rolebinding" .Release.Name  -}}"
+  name: calyptia-core-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: "{{-  printf "calyptia-core-instance-%s-role" .Release.Name  -}}"
+  name: calyptia-core-manager-role
 subjects:
 - kind: ServiceAccount
-  name: {{ template "instance.serviceAccountName" . }}
+  name: {{ template "operator.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
-{{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: operator
+    app.kubernetes.io/instance: proxy-rolebinding
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrolebinding
+    app.kubernetes.io/part-of: operator
+    calyptia.core: core-operator
+  name: calyptia-core-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: calyptia-core-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: {{ template "operator.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end -}}

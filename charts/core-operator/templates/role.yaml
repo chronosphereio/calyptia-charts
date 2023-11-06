@@ -1,0 +1,148 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    calyptia.core: core-operator
+  name: calyptia-core-manager-role
+{{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+{{- end }}
+rules:
+  - apiGroups:
+      - ""
+      - apps
+      - batch
+      - policy
+      - core.calyptia.com
+      - core
+      - rbac.authorization.k8s.io
+    resources:
+      - namespaces
+      - serviceaccounts
+      - deployments
+      - clusterrolebindings
+      - daemonsets
+      - replicasets
+      - pods
+      - pods/log
+      - services
+      - configmaps
+      - deployments/scale
+      - secrets
+      - nodes/proxy
+      - nodes
+      - jobs
+      - podsecuritypolicies
+      - ingestchecks
+      - ingestchecks/finalizers
+      - ingestchecks/status
+      - pipelines
+      - pipelines/finalizers
+      - pipelines/status
+    verbs:
+      - get
+      - list
+      - create
+      - delete
+      - patch
+      - update
+      - watch
+      - deletecollection
+      - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: operator
+    app.kubernetes.io/instance: metrics-reader
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/part-of: operator
+    calyptia.core: core-operator
+  name: calyptia-core-metrics-reader
+{{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+{{- end }}
+rules:
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    calyptia.core: core-operator
+  name: calyptia-core-pod-role
+{{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+{{- end }}
+rules:
+  - apiGroups:
+      - ""
+      - apps
+      - batch
+      - policy
+      - core.calyptia.com
+    resources:
+      - namespaces
+      - deployments
+      - daemonsets
+      - replicasets
+      - pods
+      - pods/log
+      - services
+      - configmaps
+      - deployments/scale
+      - secrets
+      - nodes/proxy
+      - nodes
+      - jobs
+      - podsecuritypolicies
+      - pipelines
+      - pipelines/finalizers
+      - pipelines/status
+    verbs:
+      - get
+      - list
+      - create
+      - delete
+      - patch
+      - update
+      - watch
+      - deletecollection
+      - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: operator
+    app.kubernetes.io/instance: proxy-role
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/part-of: operator
+    calyptia.core: core-operator
+  name: calyptia-core-proxy-role
+{{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+{{- end }}
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+{{- end -}}

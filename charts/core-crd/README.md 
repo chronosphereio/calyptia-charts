@@ -1,0 +1,36 @@
+# First time running the chart
+
+```
+HELM_EXPERIMENTAL_OCI=1 helm dependency build core-crd/
+```
+
+#Convert raw CRD to templates
+
+```
+git clone https://github.com/calyptia/core-operator 
+cd core-operator
+make manifests
+make build-manifests
+
+cat config/crd | yq 'select(documentIndex == 0)' > ingest_checks.yaml
+cat config/crd | yq 'select(documentIndex == 1)' > pipelines.yaml
+```
+
+Add templates for pipeline CRD
+
+```
+cat core-crd/templates/pipelines.yaml  | yq '.spec.versions.[0].schema.openAPIV3Schema.properties.spec.properties.hotReloadImage.default |= "{{ template \"hotReload.image\" . }}"' > pipelines.yaml && mv pipelines.yaml core-crd/templates/pipelines.yaml 
+cat core-crd/templates/pipelines.yaml  | yq '.spec.versions.[0].schema.openAPIV3Schema.properties.spec.properties.image.default |= "{{ template \"fluentBit.image\" . }}"' > pipelines.yaml && mv pipelines.yaml core-crd/templates/pipelines.yaml 
+```
+
+Add templates for ingest_checks CRD
+
+```
+cat core-crd/templates/ingest_checks.yaml  | yq '.spec.versions.[0].schema.openAPIV3Schema.properties.spec.properties.fluentBitImage.default |= "{{ template \"fluentBit.image\" . }}"' > ingest_checks.yaml && mv ingest_checks.yaml core-crd/templates/ingest_checks.yaml 
+cat core-crd/templates/ingest_checks.yaml  | yq '.spec.versions.[0].schema.openAPIV3Schema.properties.spec.properties.ingestCheckSidecarImage.default |= "{{ template \"ingestCheck.image\" . }}"' > ingest_checks.yaml && mv ingest_checks.yaml core-crd/templates/ingest_checks.yaml 
+cat core-crd/templates/ingest_checks.yaml  | yq '.spec.versions.[0].schema.openAPIV3Schema.properties.spec.properties.cloudAPI.properties.url.default |= "{{ default \"https://cloud-api.calyptia.com\" .Values.cloudUrl }}"' > ingest_checks.yaml && mv ingest_checks.yaml core-crd/templates/ingest_checks.yaml 
+
+```
+
+
+{{ default "https://cloud-api.calyptia.com" .Values.cloudUrl | quote }}
