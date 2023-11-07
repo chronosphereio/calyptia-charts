@@ -2,6 +2,51 @@ apiVersion: v1
 entries:
   calyptia-standalone:
   - apiVersion: v2
+    appVersion: v1.6.2
+    created: "2023-11-07T15:38:00.385266507Z"
+    dependencies:
+    - condition: operator.enabled
+      name: core-operator
+      repository: https://helm.calyptia.com
+      version: 2.x.x
+    - condition: operator.enabled
+      name: core-crd
+      repository: https://helm.calyptia.com
+      version: 2.x.x
+    - alias: common
+      name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 2.x.x
+    - alias: loki-stack
+      condition: monitoring.grafana
+      name: loki-stack
+      repository: https://grafana.github.io/helm-charts
+      version: 2.9.10
+    - alias: monitoring-daemonset
+      condition: monitoring.fluentBit
+      name: fluent-bit
+      repository: https://fluent.github.io/helm-charts
+      version: 0.x.x
+    - alias: monitoring-aggregator
+      condition: monitoring.fluentBit
+      name: fluent-bit
+      repository: https://fluent.github.io/helm-charts
+      version: 0.x.x
+    description: Umbrella chart to configure a Calyptia Core control plane and supporting
+      on-premise appliance.
+    digest: fdd9c2230cabc310736ee14c93966db80631443a0f76d9063b0482c646ef9614
+    home: https://calyptia.com/products/calyptia-core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: calyptia-standalone
+    type: application
+    urls:
+    - https://github.com/calyptia/charts/releases/download/calyptia-standalone-2.0.0/calyptia-standalone-2.0.0.tgz
+    version: 2.0.0
+  - apiVersion: v2
     appVersion: v1.6.1
     created: "2023-11-03T13:34:14.340148344Z"
     dependencies:
@@ -2605,4 +2650,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2023-11-07T15:06:52.694342731Z"
+generated: "2023-11-07T15:38:00.385832611Z"
