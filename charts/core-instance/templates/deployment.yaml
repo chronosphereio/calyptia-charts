@@ -40,7 +40,7 @@ spec:
           value: {{ default false .Values.clusterLogging | quote }}
         - name: NO_TLS_VERIFY
           value: {{ default false .Values.notls | quote }}
-        - name: HOTRELOADIMAGE
+        - name: HOTRELOAD_IMAGE
           value: {{ template "hotReload.image" . }}
         - name: ENABLE_HEALTH_CHECK_PIPELINE
           value: {{ .Values.enableHealthCheckPipeline | quote }}
@@ -48,6 +48,8 @@ spec:
           value: {{ .Values.healthCheckPipelinePort | quote }}
         - name: HEALTH_CHECK_PIPELINE_SERVICE_TYPE
           value: {{ .Values.healthCheckPipelineServiceType | quote }}
+        - name: INGEST_CHECK_IMAGE
+          value: {{ template "ingestCheck.image" . }}
         image: {{ template "fromCloud.image" . }}
         imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: from-cloud

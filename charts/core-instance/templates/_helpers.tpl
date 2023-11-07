@@ -36,6 +36,10 @@ Return the proper hotReload.image image name
 {{ include "common.images.image" (dict "imageRoot" .Values.images.hotReload "global" .Values.global) }}
 {{- end -}}
 
+{{- define "ingestCheck.image" -}}
+{{ include "common.images.image" (dict "imageRoot" .Values.images.ingestCheck "global" .Values.global) }}
+{{- end -}}
+
 {{/*
 Return the proper Container Registry Secret Names
 */}}

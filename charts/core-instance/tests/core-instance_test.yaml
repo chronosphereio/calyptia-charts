@@ -27,6 +27,10 @@ tests:
           registry: custom.io
           repository: test/hotreload
           tag: 1.2.3
+        ingestCheck:
+          registry: custom.io
+          repository: test/ingestcheck
+          tag: 1.2.3
     asserts:
       # From Cloud
       - equal:
@@ -74,7 +78,7 @@ tests:
           path: spec.template.spec.containers[0].env[7]
           value:
             value: custom.io/test/hotreload:1.2.3
-            name: HOTRELOADIMAGE
+            name: HOTRELOAD_IMAGE
       - equal:
           path: spec.template.spec.containers[0].image
           value: custom.io/test/fromCloud:1.2.3
@@ -87,7 +91,7 @@ tests:
           path: spec.template.spec.containers[0].env[7]
           value:
             value: "custom.io/test/hotreload:1.2.3"
-            name: HOTRELOADIMAGE
+            name: HOTRELOAD_IMAGE
       - equal:
           path: spec.template.spec.containers[0].env[8]
           value:
@@ -98,6 +102,11 @@ tests:
           value:
             value: "2020"
             name: HEALTH_CHECK_PIPELINE_PORT
+      - equal:
+          path: spec.template.spec.containers[0].env[11]
+          value:
+            value: custom.io/test/ingestcheck:1.2.3
+            name: INGEST_CHECK_IMAGE
 
       # To Cloud
       - equal:

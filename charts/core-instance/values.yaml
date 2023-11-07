@@ -24,6 +24,11 @@ images:
     repository: calyptia/configmap-reload
     tag: 0.11.1
     pullSecrets: []
+  ingestCheck:
+    registry: ghcr.io
+    repository: calyptia/core/ingest-check
+    tag: 0.0.7
+    pullSecrets: []
 notls: "true"
 interval: "15s"
 metricsPort: "15334"
