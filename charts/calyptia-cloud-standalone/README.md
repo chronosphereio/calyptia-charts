@@ -59,7 +59,7 @@ See the section below on Postgres configuration for this.
 If the Postgres state changes (e.g. if the pod is re-deployed) then all authentication and configuration details are lost.
 Postgres volumes can be set up using the `cloudApi.postgres.extraVolumes` and `cloudApi.postgres.extraVolumesMounts` settings.
 
-The chart auto-deploys the Calyptia Core operator chart by default.
+The chart auto-deploys the Calyptia Core operator and CRD charts by default.
 This includes CRD configuration but note Helm has caveats on managing existing CRDs.
 Any upgrade should first ensure the correct CRDs are installed via `kubectl replace -f crd.yaml`.
 The CRD YAML files are available on the specific release being installed here: <https://github.com/calyptia/core-operator-releases/>
@@ -68,7 +68,10 @@ If CRDs are removed then all workloads associated with them will also be destroy
 CRD removal can be prevented with the following annotation:
 
 ```shell
-kubectl annotate crd pipelines.core.calyptia.com helm.sh/resource-policy=keep
+kubectl annotate crd pipelines.core.calyptia.com helm.sh/resource-policy=keep --overwrite
+kubectl annotate crd pipelines.core.calyptia.com meta.helm.sh/release-name=calyptia-cloud --overwrite
+kubectl annotate crd pipelines.core.calyptia.com meta.helm.sh/release-namespace="$CALYPTIA_NAMESPACE" --overwrite
+kubectl label crd pipelines.core.calyptia.com app.kubernetes.io/managed-by=Helm --overwrite
 ```
 
 The recommendation would be to deploy the Core Operator separately and disable it in this chart to maintain full control over lifecycle.

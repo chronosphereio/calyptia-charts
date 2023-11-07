@@ -4,8 +4,8 @@ description: Umbrella chart to configure a Calyptia Core control plane and suppo
 home: https://calyptia.com/products/calyptia-core/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 1.0.3
-appVersion: "v1.6.1"
+version: 2.0.0
+appVersion: "v1.6.2"
 maintainers:
   - name: Calyptia
     email: hello@calyptia.com
@@ -13,7 +13,11 @@ maintainers:
 dependencies:
   # Core Operator chart
   - name: core-operator
-    version: 1.x.x
+    version: 2.x.x
+    repository: https://helm.calyptia.com
+    condition: operator.enabled
+  - name: core-crd
+    version: 2.x.x
     repository: https://helm.calyptia.com
     condition: operator.enabled
   # Useful helpers: https://github.com/bitnami/charts/tree/main/bitnami/common

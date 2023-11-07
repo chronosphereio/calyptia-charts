@@ -5,10 +5,10 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-1.0.4
+    helm.sh/chart: core-operator-2.0.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.16"
+    app.kubernetes.io/version: "v2.0.18"
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: controller-manager
@@ -26,7 +26,7 @@ metadata:
   name: calyptia-cloud-standalone-monitoring-aggregator
   namespace: calyptia
   labels:
-    helm.sh/chart: monitoring-aggregator-0.39.0
+    helm.sh/chart: monitoring-aggregator-0.39.1
     app.kubernetes.io/name: monitoring-aggregator
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -39,7 +39,7 @@ metadata:
   name: calyptia-cloud-standalone-monitoring-daemonset
   namespace: calyptia
   labels:
-    helm.sh/chart: monitoring-daemonset-0.39.0
+    helm.sh/chart: monitoring-daemonset-0.39.1
     app.kubernetes.io/name: monitoring-daemonset
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -51,10 +51,10 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
   name: calyptia-cloud-standalone-calyptia-standalone-cloud
   namespace: "calyptia"
 ---
@@ -64,10 +64,10 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
   name: calyptia-cloud-standalone-calyptia-standalone-frontend
   namespace: "calyptia"
 ---
@@ -78,10 +78,10 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
   name: calyptia-cloud-standalone-calyptia-standalone-reloader
   namespace: "calyptia"
 ---
@@ -91,10 +91,10 @@ kind: ConfigMap
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: monitoring
   name: monitoring-daemonset
   namespace: "calyptia"
@@ -176,10 +176,10 @@ kind: ConfigMap
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: monitoring
   name: monitoring-aggregator
   namespace: "calyptia"
@@ -249,67 +249,617 @@ data:
             port                9000
             match               *
 ---
-# Source: calyptia-standalone/charts/core-operator/templates/rbac.yaml
+# Source: calyptia-standalone/charts/core-crd/templates/ingest_checks.yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.11.1
+  creationTimestamp: null
+  labels:
+    calyptia.core: core-operator
+  name: ingestchecks.core.calyptia.com
+spec:
+  group: core.calyptia.com
+  names:
+    kind: IngestCheck
+    listKind: IngestCheckList
+    plural: ingestchecks
+    singular: ingestcheck
+  scope: Namespaced
+  versions:
+    - additionalPrinterColumns:
+        - description: Status of the ingest check
+          jsonPath: .status.status
+          name: Status
+          type: string
+      name: v1
+      schema:
+        openAPIV3Schema:
+          description: IngestCheck is the Schema for the ingestchecks API
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: IngestCheckSpec defines the desired state of IngestCheck
+              properties:
+                activeDeadlineSeconds:
+                  default: 60
+                  description: Specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it; value must be positive integer.
+                  format: int64
+                  type: integer
+                cloudResourceID:
+                  description: CloudResourceID represents the ID under which ingestcheck exists in Cloud API
+                  type: string
+                collectLogs:
+                  default: false
+                  type: boolean
+                config:
+                  type: string
+                fluentBitImage:
+                  default: 'ghcr.io/calyptia/core/calyptia-fluent-bit:23.11.1'
+                  type: string
+                ingestCheckSidecarImage:
+                  default: 'ghcr.io/calyptia/core/ingest-check:0.0.7'
+                  type: string
+                retries:
+                  default: 1
+                  format: int32
+                  type: integer
+              required:
+                - config
+              type: object
+            status:
+              description: IngestCheckStatus defines the observed state of IngestCheck
+              properties:
+                logs:
+                  additionalProperties:
+                    type: string
+                  type: object
+                status:
+                  default: NEW
+                  type: string
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+---
+# Source: calyptia-standalone/charts/core-crd/templates/pipelines.yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.11.1
+  creationTimestamp: null
+  labels:
+    calyptia.core: core-operator
+  name: pipelines.core.calyptia.com
+spec:
+  group: core.calyptia.com
+  names:
+    kind: Pipeline
+    listKind: PipelineList
+    plural: pipelines
+    singular: pipeline
+  scope: Namespaced
+  versions:
+    - additionalPrinterColumns:
+        - description: Status of the pipeline
+          jsonPath: .status.status
+          name: Status
+          type: string
+      name: v1
+      schema:
+        openAPIV3Schema:
+          description: Pipeline is the Schema for the pipelines API
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: PipelineSpec defines the desired state of Pipeline
+              properties:
+                cloudResourceID:
+                  description: CloudResourceID represents the ID under which pipeline exists in Cloud API
+                  type: string
+                envVar:
+                  items:
+                    description: EnvVar represents an environment variable present in a Container.
+                    properties:
+                      name:
+                        description: Name of the environment variable. Must be a C_IDENTIFIER.
+                        type: string
+                      value:
+                        description: 'Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
+                        type: string
+                      valueFrom:
+                        description: Source for the environment variable's value. Cannot be used if value is not empty.
+                        properties:
+                          configMapKeyRef:
+                            description: Selects a key of a ConfigMap.
+                            properties:
+                              key:
+                                description: The key to select.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the ConfigMap or its key must be defined
+                                type: boolean
+                            required:
+                              - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                          fieldRef:
+                            description: 'Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels[''<KEY>'']`, `metadata.annotations[''<KEY>'']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.'
+                            properties:
+                              apiVersion:
+                                description: Version of the schema the FieldPath is written in terms of, defaults to "v1".
+                                type: string
+                              fieldPath:
+                                description: Path of the field to select in the specified API version.
+                                type: string
+                            required:
+                              - fieldPath
+                            type: object
+                            x-kubernetes-map-type: atomic
+                          resourceFieldRef:
+                            description: 'Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.'
+                            properties:
+                              containerName:
+                                description: 'Container name: required for volumes, optional for env vars'
+                                type: string
+                              divisor:
+                                anyOf:
+                                  - type: integer
+                                  - type: string
+                                description: Specifies the output format of the exposed resources, defaults to "1"
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              resource:
+                                description: 'Required: resource to select'
+                                type: string
+                            required:
+                              - resource
+                            type: object
+                            x-kubernetes-map-type: atomic
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key must be defined
+                                type: boolean
+                            required:
+                              - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    required:
+                      - name
+                    type: object
+                  type: array
+                fluentbit:
+                  properties:
+                    config:
+                      type: string
+                    files:
+                      items:
+                        properties:
+                          content:
+                            type: string
+                          name:
+                            type: string
+                        type: object
+                      type: array
+                    parsers:
+                      type: string
+                    secrets:
+                      items:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                        type: object
+                      type: array
+                  type: object
+                hotReload:
+                  type: boolean
+                hotReloadImage:
+                  default: 'ghcr.io/calyptia/configmap-reload:0.11.1'
+                  type: string
+                image:
+                  default: 'ghcr.io/calyptia/core/calyptia-fluent-bit:23.11.1'
+                  type: string
+                kind:
+                  description: Enums
+                  type: string
+                ports:
+                  items:
+                    properties:
+                      backendPort:
+                        type: integer
+                      cloudResourceID:
+                        description: CloudResourceID represents the ID under which pipeline port exists in Cloud API
+                        type: string
+                      frontendPort:
+                        type: integer
+                      port:
+                        format: int32
+                        type: integer
+                      protocol:
+                        type: string
+                      serviceType:
+                        default: LoadBalancer
+                        description: Service Type string describes ingress methods for a service
+                        type: string
+                    type: object
+                  type: array
+                replicasCount:
+                  format: int32
+                  type: integer
+                resources:
+                  description: ResourceProfile model.
+                  properties:
+                    limits:
+                      properties:
+                        cpu:
+                          type: string
+                        memory:
+                          type: string
+                      type: object
+                    requests:
+                      properties:
+                        cpu:
+                          type: string
+                        memory:
+                          type: string
+                        storage:
+                          properties:
+                            backlog-mem-limit:
+                              type: string
+                            max-chunks-pause:
+                              type: boolean
+                            max-chunks-up:
+                              type: integer
+                            sync-full:
+                              type: boolean
+                            volume-size:
+                              default: 256Mi
+                              type: string
+                          type: object
+                      type: object
+                  type: object
+              required:
+                - kind
+                - replicasCount
+              type: object
+            status:
+              description: PipelineStatus defines the observed state of Pipeline
+              properties:
+                daemonsetstatus:
+                  description: DaemonSetStatus represents the current status of a daemon set.
+                  properties:
+                    collisionCount:
+                      description: Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
+                      format: int32
+                      type: integer
+                    conditions:
+                      description: Represents the latest available observations of a DaemonSet's current state.
+                      items:
+                        description: DaemonSetCondition describes the state of a DaemonSet at a certain point.
+                        properties:
+                          lastTransitionTime:
+                            description: Last time the condition transitioned from one status to another.
+                            format: date-time
+                            type: string
+                          message:
+                            description: A human readable message indicating details about the transition.
+                            type: string
+                          reason:
+                            description: The reason for the condition's last transition.
+                            type: string
+                          status:
+                            description: Status of the condition, one of True, False, Unknown.
+                            type: string
+                          type:
+                            description: Type of DaemonSet condition.
+                            type: string
+                        required:
+                          - status
+                          - type
+                        type: object
+                      type: array
+                    currentNumberScheduled:
+                      description: 'The number of nodes that are running at least 1 daemon pod and are supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/'
+                      format: int32
+                      type: integer
+                    desiredNumberScheduled:
+                      description: 'The total number of nodes that should be running the daemon pod (including nodes correctly running the daemon pod). More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/'
+                      format: int32
+                      type: integer
+                    numberAvailable:
+                      description: The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)
+                      format: int32
+                      type: integer
+                    numberMisscheduled:
+                      description: 'The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/'
+                      format: int32
+                      type: integer
+                    numberReady:
+                      description: numberReady is the number of nodes that should be running the daemon pod and have one or more of the daemon pod running with a Ready Condition.
+                      format: int32
+                      type: integer
+                    numberUnavailable:
+                      description: The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)
+                      format: int32
+                      type: integer
+                    observedGeneration:
+                      description: The most recent generation observed by the daemon set controller.
+                      format: int64
+                      type: integer
+                    updatedNumberScheduled:
+                      description: The total number of nodes that are running updated daemon pod
+                      format: int32
+                      type: integer
+                  required:
+                    - currentNumberScheduled
+                    - desiredNumberScheduled
+                    - numberMisscheduled
+                    - numberReady
+                  type: object
+                deploymentstatus:
+                  description: DeploymentStatus is the most recently observed status of the Deployment.
+                  properties:
+                    availableReplicas:
+                      description: Total number of available pods (ready for at least minReadySeconds) targeted by this deployment.
+                      format: int32
+                      type: integer
+                    collisionCount:
+                      description: Count of hash collisions for the Deployment. The Deployment controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ReplicaSet.
+                      format: int32
+                      type: integer
+                    conditions:
+                      description: Represents the latest available observations of a deployment's current state.
+                      items:
+                        description: DeploymentCondition describes the state of a deployment at a certain point.
+                        properties:
+                          lastTransitionTime:
+                            description: Last time the condition transitioned from one status to another.
+                            format: date-time
+                            type: string
+                          lastUpdateTime:
+                            description: The last time this condition was updated.
+                            format: date-time
+                            type: string
+                          message:
+                            description: A human readable message indicating details about the transition.
+                            type: string
+                          reason:
+                            description: The reason for the condition's last transition.
+                            type: string
+                          status:
+                            description: Status of the condition, one of True, False, Unknown.
+                            type: string
+                          type:
+                            description: Type of deployment condition.
+                            type: string
+                        required:
+                          - status
+                          - type
+                        type: object
+                      type: array
+                    observedGeneration:
+                      description: The generation observed by the deployment controller.
+                      format: int64
+                      type: integer
+                    readyReplicas:
+                      description: readyReplicas is the number of pods targeted by this Deployment with a Ready Condition.
+                      format: int32
+                      type: integer
+                    replicas:
+                      description: Total number of non-terminated pods targeted by this deployment (their labels match the selector).
+                      format: int32
+                      type: integer
+                    unavailableReplicas:
+                      description: Total number of unavailable pods targeted by this deployment. This is the total number of pods that are still required for the deployment to have 100% available capacity. They may either be pods that are running but not yet available or pods that still have not been created.
+                      format: int32
+                      type: integer
+                    updatedReplicas:
+                      description: Total number of non-terminated pods targeted by this deployment that have the desired template spec.
+                      format: int32
+                      type: integer
+                  type: object
+                servicestatuses:
+                  additionalProperties:
+                    description: ServiceStatus represents the current status of a service.
+                    properties:
+                      conditions:
+                        description: Current service state
+                        items:
+                          description: "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                          properties:
+                            lastTransitionTime:
+                              description: lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                              format: date-time
+                              type: string
+                            message:
+                              description: message is a human readable message indicating details about the transition. This may be an empty string.
+                              maxLength: 32768
+                              type: string
+                            observedGeneration:
+                              description: observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+                              format: int64
+                              minimum: 0
+                              type: integer
+                            reason:
+                              description: reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+                              maxLength: 1024
+                              minLength: 1
+                              pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                              type: string
+                            status:
+                              description: status of the condition, one of True, False, Unknown.
+                              enum:
+                                - "True"
+                                - "False"
+                                - Unknown
+                              type: string
+                            type:
+                              description: type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                              maxLength: 316
+                              pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                              type: string
+                          required:
+                            - lastTransitionTime
+                            - message
+                            - reason
+                            - status
+                            - type
+                          type: object
+                        type: array
+                        x-kubernetes-list-map-keys:
+                          - type
+                        x-kubernetes-list-type: map
+                      loadBalancer:
+                        description: LoadBalancer contains the current status of the load-balancer, if one is present.
+                        properties:
+                          ingress:
+                            description: Ingress is a list containing ingress points for the load-balancer. Traffic intended for the service should be sent to these ingress points.
+                            items:
+                              description: 'LoadBalancerIngress represents the status of a load-balancer ingress point: traffic intended for the service should be sent to an ingress point.'
+                              properties:
+                                hostname:
+                                  description: Hostname is set for load-balancer ingress points that are DNS based (typically AWS load-balancers)
+                                  type: string
+                                ip:
+                                  description: IP is set for load-balancer ingress points that are IP based (typically GCE or OpenStack load-balancers)
+                                  type: string
+                                ports:
+                                  description: Ports is a list of records of service ports If used, every port defined in the service should have an entry in it
+                                  items:
+                                    properties:
+                                      error:
+                                        description: 'Error is to record the problem with the service port The format of the error shall comply with the following rules: - built-in error values shall be specified in this file and those shall use CamelCase names - cloud provider specific error values must have names that comply with the format foo.example.com/CamelCase. --- The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)'
+                                        maxLength: 316
+                                        pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                                        type: string
+                                      port:
+                                        description: Port is the port number of the service port of which status is recorded here
+                                        format: int32
+                                        type: integer
+                                      protocol:
+                                        default: TCP
+                                        description: 'Protocol is the protocol of the service port of which status is recorded here The supported values are: "TCP", "UDP", "SCTP"'
+                                        type: string
+                                    required:
+                                      - port
+                                      - protocol
+                                    type: object
+                                  type: array
+                                  x-kubernetes-list-type: atomic
+                              type: object
+                            type: array
+                        type: object
+                    type: object
+                  type: object
+                status:
+                  description: PipelineStatusKind enum.
+                  type: string
+              required:
+                - status
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+---
+# Source: calyptia-standalone/charts/core-operator/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-1.0.4
+    helm.sh/chart: core-operator-2.0.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.16"
+    app.kubernetes.io/version: "v2.0.18"
     calyptia.core: core-operator
   name: calyptia-core-manager-role
 rules:
-- apiGroups:
-  - ""
-  - apps
-  - batch
-  - policy
-  - core.calyptia.com
-  - core
-  - rbac.authorization.k8s.io
-  resources:
-  - namespaces
-  - serviceaccounts
-  - deployments
-  - clusterrolebindings
-  - daemonsets
-  - replicasets
-  - pods
-  - services
-  - configmaps
-  - deployments/scale
-  - secrets
-  - nodes/proxy
-  - nodes
-  - jobs
-  - podsecuritypolicies
-  - pipelines
-  - pipelines/finalizers
-  - pipelines/status
-  verbs:
-  - get
-  - list
-  - create
-  - delete
-  - patch
-  - update
-  - watch
-  - deletecollection
-  - use
+  - apiGroups:
+      - ""
+      - apps
+      - batch
+      - policy
+      - core.calyptia.com
+      - core
+      - rbac.authorization.k8s.io
+    resources:
+      - namespaces
+      - serviceaccounts
+      - deployments
+      - clusterrolebindings
+      - daemonsets
+      - replicasets
+      - pods
+      - pods/log
+      - services
+      - configmaps
+      - deployments/scale
+      - secrets
+      - nodes/proxy
+      - nodes
+      - jobs
+      - podsecuritypolicies
+      - ingestchecks
+      - ingestchecks/finalizers
+      - ingestchecks/status
+      - pipelines
+      - pipelines/finalizers
+      - pipelines/status
+    verbs:
+      - get
+      - list
+      - create
+      - delete
+      - patch
+      - update
+      - watch
+      - deletecollection
+      - use
 ---
-# Source: calyptia-standalone/charts/core-operator/templates/rbac.yaml
+# Source: calyptia-standalone/charts/core-operator/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-1.0.4
+    helm.sh/chart: core-operator-2.0.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.16"
+    app.kubernetes.io/version: "v2.0.18"
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: metrics-reader
@@ -319,68 +869,69 @@ metadata:
     calyptia.core: core-operator
   name: calyptia-core-metrics-reader
 rules:
-- nonResourceURLs:
-  - /metrics
-  verbs:
-  - get
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
 ---
-# Source: calyptia-standalone/charts/core-operator/templates/rbac.yaml
+# Source: calyptia-standalone/charts/core-operator/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-1.0.4
+    helm.sh/chart: core-operator-2.0.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.16"
+    app.kubernetes.io/version: "v2.0.18"
     calyptia.core: core-operator
   name: calyptia-core-pod-role
 rules:
-- apiGroups:
-  - ""
-  - apps
-  - batch
-  - policy
-  - core.calyptia.com
-  resources:
-  - namespaces
-  - deployments
-  - daemonsets
-  - replicasets
-  - pods
-  - services
-  - configmaps
-  - deployments/scale
-  - secrets
-  - nodes/proxy
-  - nodes
-  - jobs
-  - podsecuritypolicies
-  - pipelines
-  - pipelines/finalizers
-  - pipelines/status
-  verbs:
-  - get
-  - list
-  - create
-  - delete
-  - patch
-  - update
-  - watch
-  - deletecollection
-  - use
+  - apiGroups:
+      - ""
+      - apps
+      - batch
+      - policy
+      - core.calyptia.com
+    resources:
+      - namespaces
+      - deployments
+      - daemonsets
+      - replicasets
+      - pods
+      - pods/log
+      - services
+      - configmaps
+      - deployments/scale
+      - secrets
+      - nodes/proxy
+      - nodes
+      - jobs
+      - podsecuritypolicies
+      - pipelines
+      - pipelines/finalizers
+      - pipelines/status
+    verbs:
+      - get
+      - list
+      - create
+      - delete
+      - patch
+      - update
+      - watch
+      - deletecollection
+      - use
 ---
-# Source: calyptia-standalone/charts/core-operator/templates/rbac.yaml
+# Source: calyptia-standalone/charts/core-operator/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-1.0.4
+    helm.sh/chart: core-operator-2.0.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.16"
+    app.kubernetes.io/version: "v2.0.18"
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: proxy-role
@@ -390,18 +941,18 @@ metadata:
     calyptia.core: core-operator
   name: calyptia-core-proxy-role
 rules:
-- apiGroups:
-  - authentication.k8s.io
-  resources:
-  - tokenreviews
-  verbs:
-  - create
-- apiGroups:
-  - authorization.k8s.io
-  resources:
-  - subjectaccessreviews
-  verbs:
-  - create
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
 ---
 # Source: calyptia-standalone/charts/monitoring-aggregator/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -409,7 +960,7 @@ kind: ClusterRole
 metadata:
   name: calyptia-cloud-standalone-monitoring-aggregator
   labels:
-    helm.sh/chart: monitoring-aggregator-0.39.0
+    helm.sh/chart: monitoring-aggregator-0.39.1
     app.kubernetes.io/name: monitoring-aggregator
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -431,7 +982,7 @@ kind: ClusterRole
 metadata:
   name: calyptia-cloud-standalone-monitoring-daemonset
   labels:
-    helm.sh/chart: monitoring-daemonset-0.39.0
+    helm.sh/chart: monitoring-daemonset-0.39.1
     app.kubernetes.io/name: monitoring-daemonset
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -447,16 +998,16 @@ rules:
       - list
       - watch
 ---
-# Source: calyptia-standalone/charts/core-operator/templates/rbac.yaml
+# Source: calyptia-standalone/charts/core-operator/templates/rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-1.0.4
+    helm.sh/chart: core-operator-2.0.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.16"
+    app.kubernetes.io/version: "v2.0.18"
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: manager-rolebinding
@@ -474,16 +1025,16 @@ subjects:
   name: calyptia-cloud-standalone-core-operator-calyptia-core-operator
   namespace: calyptia
 ---
-# Source: calyptia-standalone/charts/core-operator/templates/rbac.yaml
+# Source: calyptia-standalone/charts/core-operator/templates/rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-1.0.4
+    helm.sh/chart: core-operator-2.0.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.16"
+    app.kubernetes.io/version: "v2.0.18"
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: proxy-rolebinding
@@ -507,7 +1058,7 @@ kind: ClusterRoleBinding
 metadata:
   name: calyptia-cloud-standalone-monitoring-aggregator
   labels:
-    helm.sh/chart: monitoring-aggregator-0.39.0
+    helm.sh/chart: monitoring-aggregator-0.39.1
     app.kubernetes.io/name: monitoring-aggregator
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -527,7 +1078,7 @@ kind: ClusterRoleBinding
 metadata:
   name: calyptia-cloud-standalone-monitoring-daemonset
   labels:
-    helm.sh/chart: monitoring-daemonset-0.39.0
+    helm.sh/chart: monitoring-daemonset-0.39.1
     app.kubernetes.io/name: monitoring-daemonset
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -665,10 +1216,10 @@ metadata:
     prometheus.io/scrape: "true"
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-1.0.4
+    helm.sh/chart: core-operator-2.0.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.16"
+    app.kubernetes.io/version: "v2.0.18"
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: controller-manager-metrics-service
@@ -686,7 +1237,7 @@ spec:
     protocol: TCP
     targetPort: https
   - name: http
-    port: 8080
+    port: 8081
     protocol: TCP
     targetPort: http
   selector:
@@ -700,7 +1251,7 @@ metadata:
   name: calyptia-cloud-standalone-monitoring-aggregator
   namespace: calyptia
   labels:
-    helm.sh/chart: monitoring-aggregator-0.39.0
+    helm.sh/chart: monitoring-aggregator-0.39.1
     app.kubernetes.io/name: monitoring-aggregator
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -734,7 +1285,7 @@ metadata:
   name: calyptia-cloud-standalone-monitoring-daemonset
   namespace: calyptia
   labels:
-    helm.sh/chart: monitoring-daemonset-0.39.0
+    helm.sh/chart: monitoring-daemonset-0.39.1
     app.kubernetes.io/name: monitoring-daemonset
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -768,10 +1319,10 @@ metadata:
     metrics.dynatrace.com/port: "5000"
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: cloud-api
   name: cloud-api
   namespace: "calyptia"
@@ -783,10 +1334,10 @@ spec:
       targetPort: 5000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: cloud-api
 ---
 # Source: calyptia-standalone/templates/cloud/service-influxdb.yaml
@@ -795,10 +1346,10 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: influxdb
   name: influxdb
   namespace: "calyptia"
@@ -810,10 +1361,10 @@ spec:
       targetPort: 8086
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: influxdb
 ---
 # Source: calyptia-standalone/templates/cloud/service-postgres.yaml
@@ -822,10 +1373,10 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: postgres
   name: postgres
   namespace: "calyptia"
@@ -837,10 +1388,10 @@ spec:
       targetPort: 5432
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: postgres
 ---
 # Source: calyptia-standalone/templates/frontend/service-core-ui.yaml
@@ -849,10 +1400,10 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: core
   name: core
   namespace: "calyptia"
@@ -864,10 +1415,10 @@ spec:
       targetPort: 3000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: core
 ---
 # Source: calyptia-standalone/templates/frontend/service-luasandbox.yaml
@@ -876,10 +1427,10 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: cloud-lua-sandbox
   name: cloud-lua-sandbox
   namespace: "calyptia"
@@ -891,10 +1442,10 @@ spec:
       targetPort: 5555
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: cloud-lua-sandbox
 ---
 # Source: calyptia-standalone/templates/reloader/sevice-reloader.yaml
@@ -911,10 +1462,10 @@ metadata:
     metrics.dynatrace.com/port: '9090'
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: reloader
   name: reloader
   namespace: "calyptia"
@@ -926,10 +1477,10 @@ spec:
       targetPort: 9090
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: reloader
 ---
 # Source: calyptia-standalone/templates/vivo/service-vivo.yaml
@@ -946,10 +1497,10 @@ metadata:
     metrics.dynatrace.com/port: '2020'
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: vivo
     calyptia.vivo.input.http: '9010'
     calyptia.vivo.input.forward: '9000'
@@ -975,10 +1526,10 @@ spec:
       targetPort: 2020
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: vivo
 ---
 # Source: calyptia-standalone/charts/monitoring-daemonset/templates/daemonset.yaml
@@ -988,7 +1539,7 @@ metadata:
   name: calyptia-cloud-standalone-monitoring-daemonset
   namespace: calyptia
   labels:
-    helm.sh/chart: monitoring-daemonset-0.39.0
+    helm.sh/chart: monitoring-daemonset-0.39.1
     app.kubernetes.io/name: monitoring-daemonset
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -1023,7 +1574,7 @@ spec:
           securityContext:
             runAsNonRoot: false
             runAsUser: 0
-          image: "ghcr.io/calyptia/core/calyptia-fluent-bit:23.10.3"
+          image: "ghcr.io/calyptia/core/calyptia-fluent-bit:23.11.1"
           imagePullPolicy: IfNotPresent
           env:
             - name: NODE_NAME
@@ -1107,10 +1658,10 @@ metadata:
   labels:
   #
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-1.0.4
+    helm.sh/chart: core-operator-2.0.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.16"
+    app.kubernetes.io/version: "v2.0.18"
     app.kubernetes.io/component: manager
     app.kubernetes.io/created-by: operator
     calyptia.core: core-operator
@@ -1130,10 +1681,10 @@ spec:
       labels:
       #
         app.kubernetes.io/name: core-operator
-        helm.sh/chart: core-operator-1.0.4
+        helm.sh/chart: core-operator-2.0.1
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: "v2.0.16"
+        app.kubernetes.io/version: "v2.0.18"
       #
       #
         calyptia.core: core-operator
@@ -1142,7 +1693,7 @@ spec:
       containers:
         - command:
             - /manager
-          image: ghcr.io/calyptia/core-operator:2.0.17
+          image: ghcr.io/calyptia/core-operator:2.0.18
           imagePullPolicy: "IfNotPresent"
           livenessProbe:
             httpGet:
@@ -1154,7 +1705,7 @@ spec:
           ports:
             - containerPort: 8443
               name: https
-            - containerPort: 8080
+            - containerPort: 8081
               name: http
           readinessProbe:
             httpGet:
@@ -1189,7 +1740,7 @@ metadata:
   name: calyptia-cloud-standalone-monitoring-aggregator
   namespace: calyptia
   labels:
-    helm.sh/chart: monitoring-aggregator-0.39.0
+    helm.sh/chart: monitoring-aggregator-0.39.1
     app.kubernetes.io/name: monitoring-aggregator
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -1215,7 +1766,7 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: monitoring-aggregator
-          image: "ghcr.io/calyptia/core/calyptia-fluent-bit:23.10.3"
+          image: "ghcr.io/calyptia/core/calyptia-fluent-bit:23.11.1"
           imagePullPolicy: IfNotPresent
           command:
             - /fluent-bit/bin/fluent-bit
@@ -1260,10 +1811,10 @@ metadata:
     kubectl.kubernetes.io/default-container: cloud-api
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: cloud-api
   name: cloud-api
   namespace: "calyptia"
@@ -1279,10 +1830,10 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-1.0.3
+        helm.sh/chart: calyptia-standalone-2.0.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: "v1.6.1"
+        app.kubernetes.io/version: "v1.6.2"
         app.kubernetes.io/component: cloud-api
     spec:
       serviceAccount: calyptia-cloud-standalone-calyptia-standalone-cloud
@@ -1290,7 +1841,7 @@ spec:
       imagePullSecrets:
         - name: regcreds
       containers:
-        - image: ghcr.io/calyptia/cloud:1.6.1
+        - image: ghcr.io/calyptia/cloud:1.6.2
           imagePullPolicy: "IfNotPresent"
           name: cloud-api
           ports:
@@ -1382,10 +1933,10 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: influxdb
   name: influxdb
   namespace: "calyptia"
@@ -1401,10 +1952,10 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-1.0.3
+        helm.sh/chart: calyptia-standalone-2.0.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: "v1.6.1"
+        app.kubernetes.io/version: "v1.6.2"
         app.kubernetes.io/component: influxdb
     spec:
       
@@ -1444,10 +1995,10 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: postgres
   name: postgres
   namespace: "calyptia"
@@ -1463,10 +2014,10 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-1.0.3
+        helm.sh/chart: calyptia-standalone-2.0.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: "v1.6.1"
+        app.kubernetes.io/version: "v1.6.2"
         app.kubernetes.io/component: postgres
     spec:
       
@@ -1498,10 +2049,10 @@ metadata:
     reloader.stakater.com/auto: "true"
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: core
   name: core
   namespace: "calyptia"
@@ -1516,10 +2067,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-1.0.3
+        helm.sh/chart: calyptia-standalone-2.0.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: "v1.6.1"
+        app.kubernetes.io/version: "v1.6.2"
         app.kubernetes.io/component: core
     spec:
       serviceAccount: calyptia-cloud-standalone-calyptia-standalone-frontend
@@ -1547,7 +2098,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
       containers:
-        - image: ghcr.io/calyptia/frontend:1.3.1
+        - image: ghcr.io/calyptia/frontend:1.4.1
           imagePullPolicy: "IfNotPresent"
           name: core
           ports:
@@ -1607,10 +2158,10 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: cloud-lua-sandbox
   name: cloud-lua-sandbox
   namespace: "calyptia"
@@ -1625,10 +2176,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-1.0.3
+        helm.sh/chart: calyptia-standalone-2.0.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: "v1.6.1"
+        app.kubernetes.io/version: "v1.6.2"
         app.kubernetes.io/component: cloud-lua-sandbox
     spec:
       
@@ -1655,10 +2206,10 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: reloader
   name: reloader
   namespace: "calyptia"
@@ -1673,10 +2224,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-1.0.3
+        helm.sh/chart: calyptia-standalone-2.0.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: "v1.6.1"
+        app.kubernetes.io/version: "v1.6.2"
         app.kubernetes.io/component: reloader
     spec:
       
@@ -1730,10 +2281,10 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-1.0.3
+    helm.sh/chart: calyptia-standalone-2.0.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v1.6.1"
+    app.kubernetes.io/version: "v1.6.2"
     app.kubernetes.io/component: vivo
   name: vivo
   namespace: "calyptia"
@@ -1748,10 +2299,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-1.0.3
+        helm.sh/chart: calyptia-standalone-2.0.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: "v1.6.1"
+        app.kubernetes.io/version: "v1.6.2"
         app.kubernetes.io/component: vivo
     spec:
       
@@ -1800,7 +2351,7 @@ metadata:
   name: "calyptia-cloud-standalone-monitoring-aggregator-test-connection"
   namespace: calyptia
   labels:
-    helm.sh/chart: monitoring-aggregator-0.39.0
+    helm.sh/chart: monitoring-aggregator-0.39.1
     app.kubernetes.io/name: monitoring-aggregator
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
@@ -1823,7 +2374,7 @@ metadata:
   name: "calyptia-cloud-standalone-monitoring-daemonset-test-connection"
   namespace: calyptia
   labels:
-    helm.sh/chart: monitoring-daemonset-0.39.0
+    helm.sh/chart: monitoring-daemonset-0.39.1
     app.kubernetes.io/name: monitoring-daemonset
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/version: "2.1.10"
