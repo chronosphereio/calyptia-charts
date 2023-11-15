@@ -17,6 +17,7 @@ rules:
       - core.calyptia.com
       - core
       - rbac.authorization.k8s.io
+      - security.openshift.io
     resources:
       - namespaces
       - serviceaccounts
@@ -40,6 +41,7 @@ rules:
       - pipelines
       - pipelines/finalizers
       - pipelines/status
+      - securitycontextconstraints
     verbs:
       - get
       - list
