@@ -4,14 +4,13 @@ images:
   operator:
     registry: ghcr.io
     repository: calyptia/core-operator
-    tag: 2.0.19
+    tag: 2.0.20
     pullSecrets: []
   hotReload:
     registry: ghcr.io
     repository: calyptia/configmap-reload
     tag: 0.11.1
     pullSecrets: []
-
 commonAnnotations: {}
 commonLabels: {}
 podAnnotations: {}
@@ -56,7 +55,6 @@ global:
 #   email: ci@calyptia.com
 #
 replicas: 1
-
 # Resource information for the operator deployment
 resources:
   limits:
