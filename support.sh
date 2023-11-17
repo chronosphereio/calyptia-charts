@@ -145,6 +145,15 @@ fi
 # Grab any K3S logs for on-prem deployment
 journalctl -q -u k3s &> "$OUTPUT_DIR"/k3s-service.log
 
+# Check for systemctl and scrape systemctl units if available
+if command -v systemctl &> /dev/null; then
+    echo "Scraping systemctl units..."
+    systemctl list-units --all --type=service --no-pager &> "$OUTPUT_DIR/systemctl-all-units.log"
+    echo "Systemctl units scraped."
+else
+    echo "Systemctl not found, skipping systemctl units scrape."
+fi
+
 # Create a tarball for simple upload
 echo "Creating tarball: $TAR_NAME"
 tar -czf "$TAR_NAME" -C "$OUTPUT_DIR" .
