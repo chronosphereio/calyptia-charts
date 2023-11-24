@@ -65,12 +65,14 @@ spec:
             # - name: ALLOWED_ORIGINS
             #   # value: "https://config-viewer-ui-dev.herokuapp.com,https://visual-ui.herokuapp.com,https://cloud-api.calyptia.com,https://core-jet.vercel.app,https://core-git-*-calyptia.vercel.app"
             #   value: "*"
-            # Cross-mount a token file
+            # To enable secret export we have to specify a token file but we do not want to expose this
             - name: DEFAULT_TOKEN_FILE
-              value: /token/token.txt
+              value: /dev/null
+            - name: DEFAULT_TOKEN_K8S_SECRET_NAME
+              value: {{ template "cloud.authSecretName" . }}
+            - name: DEFAULT_TOKEN_K8S_SECRET_NAMESPACE
+              value: {{ .Release.Namespace | quote }}
           volumeMounts:
-            - mountPath: /token
-              name: token
           {{- if .Values.cloudApi.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
@@ -83,45 +85,7 @@ spec:
           {{- if .Values.cloudApi.livenessProbe }}
           livenessProbe: {{- toYaml .Values.cloudApi.livenessProbe | nindent 12 }}
           {{- end }}
-        - name: token-secret-creator
-          image: {{ template "cloud.kubectl.image" . }}
-          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
-          # Need access to the filesystem - cloud runs as root
-          securityContext:
-            runAsUser: 0
-          {{- if .Values.cloudApi.kubectl.resources }}
-          resources: {{- toYaml .Values.cloudApi.kubectl.resources | nindent 12 }}
-          {{- end }}
-          command: ["/bin/bash"]
-          args:
-            - "-c"
-            - |
-              if kubectl delete -n ${CORE_NAMESPACE} secret auth-secret ; then
-                echo 'Deleted existing token'
-              fi
-              until [[ -f /token/token.txt ]]; do
-                sleep 5
-              done
-              echo 'Token file found'
-              until kubectl create -n ${CORE_NAMESPACE} secret generic auth-secret --from-file=ONPREM_CLOUD_API_PROJECT_TOKEN=/token/token.txt ; do
-                sleep 5
-              done
-              echo 'Secret created - complete'
-              while true; do
-                sleep 5
-              done
-          env:
-            - name: CORE_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-          volumeMounts:
-            - name: token
-              mountPath: /token
       volumes:
-        - name: token
-          emptyDir:
-            sizeLimit: 1Mi
         {{- if .Values.cloudApi.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.cloudApi.extraVolumes "context" $) | nindent 8 }}
         {{- end }}

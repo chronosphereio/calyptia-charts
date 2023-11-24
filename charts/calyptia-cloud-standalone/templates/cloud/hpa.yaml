@@ -1,0 +1,31 @@
+{{- if (and .Values.cloudApi.autoscaling .Values.cloudApi.autoscaling.enabled) }}
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: cloud-api
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: cloud-api
+  minReplicas: {{ default 1 .Values.cloudApi.autoscaling.minReplicas }}
+  maxReplicas: {{ default 5 .Values.cloudApi.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.cloudApi.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.cloudApi.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.cloudApi.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.cloudApi.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
