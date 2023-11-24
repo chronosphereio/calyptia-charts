@@ -4,8 +4,8 @@ description: Umbrella chart to configure a Calyptia Core control plane and suppo
 home: https://calyptia.com/products/calyptia-core/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 2.0.1
-appVersion: "v1.6.5"
+version: 2.1.0
+appVersion: "v1.6.8"
 maintainers:
   - name: Calyptia
     email: hello@calyptia.com
@@ -30,13 +30,6 @@ dependencies:
     version: 2.9.10
     alias: loki-stack
     condition: monitoring.grafana
-  # Cannot use the chart due to incompatible usage of global.imagePullSecrets
-  # Instead we embed it
-  # - name: reloader
-  #   version: 1.x.x
-  #   repository: https://stakater.github.io/stakater-charts
-  #   alias: reloader
-  #   condition: reloader.enabled
   # Use the OSS Fluent Bit chart for monitoring
   - name: fluent-bit
     version: 0.x.x

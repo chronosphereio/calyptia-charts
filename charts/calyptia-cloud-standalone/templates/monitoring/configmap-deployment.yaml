@@ -48,14 +48,6 @@ data:
 
         [INPUT]
             name                prometheus_scrape
-            tag                 metrics.reloader
-            host                reloader.calyptia
-            port                9090
-            metrics_path        /metrics
-            scrape_interval     30s
-
-        [INPUT]
-            name                prometheus_scrape
             tag                 metrics.operator
             host                calyptia-core-controller-manager-metrics-service.calyptia
             port                8443

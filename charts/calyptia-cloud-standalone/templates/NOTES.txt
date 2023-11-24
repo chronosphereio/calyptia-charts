@@ -5,7 +5,7 @@ Calyptia Core Operator correctly installed.
 
 To get the project token:
 
-kubectl get secret -n {{ .Release.Namespace }} auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode
+kubectl get secret -n {{ .Release.Namespace }} auth-secret -o jsonpath='{.data.token}'| base64 --decode
 
 To create an instance in the cluster run:
 
@@ -17,7 +17,7 @@ export INSTANCE_NAMESPACE=core-instance
 export INSTANCE_NAME=test
 {{- if .Values.operator.enabled }}
 helm upgrade --install --namespace "$INSTANCE_NAMESPACE" --create-namespace calyptia-core-instance calyptia/core-instance \
-    --set cloudToken="$(kubectl get secret -n "$CLOUD_NAMESPACE" auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)" \
+    --set cloudToken="$(kubectl get secret -n "$CLOUD_NAMESPACE" auth-secret -o jsonpath='{.data.token}'| base64 --decode)" \
     --set coreInstance="$INSTANCE_NAME" --set cloudUrl="http://cloud-api.${CLOUD_NAMESPACE}:5000" \
     --debug --wait
 
@@ -51,7 +51,7 @@ This will spin up a pod to handle the pipeline as a test, however this should be
 export INSTANCE_TAG=test
 
 helm upgrade --install --namespace "$INSTANCE_NAMESPACE" --create-namespace calyptia-core calyptia/core \
-    --set project_token="$(kubectl get secret -n "$CLOUD_NAMESPACE" auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)" \
+    --set project_token="$(kubectl get secret -n "$CLOUD_NAMESPACE" auth-secret -o jsonpath='{.data.token}'| base64 --decode)" \
     --set name="$INSTANCE_NAME" --set core_instance_tags="$INSTANCE_TAG" --set api_url="http://cloud-api.$CLOUD_NAMESPACE:5000" \
     --debug --wait
 
@@ -122,4 +122,10 @@ kubectl describe -n {{ .Release.Namespace }} configmap monitoring-aggregator
 A different configuration can be provided via the '.monitoring-aggregator.existingConfigMap' Helm chart value.
 
 Each of these provides Prometheus metrics via port 2021 `/metrics` endpoint.
+{{- end }}
+{{- if .Values.cloudApi.postgres.enabled }}
+WARNING: This is a non-production deployment as it is using an in-cluster Postgres database deployed by this chart.
+{{- end }}
+{{- if .Values.operator.enabled }}
+WARNING: This is a non-production deployment as it is using an in-cluster Core Operator deployed by this chart.
 {{- end }}

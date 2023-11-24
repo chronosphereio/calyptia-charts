@@ -38,6 +38,7 @@ mkdir -p "$OUTPUT_DIR"
 \kubectl get nodes -o yaml > "$OUTPUT_DIR"/kubectl-nodes.yaml
 \kubectl get pods --all-namespaces -o yaml > "$OUTPUT_DIR"/kubectl-all-pods.yaml
 \kubectl describe all --all-namespaces > "$OUTPUT_DIR"/kubectl-all.log
+\kubectl get -o yaml crd > "$OUTPUT_DIR"/kubectl-crds.yaml
 
 mkdir -p "$OUTPUT_DIR"/cluster
 \kubectl cluster-info dump --all-namespaces -o yaml --output-directory="$OUTPUT_DIR"/cluster
@@ -55,8 +56,13 @@ do
     # Attempt to discover token and url for cloud-api in cluster
     if [[ -z "$CALYPTIA_CLOUD_TOKEN" ]]; then
         if \kubectl get --namespace "$namespace" secret auth-secret &>/dev/null; then
-            CALYPTIA_CLOUD_TOKEN=$(kubectl get --namespace "$namespace" secret auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)
+            CALYPTIA_CLOUD_TOKEN=$(kubectl get --namespace "$namespace" secret auth-secret -o jsonpath='{.data.token}'| base64 --decode)
             export CALYPTIA_CLOUD_TOKEN
+            if [[ -z "$CALYPTIA_CLOUD_TOKEN" ]]; then
+                # Use the old approach
+                CALYPTIA_CLOUD_TOKEN=$(kubectl get --namespace "$namespace" secret auth-secret -o jsonpath='{.data.ONPREM_CLOUD_API_PROJECT_TOKEN}'| base64 --decode)
+                export CALYPTIA_CLOUD_TOKEN
+            fi
             # Detain the token for comparison in the pod specs
             echo -n "$CALYPTIA_CLOUD_TOKEN" > "${OUTPUT_DIR}"/token.txt
         fi

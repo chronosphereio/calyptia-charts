@@ -66,13 +66,6 @@ Return the proper ingress.image image name
 {{- end -}}
 
 {{/*
-Return the proper reloader.image image name
-*/}}
-{{- define "reloader.image" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.reloader.images.reloader "global" .Values.global) }}
-{{- end -}}
-
-{{/*
 Returns the proper service account name depending if an explicit service account name is set
 in the values file. If the name is not set it will default to either common.names.fullname if serviceAccount.create
 is true or default otherwise.
@@ -103,23 +96,6 @@ is true or default otherwise.
         {{- end -}}
     {{- else -}}
         {{ default "default" .Values.frontend.serviceAccount.name }}
-    {{- end -}}
-{{- end -}}
-
-{{/*
-Returns the proper service account name depending if an explicit service account name is set
-in the values file. If the name is not set it will default to either common.names.fullname if serviceAccount.create
-is true or default otherwise.
-*/}}
-{{- define "reloader.serviceAccountName" -}}
-    {{- if .Values.reloader.serviceAccount.create -}}
-        {{- if (empty .Values.reloader.serviceAccount.name) -}}
-          {{- printf "%s-reloader" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
-        {{- else -}}
-          {{ default "default" .Values.reloader.serviceAccount.name }}
-        {{- end -}}
-    {{- else -}}
-        {{ default "default" .Values.reloader.serviceAccount.name }}
     {{- end -}}
 {{- end -}}
 
@@ -165,15 +141,19 @@ Return the proper Container Registry Secret Names
 {{ include "common.images.pullSecrets" (dict "images" (list .Values.vivo.images.vivo) "global" .Values.global) }}
 {{- end -}}
 
-{{/*
-Return the proper Container Registry Secret Names
-*/}}
-{{- define "reloader.imagePullSecrets" -}}
-{{ include "common.images.pullSecrets" (dict "images" (list .Values.reloader.images.reloader) "global" .Values.global) }}
-{{- end -}}
-
 {{- define "createImagePullSecret" -}}
 {{- with .Values.imageCredentials }}
 {{- printf "{\"auths\":{\"%s\":{\"username\":\"%s\",\"password\":\"%s\",\"email\":\"%s\",\"auth\":\"%s\"}}}" .registry .username .password .email (printf "%s:%s" .username .password | b64enc) | b64enc }}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Return the proper name for the shared authentication secret
+*/}}
+{{- define "cloud.authSecretName" -}}
+  {{- if .Values.authentication -}}
+    {{- default "auth-secret" .Values.authentication.secret.name | trunc 63 | trimSuffix "-" -}}
+  {{- else -}}
+    {{- "auth-secret" | trunc 63 | trimSuffix "-" -}}
+  {{- end -}}
 {{- end -}}

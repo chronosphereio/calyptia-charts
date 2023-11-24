@@ -47,10 +47,10 @@ helm upgrade --install \
 
 ## Upgrade
 
-To upgrade the chart, the two main things to ensure are:
+To upgrade the chart without service interruption, the two main things to ensure are:
 
 1. The Postgres database state does not change.
-1. The CRDs for the operator are not removed.
+1. The CRDs for the operator (if deployed with this chart) are not removed.
 
 The chart includes a Postgres database default deployment in-cluster but this is not recommended for production and provides no guarantees.
 An external database (external to this chart, it could be in-cluster) with high availability should be provided.
@@ -64,17 +64,44 @@ This includes CRD configuration but note Helm has caveats on managing existing C
 Any upgrade should first ensure the correct CRDs are installed via `kubectl replace -f crd.yaml`.
 The CRD YAML files are available on the specific release being installed here: <https://github.com/calyptia/core-operator-releases/>
 
-If CRDs are removed then all workloads associated with them will also be destroyed.
+If CRDs are removed then all workloads associated with them will also be destroyed (but will be recreated when the CRD is added again if the config is in the database).
+
 CRD removal can be prevented with the following annotation:
 
 ```shell
 kubectl annotate crd pipelines.core.calyptia.com helm.sh/resource-policy=keep --overwrite
+kubectl annotate crd ingestchecks.core.calyptia.com helm.sh/resource-policy=keep --overwrite
+```
+
+To upgrade from 1.x series chart to 2.x, also add these annotations to prevent replacement of the CRD:
+
+```shell
 kubectl annotate crd pipelines.core.calyptia.com meta.helm.sh/release-name=calyptia-cloud --overwrite
 kubectl annotate crd pipelines.core.calyptia.com meta.helm.sh/release-namespace="$CALYPTIA_NAMESPACE" --overwrite
 kubectl label crd pipelines.core.calyptia.com app.kubernetes.io/managed-by=Helm --overwrite
 ```
 
 The recommendation would be to deploy the Core Operator separately and disable it in this chart to maintain full control over lifecycle.
+
+## Production deployment
+
+The default configuration for this chart is intended to provide a simple in-cluster working deployment and as such is not recommended for production.
+Specifically, for a production deployment the recommendations are:
+
+* Deploy Postgres (and Influx) separately and manage with high availability.
+* Deploy the Core Operator separately and manage the data plane independently of the control plane.
+
+```yaml
+operator:
+  enabled: false
+cloudApi:
+  postgres:
+    enabled: false
+    connectionString: <Postgres DNS provided here>
+  influxdb:
+    enabled: false
+    server: <URL for InfluxDB server>
+```
 
 ## Services
 
@@ -230,6 +257,39 @@ operator:
 
 Once the operator is deployed, the [`core-instance`](https://github.com/calyptia/charts/tree/master/charts/core-instance) chart can be used to add workloads to the cluster.
 Alternatively the legacy [`core`](https://github.com/calyptia/charts/tree/master/charts/core) chart can also be used without operator support.
+
+### Autoscaling
+
+Each of the main services can be set up to use [Horizontal Pod Autoscaling (HPA)](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/), however this is disabled by default.
+
+To enable, set the `autoscaling.enabled=true` property in the appropriate sections below:
+
+```yaml
+cloudApi:
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetMemoryUtilizationPercentage: 50
+    targetCPUUtilizationPercentage: 50
+frontend:
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetMemoryUtilizationPercentage: 50
+    targetCPUUtilizationPercentage: 50
+  luaSandbox:
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 5
+      targetMemoryUtilizationPercentage: 50
+      targetCPUUtilizationPercentage: 50
+```
+
+Remember HPA requires a controller (as well as a metrics server and any other supporting infrastructure) in the cluster to actually implement and manage scaling.
+Ensure this is deployed as well in an appropriate fashion.
 
 ## Troubleshooting
 
