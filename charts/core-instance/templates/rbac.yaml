@@ -20,6 +20,8 @@ rules:
   resources:
   - namespaces
   - secrets
+  - pods
+  - pods/log
   - ingestchecks
   - ingestchecks/finalizers
   - ingestchecks/status
