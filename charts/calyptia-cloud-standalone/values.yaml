@@ -149,7 +149,7 @@ frontend:
     frontend:
       registry: ghcr.io
       repository: calyptia/frontend
-      tag: 1.5.3
+      tag: 1.5.4
       pullSecrets: []
     luaSandbox:
       registry: ghcr.io
@@ -301,7 +301,7 @@ core-operator:
     operator:
       registry: ghcr.io
       repository: calyptia/core-operator
-      tag: 2.0.25
+      tag: 2.1.1
       pullSecrets: []
     hotReload:
       registry: ghcr.io
@@ -312,12 +312,12 @@ core-operator:
     toCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-to-cloud
-      tag: 2.0.25
+      tag: 2.1.1
       pullSecrets: []
     fromCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-from-cloud
-      tag: 2.0.25
+      tag: 2.1.1
       pullSecrets: []
   annotations:
     prometheus.io/scrape: "true"

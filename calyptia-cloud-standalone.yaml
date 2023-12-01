@@ -5,10 +5,10 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-2.0.8
+    helm.sh/chart: core-operator-2.1.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.24"
+    app.kubernetes.io/version: "v2.1.1"
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: controller-manager
@@ -51,7 +51,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -64,7 +64,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -77,7 +77,7 @@ kind: ConfigMap
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -162,7 +162,7 @@ kind: ConfigMap
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -779,10 +779,10 @@ kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-2.0.8
+    helm.sh/chart: core-operator-2.1.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.24"
+    app.kubernetes.io/version: "v2.1.1"
     calyptia.core: core-operator
   name: calyptia-core-manager-role
 rules:
@@ -836,10 +836,10 @@ kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-2.0.8
+    helm.sh/chart: core-operator-2.1.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.24"
+    app.kubernetes.io/version: "v2.1.1"
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: metrics-reader
@@ -860,10 +860,10 @@ kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-2.0.8
+    helm.sh/chart: core-operator-2.1.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.24"
+    app.kubernetes.io/version: "v2.1.1"
     calyptia.core: core-operator
   name: calyptia-core-pod-role
 rules:
@@ -908,10 +908,10 @@ kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-2.0.8
+    helm.sh/chart: core-operator-2.1.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.24"
+    app.kubernetes.io/version: "v2.1.1"
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: proxy-role
@@ -984,10 +984,10 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-2.0.8
+    helm.sh/chart: core-operator-2.1.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.24"
+    app.kubernetes.io/version: "v2.1.1"
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: manager-rolebinding
@@ -1011,10 +1011,10 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-2.0.8
+    helm.sh/chart: core-operator-2.1.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.24"
+    app.kubernetes.io/version: "v2.1.1"
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: proxy-rolebinding
@@ -1134,10 +1134,10 @@ metadata:
     prometheus.io/scrape: "true"
   labels:
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-2.0.8
+    helm.sh/chart: core-operator-2.1.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.24"
+    app.kubernetes.io/version: "v2.1.1"
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: operator
     app.kubernetes.io/instance: controller-manager-metrics-service
@@ -1237,7 +1237,7 @@ metadata:
     metrics.dynatrace.com/port: "5000"
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1252,7 +1252,7 @@ spec:
       targetPort: 5000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1264,7 +1264,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1279,7 +1279,7 @@ spec:
       targetPort: 8086
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1291,7 +1291,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1306,7 +1306,7 @@ spec:
       targetPort: 5432
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1318,7 +1318,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1333,7 +1333,7 @@ spec:
       targetPort: 3000
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1345,7 +1345,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1360,7 +1360,7 @@ spec:
       targetPort: 5555
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1380,7 +1380,7 @@ metadata:
     metrics.dynatrace.com/port: '2020'
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1409,7 +1409,7 @@ spec:
       targetPort: 2020
   selector:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1539,10 +1539,10 @@ metadata:
   labels:
   #
     app.kubernetes.io/name: core-operator
-    helm.sh/chart: core-operator-2.0.8
+    helm.sh/chart: core-operator-2.1.1
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: "v2.0.24"
+    app.kubernetes.io/version: "v2.1.1"
     app.kubernetes.io/component: manager
     app.kubernetes.io/created-by: operator
     calyptia.core: core-operator
@@ -1562,10 +1562,10 @@ spec:
       labels:
       #
         app.kubernetes.io/name: core-operator
-        helm.sh/chart: core-operator-2.0.8
+        helm.sh/chart: core-operator-2.1.1
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: "v2.0.24"
+        app.kubernetes.io/version: "v2.1.1"
       #
       #
         calyptia.core: core-operator
@@ -1574,7 +1574,7 @@ spec:
       containers:
         - command:
             - /manager
-          image: ghcr.io/calyptia/core-operator:2.0.25
+          image: ghcr.io/calyptia/core-operator:2.1.1
           imagePullPolicy: "IfNotPresent"
           livenessProbe:
             httpGet:
@@ -1690,7 +1690,7 @@ metadata:
     kubectl.kubernetes.io/default-container: cloud-api
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1709,7 +1709,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-2.1.0
+        helm.sh/chart: calyptia-standalone-2.2.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/version: "v1.6.8"
@@ -1776,7 +1776,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1795,7 +1795,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-2.1.0
+        helm.sh/chart: calyptia-standalone-2.2.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/version: "v1.6.8"
@@ -1838,7 +1838,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1857,7 +1857,7 @@ spec:
       annotations:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-2.1.0
+        helm.sh/chart: calyptia-standalone-2.2.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/version: "v1.6.8"
@@ -1890,7 +1890,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -1908,7 +1908,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-2.1.0
+        helm.sh/chart: calyptia-standalone-2.2.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/version: "v1.6.8"
@@ -1942,7 +1942,7 @@ spec:
             - name: DEFAULT_TOKEN_K8S_SECRET_NAME
               value: auth-secret
       containers:
-        - image: ghcr.io/calyptia/frontend:1.5.3
+        - image: ghcr.io/calyptia/frontend:1.5.4
           imagePullPolicy: "IfNotPresent"
           name: core
           ports:
@@ -2006,7 +2006,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -2024,7 +2024,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-2.1.0
+        helm.sh/chart: calyptia-standalone-2.2.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/version: "v1.6.8"
@@ -2053,7 +2053,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: calyptia-standalone
-    helm.sh/chart: calyptia-standalone-2.1.0
+    helm.sh/chart: calyptia-standalone-2.2.0
     app.kubernetes.io/instance: calyptia-cloud-standalone
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/version: "v1.6.8"
@@ -2071,7 +2071,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: calyptia-standalone
-        helm.sh/chart: calyptia-standalone-2.1.0
+        helm.sh/chart: calyptia-standalone-2.2.0
         app.kubernetes.io/instance: calyptia-cloud-standalone
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/version: "v1.6.8"
