@@ -12,12 +12,12 @@ images:
   fromCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-from-cloud
-    tag: 2.0.18
+    tag: 2.1.1
     pullSecrets: []
   toCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-to-cloud
-    tag: 2.0.18
+    tag: 2.1.1
     pullSecrets: []
   hotReload:
     registry: ghcr.io
@@ -32,24 +32,20 @@ images:
 notls: "true"
 interval: "15s"
 metricsPort: "15334"
-
 commonAnnotations: {}
 commonLabels: {}
 podAnnotations: {}
 podLabels: {}
 nameOverride: ""
 fullnameOverride: ""
-
 fromCloud:
   resources: {}
 toCloud:
   resources: {}
-
 serviceAccount:
   create: true
   name: ""
   annotations: {}
-
 #
 ## RBAC configuration
 ## @param rbac.create Specifies whether RBAC resources should be created
