@@ -15,3 +15,4 @@ images:
     tag: 0.0.7
     pullSecrets: []
 cloudUrl: https://cloud-api.calyptia.com
+pipelineServiceType: LoadBalancer

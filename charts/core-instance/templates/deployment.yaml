@@ -50,6 +50,8 @@ spec:
           value: {{ .Values.healthCheckPipelineServiceType | quote }}
         - name: INGEST_CHECK_IMAGE
           value: {{ template "ingestCheck.image" . }}
+        - name: ANNOTATIONS
+          value: {{ .Values.calyptiaAnnotations }}
         image: {{ template "fromCloud.image" . }}
         imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: from-cloud

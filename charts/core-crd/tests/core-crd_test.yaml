@@ -1,0 +1,17 @@
+suite: Test core crd
+release:
+  namespace: test
+templates:
+  - pipelines.yaml
+
+tests:
+  - it: checks kind
+    set:
+      pipelineServiceType: ClusterIP      
+    asserts:
+      - isKind:
+          of: CustomResourceDefinition
+      - equal: 
+          path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.ports.items.properties.serviceType.default
+          value: ClusterIP
+  

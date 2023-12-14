@@ -19,6 +19,7 @@ rules:
       - rbac.authorization.k8s.io
       - security.openshift.io
     resources:
+      - events
       - namespaces
       - serviceaccounts
       - deployments
