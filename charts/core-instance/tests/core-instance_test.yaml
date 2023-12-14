@@ -18,6 +18,7 @@ tests:
       cloudUrl: test_url
       coreInstance: ci-1234
       cloudToken: xxx
+      calyptiaAnnotations: "test=1234,nope=4321"
       images:
         fromCloud:
           registry: custom.io
@@ -107,6 +108,11 @@ tests:
           value:
             value: custom.io/test/ingestcheck:1.2.3
             name: INGEST_CHECK_IMAGE
+      - equal:
+          path: spec.template.spec.containers[0].env[12]
+          value:
+            value: test=1234,nope=4321
+            name: ANNOTATIONS
 
       # To Cloud
       - equal:
@@ -139,3 +145,49 @@ tests:
           value:
             value: "true"
             name: NO_TLS_VERIFY
+  - it: checks annotations 
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaAnnotations: "test=1234,nope=test"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[12]
+          value:
+            value: test=1234,nope=test
+            name: ANNOTATIONS
+  - it: checks annotations white space
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaAnnotations: "test=some three words,nope=two words"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[12]
+          value:
+            value: test=some three words,nope=two words
+            name: ANNOTATIONS
+  - it: checks annotations special char
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaAnnotations: "test=email@test.com,nope=two words"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[12]
+          value:
+            value: test=email@test.com,nope=two words
+            name: ANNOTATIONS
+  - it: checks annotations special char
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaAnnotations: "myspecial/annotation='this has spaces'"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[12]
+          value:
+            value: myspecial/annotation='this has spaces'
+            name: ANNOTATIONS
+
+
