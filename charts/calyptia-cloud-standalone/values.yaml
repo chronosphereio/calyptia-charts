@@ -78,21 +78,25 @@ cloudApi:
       repository: calyptia/cloud
       tag: 1.6.8
       pullSecrets: []
+      digest: ''
     kubectl:
       registry: docker.io
       repository: bitnami/kubectl
       tag: 1.25.12
       pullSecrets: []
+      digest: ''
     postgres:
       registry: docker.io
       repository: postgres
       tag: 15.3
       pullSecrets: []
+      digest: ''
     influxdb:
       registry: docker.io
       repository: influxdb
       tag: 2.7.1
       pullSecrets: []
+      digest: ''
   serviceAccount:
     create: true
     name: ""
@@ -151,11 +155,13 @@ frontend:
       repository: calyptia/frontend
       tag: 1.5.4
       pullSecrets: []
+      digest: ''
     luaSandbox:
       registry: ghcr.io
       repository: calyptia/cloud-lua-sandbox
       tag: 2.2.0
       pullSecrets: []
+      digest: ''
   serviceAccount:
     create: true
     name: ""
@@ -218,6 +224,7 @@ vivo:
       repository: calyptia/vivo
       tag: 3.0.1
       pullSecrets: []
+      digest: ''
   resources:
     requests:
       memory: "64Mi"
@@ -245,6 +252,7 @@ ingress:
       registry: docker.io
       repository: nginx
       tag: 1.25.1
+      digest: ''
   config:
     # Switch to individual sidecars as well per pod
     nginx: |
@@ -284,16 +292,19 @@ core-crd:
       repository: calyptia/configmap-reload
       tag: 0.11.1
       pullSecrets: []
+      digest: ''
     fluentBit:
       registry: ghcr.io
       repository: calyptia/core/calyptia-fluent-bit
-      tag: 23.11.3
+      tag: 23.12.2
       pullSecrets: []
+      digest: ''
     ingestCheck:
       registry: ghcr.io
       repository: calyptia/core/ingest-check
       tag: 0.0.7
       pullSecrets: []
+      digest: ''
 #
 # Dependent chart config: https://github.com/calyptia/charts/tree/master/charts/core-operator
 core-operator:
@@ -301,24 +312,28 @@ core-operator:
     operator:
       registry: ghcr.io
       repository: calyptia/core-operator
-      tag: 2.1.1
+      tag: 2.3.0
       pullSecrets: []
+      digest: ''
     hotReload:
       registry: ghcr.io
       repository: calyptia/configmap-reload
       tag: 0.11.1
       pullSecrets: []
+      digest: ''
     # The following are not chart parameters but simplify building the offline packages
     toCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-to-cloud
-      tag: 2.1.1
+      tag: 2.3.0
       pullSecrets: []
+      digest: ''
     fromCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-from-cloud
-      tag: 2.1.1
+      tag: 2.3.0
       pullSecrets: []
+      digest: ''
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/path: "/"
@@ -381,7 +396,7 @@ monitoring-daemonset:
   image:
     # Have to customise separately
     repository: ghcr.io/calyptia/core/calyptia-fluent-bit
-    tag: 23.11.3
+    tag: 23.12.2
     pullPolicy: IfNotPresent
   # Modify this to use any other CM you want
   existingConfigMap: monitoring-daemonset
@@ -463,7 +478,7 @@ monitoring-aggregator:
     - regcreds
   image:
     repository: ghcr.io/calyptia/core/calyptia-fluent-bit
-    tag: 23.11.3
+    tag: 23.12.2
     pullPolicy: IfNotPresent
   # Modify this to use any other CM you want
   existingConfigMap: monitoring-aggregator
