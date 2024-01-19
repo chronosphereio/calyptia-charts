@@ -1,10 +1,10 @@
 dependencies:
 - name: core-operator
   repository: https://helm.calyptia.com
-  version: 2.3.0
+  version: 2.4.0
 - name: core-crd
   repository: https://helm.calyptia.com
-  version: 2.3.0
+  version: 2.4.0
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 2.14.1
@@ -13,9 +13,9 @@ dependencies:
   version: 2.9.10
 - name: fluent-bit
   repository: https://fluent.github.io/helm-charts
-  version: 0.40.0
+  version: 0.42.0
 - name: fluent-bit
   repository: https://fluent.github.io/helm-charts
-  version: 0.40.0
-digest: sha256:48d0383eaab911ed08a2ebb4d359e84abe5d2723ecd12599d36765a4c5980aad
-generated: "2023-12-20T17:00:00.704853539Z"
+  version: 0.42.0
+digest: sha256:456f6d7a73d658aa900a01635171276eeedf5d40182bda50061357d9f077a6f7
+generated: "2024-01-19T11:15:31.878809541Z"

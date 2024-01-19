@@ -153,13 +153,13 @@ frontend:
     frontend:
       registry: ghcr.io
       repository: calyptia/frontend
-      tag: 1.5.4
+      tag: 1.6.0
       pullSecrets: []
       digest: ''
     luaSandbox:
       registry: ghcr.io
       repository: calyptia/cloud-lua-sandbox
-      tag: 2.2.0
+      tag: 3.1.0
       pullSecrets: []
       digest: ''
   serviceAccount:
@@ -296,7 +296,7 @@ core-crd:
     fluentBit:
       registry: ghcr.io
       repository: calyptia/core/calyptia-fluent-bit
-      tag: 23.12.2
+      tag: 24.1.1
       pullSecrets: []
       digest: ''
     ingestCheck:
@@ -312,7 +312,7 @@ core-operator:
     operator:
       registry: ghcr.io
       repository: calyptia/core-operator
-      tag: 2.3.0
+      tag: 2.4.0
       pullSecrets: []
       digest: ''
     hotReload:
@@ -325,13 +325,13 @@ core-operator:
     toCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-to-cloud
-      tag: 2.3.0
+      tag: 2.4.0
       pullSecrets: []
       digest: ''
     fromCloud:
       registry: ghcr.io
       repository: calyptia/core-operator/sync-from-cloud
-      tag: 2.3.0
+      tag: 2.4.0
       pullSecrets: []
       digest: ''
   annotations:
@@ -396,7 +396,7 @@ monitoring-daemonset:
   image:
     # Have to customise separately
     repository: ghcr.io/calyptia/core/calyptia-fluent-bit
-    tag: 23.12.2
+    tag: 24.1.1
     pullPolicy: IfNotPresent
   # Modify this to use any other CM you want
   existingConfigMap: monitoring-daemonset
@@ -478,7 +478,7 @@ monitoring-aggregator:
     - regcreds
   image:
     repository: ghcr.io/calyptia/core/calyptia-fluent-bit
-    tag: 23.12.2
+    tag: 24.1.1
     pullPolicy: IfNotPresent
   # Modify this to use any other CM you want
   existingConfigMap: monitoring-aggregator
