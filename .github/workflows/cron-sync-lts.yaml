@@ -19,8 +19,8 @@ jobs:
 
       - id: get-fb-release
         run: |
-          curl -sSfl -H "Authorization: Bearer $GITHUB_TOKEN"  https://api.github.com/repos/calyptia/calyptia-fluent-bit/releases/latest
-          LATEST_RELEASE_TAG=$(curl -sSfl -H "Authorization: Bearer $GITHUB_TOKEN"  https://api.github.com/repos/calyptia/calyptia-fluent-bit/releases/latest|jq -r .tag_name)
+          curl -sSfl -H "Authorization: Bearer $GITHUB_TOKEN"  https://api.github.com/repos/chronosphereio/calyptia-calyptia-fluent-bit/releases/latest
+          LATEST_RELEASE_TAG=$(curl -sSfl -H "Authorization: Bearer $GITHUB_TOKEN"  https://api.github.com/repos/chronosphereio/calyptia-calyptia-fluent-bit/releases/latest|jq -r .tag_name)
           echo "Found tag for latest release: $LATEST_RELEASE_TAG"
           echo "tag=$LATEST_RELEASE_TAG" >> $GITHUB_OUTPUT
         shell: bash
