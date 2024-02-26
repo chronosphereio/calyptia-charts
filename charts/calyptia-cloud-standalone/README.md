@@ -62,7 +62,7 @@ Postgres volumes can be set up using the `cloudApi.postgres.extraVolumes` and `c
 The chart auto-deploys the Calyptia Core operator and CRD charts by default.
 This includes CRD configuration but note Helm has caveats on managing existing CRDs.
 Any upgrade should first ensure the correct CRDs are installed via `kubectl replace -f crd.yaml`.
-The CRD YAML files are available on the specific release being installed here: <https://github.com/calyptia/core-operator-releases/>
+The CRD YAML files are available on the specific release being installed here: <https://github.com/chronosphereio/calyptia-core-operator-releases/>
 
 If CRDs are removed then all workloads associated with them will also be destroyed (but will be recreated when the CRD is added again if the config is in the database).
 
