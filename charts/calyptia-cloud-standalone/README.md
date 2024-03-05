@@ -112,7 +112,7 @@ The helm chart provides the following services:
 
 These match up with the hosted names, e.g. cloud-api.calyptia.com and core.calyptia.com.
 
-In addition, a [Vivo](https://github.com/calyptia/vivo) service is also provided on port 3000.
+In addition, a [Vivo](https://github.com/chronosphereio/calyptia-vivo) service is also provided on port 3000.
 
 All services are provided as [`LoadBalancer`](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer) type by default so the external IP can be retrieved via a call to `kubectl -n <namesapce> get svc`.
 
@@ -255,8 +255,8 @@ operator:
   enabled: true
 ```
 
-Once the operator is deployed, the [`core-instance`](https://github.com/calyptia/charts/tree/master/charts/core-instance) chart can be used to add workloads to the cluster.
-Alternatively the legacy [`core`](https://github.com/calyptia/charts/tree/master/charts/core) chart can also be used without operator support.
+Once the operator is deployed, the [`core-instance`](https://github.com/chronosphereio/calyptia-charts/tree/master/charts/core-instance) chart can be used to add workloads to the cluster.
+Alternatively the legacy [`core`](https://github.com/chronosphereio/calyptia-charts/tree/master/charts/core) chart can also be used without operator support.
 
 ### Autoscaling
 
