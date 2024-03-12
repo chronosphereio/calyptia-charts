@@ -396,7 +396,7 @@ monitoring-daemonset:
   image:
     # Have to customise separately
     repository: ghcr.io/calyptia/core/calyptia-fluent-bit
-    tag: 24.2.1
+    tag: 24.2.3
     pullPolicy: IfNotPresent
   # Modify this to use any other CM you want
   existingConfigMap: monitoring-daemonset
@@ -478,7 +478,7 @@ monitoring-aggregator:
     - regcreds
   image:
     repository: ghcr.io/calyptia/core/calyptia-fluent-bit
-    tag: 24.2.1
+    tag: 24.2.3
     pullPolicy: IfNotPresent
   # Modify this to use any other CM you want
   existingConfigMap: monitoring-aggregator

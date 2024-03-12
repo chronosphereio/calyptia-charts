@@ -1568,7 +1568,7 @@ spec:
           securityContext:
             runAsNonRoot: false
             runAsUser: 0
-          image: "ghcr.io/calyptia/core/calyptia-fluent-bit:24.2.1"
+          image: "ghcr.io/calyptia/core/calyptia-fluent-bit:24.2.3"
           imagePullPolicy: IfNotPresent
           env:
             - name: NODE_NAME
@@ -1758,7 +1758,7 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: monitoring-aggregator
-          image: "ghcr.io/calyptia/core/calyptia-fluent-bit:24.2.1"
+          image: "ghcr.io/calyptia/core/calyptia-fluent-bit:24.2.3"
           imagePullPolicy: IfNotPresent
           command:
             - /fluent-bit/bin/fluent-bit
