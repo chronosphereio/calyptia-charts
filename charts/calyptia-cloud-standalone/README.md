@@ -212,7 +212,7 @@ helm upgrade --install \
   --create-namespace --namespace "external" \
   --set auth.postgresPassword='adminpassword' \
   --set primary.persistence.enabled=false \
-  external-postgres oci://registry-1.docker.io/bitnamicharts/postgresql
+  external-postgres oci://registry-1.docker.io/bitnamicharts/postgresql --version 14.2.2
 ```
 
 Now we can deploy the chart using the separate Postgres configuration:
