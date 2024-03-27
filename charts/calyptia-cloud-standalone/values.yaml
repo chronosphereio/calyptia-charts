@@ -153,13 +153,13 @@ frontend:
     frontend:
       registry: ghcr.io
       repository: chronosphereio/calyptia-frontend
-      tag: 1.12.0
+      tag: 1.13.0
       pullSecrets: []
       digest: ''
     luaSandbox:
       registry: ghcr.io
       repository: calyptia/cloud-lua-sandbox
-      tag: 3.5.0
+      tag: 4.0.0
       pullSecrets: []
       digest: ''
   serviceAccount:
