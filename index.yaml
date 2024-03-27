@@ -3,6 +3,51 @@ entries:
   calyptia-standalone:
   - apiVersion: v2
     appVersion: v1.8.0
+    created: "2024-03-27T10:01:34.126151322Z"
+    dependencies:
+    - condition: operator.enabled
+      name: core-operator
+      repository: https://helm.calyptia.com
+      version: 2.x.x
+    - condition: operator.enabled
+      name: core-crd
+      repository: https://helm.calyptia.com
+      version: 2.x.x
+    - alias: common
+      name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 2.x.x
+    - alias: loki-stack
+      condition: monitoring.grafana
+      name: loki-stack
+      repository: https://grafana.github.io/helm-charts
+      version: 2.9.10
+    - alias: monitoring-daemonset
+      condition: monitoring.fluentBit
+      name: fluent-bit
+      repository: https://fluent.github.io/helm-charts
+      version: 0.x.x
+    - alias: monitoring-aggregator
+      condition: monitoring.fluentBit
+      name: fluent-bit
+      repository: https://fluent.github.io/helm-charts
+      version: 0.x.x
+    description: Umbrella chart to configure a Calyptia Core control plane and supporting
+      on-premise appliance.
+    digest: 325ce268e4ab2cf4f522add2f972bbeb843469c42ceba5ef7b482f7c927f5560
+    home: https://calyptia.com/products/calyptia-core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: calyptia-standalone
+    type: application
+    urls:
+    - https://github.com/chronosphereio/calyptia-charts/releases/download/calyptia-standalone-2.9.0/calyptia-standalone-2.9.0.tgz
+    version: 2.9.0
+  - apiVersion: v2
+    appVersion: v1.8.0
     created: "2024-03-25T13:17:56.178137851Z"
     dependencies:
     - condition: operator.enabled
@@ -4291,4 +4336,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-25T13:17:56.178565187Z"
+generated: "2024-03-27T10:01:34.126558276Z"
