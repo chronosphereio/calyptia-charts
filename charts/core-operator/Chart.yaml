@@ -4,8 +4,8 @@ description: Calyptia Core Operator chart
 home: https://calyptia.com/products/core/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 2.8.2
-appVersion: "v2.8.2"
+version: 2.8.4
+appVersion: "v2.8.4"
 maintainers:
   - name: Calyptia
     email: hello@calyptia.com

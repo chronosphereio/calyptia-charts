@@ -52,6 +52,8 @@ spec:
           value: {{ template "ingestCheck.image" . }}
         - name: ANNOTATIONS
           value: {{ .Values.calyptiaAnnotations }}
+        - name: TOLERATIONS
+          value: {{ .Values.calyptiaTolerations }}
         image: {{ template "fromCloud.image" . }}
         imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: from-cloud

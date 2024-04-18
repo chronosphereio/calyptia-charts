@@ -145,7 +145,7 @@ tests:
           value:
             value: "true"
             name: NO_TLS_VERIFY
-  - it: checks annotations 
+  - it: checks annotations
     set:
       coreInstance: ci-1234
       cloudToken: xxx
@@ -189,5 +189,14 @@ tests:
           value:
             value: myspecial/annotation='this has spaces'
             name: ANNOTATIONS
-
-
+  - it: checks tolerations char
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[13]
+          value:
+            value: key1=Equal:value1:Execute:3600
+            name: TOLERATIONS
