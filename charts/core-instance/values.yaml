@@ -11,16 +11,17 @@ healthCheckPipelineServiceType: LoadBalancer
 # calyptiaAnnotations is a core-instance specific parameter
 # NOT to be confused with standard annotations
 calyptiaAnnotations: ""
+calyptiaTolerations: ""
 images:
   fromCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-from-cloud
-    tag: 2.8.2
+    tag: 2.8.4
     pullSecrets: []
   toCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-to-cloud
-    tag: 2.8.2
+    tag: 2.8.4
     pullSecrets: []
   hotReload:
     registry: ghcr.io
