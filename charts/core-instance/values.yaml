@@ -6,6 +6,7 @@ coreSecret: "core-instance"
 cloudToken: ""
 cloudUrl: "https://cloud-api.calyptia.com"
 enableHealthCheckPipeline: false
+skipServiceCreation: false
 healthCheckPipelinePort: 2020
 healthCheckPipelineServiceType: LoadBalancer
 # calyptiaAnnotations is a core-instance specific parameter

@@ -189,14 +189,75 @@ tests:
           value:
             value: myspecial/annotation='this has spaces'
             name: ANNOTATIONS
-  - it: checks tolerations char
+  - it: checks tolerations key
     set:
       coreInstance: ci-1234
       cloudToken: xxx
       calyptiaTolerations: "key1=Equal:value1:Execute:3600"
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env[13]
-          value:
-            value: key1=Equal:value1:Execute:3600
-            name: TOLERATIONS
+          path: spec.template.spec.tolerations[0].key
+          value: "key1"
+  - it: checks tolerations effect
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].effect
+          value: "Execute"
+  - it: checks tolerations operator
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].operator
+          value: "Equal"
+  - it: checks tolerations tolerationSeconds
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].tolerationSeconds
+          value: 3600
+  - it: checks tolerations key
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600,key2=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[1].key
+          value: "key2"
+  - it: checks tolerations effect
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600,key2=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[1].effect
+          value: "Execute"
+  - it: checks tolerations operator
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600,key2=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[1].operator
+          value: "Equal"
+  - it: checks tolerations tolerationSeconds
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600,key2=Equal:value1:Execute:3605"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[1].tolerationSeconds
+          value: 3605
