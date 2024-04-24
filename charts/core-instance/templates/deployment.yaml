@@ -52,6 +52,8 @@ spec:
           value: {{ template "ingestCheck.image" . }}
         - name: ANNOTATIONS
           value: {{ .Values.calyptiaAnnotations }}
+        - name: SKIP_SERVICE_CREATION
+          value: {{ .Values.skipServiceCreation | quote }}
         - name: TOLERATIONS
           value: {{ .Values.calyptiaTolerations }}
         image: {{ template "fromCloud.image" . }}
@@ -84,3 +86,18 @@ spec:
         ports:
           - containerPort: {{ .Values.metricsPort | int }}
             name: metrics
+    {{- if .Values.calyptiaTolerations }}
+      tolerations:
+      {{- $tolerations := .Values.calyptiaTolerations | split "," }}
+      {{- range $toleration := $tolerations }}
+        {{- $tolerationParts := split ":" $toleration }}
+        {{- $keyValue := split "=" (index $tolerationParts._0) }}
+        - key: "{{ $keyValue._0 }}"
+          operator: "{{ $keyValue._1 }}"
+          value: "{{ index $tolerationParts._1 }}"
+          effect: "{{ index $tolerationParts._2 }}"
+          {{- if gt (len $tolerationParts) 3 }}
+          tolerationSeconds: {{ index $tolerationParts._3 }}
+          {{- end }}
+      {{- end }}
+    {{- end }}
