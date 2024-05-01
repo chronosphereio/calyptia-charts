@@ -1,8 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
----
 suite: test my manager
 templates:
-  - manager.yaml
+  - templates/manager.yaml
 release:
   namespace: test
 tests:
