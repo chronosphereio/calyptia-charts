@@ -323,6 +323,9 @@ spec:
                           - type
                         type: object
                       type: array
+                      x-kubernetes-list-map-keys:
+                        - type
+                      x-kubernetes-list-type: map
                     currentNumberScheduled:
                       description: |-
                         The number of nodes that are running at least 1
@@ -422,6 +425,9 @@ spec:
                           - type
                         type: object
                       type: array
+                      x-kubernetes-list-map-keys:
+                        - type
+                      x-kubernetes-list-type: map
                     observedGeneration:
                       description: The generation observed by the deployment controller.
                       format: int64
@@ -584,6 +590,7 @@ spec:
                                   x-kubernetes-list-type: atomic
                               type: object
                             type: array
+                            x-kubernetes-list-type: atomic
                         type: object
                     type: object
                   type: object
