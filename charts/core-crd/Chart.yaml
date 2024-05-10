@@ -2,8 +2,8 @@ apiVersion: v2
 name: core-crd
 description: A Helm chart for Kubernetes
 type: application
-version: 2.10.0
-appVersion: "v2.10.0"
+version: 2.10.1
+appVersion: "v2.10.1"
 maintainers:
   - name: Calyptia
     email: hello@calyptia.com
