@@ -8,7 +8,9 @@ tests:
   - it: checks kind
     set:
       coreInstance: ci-1234
-      cloudToken: xxx
+      cloudTokenSec: 
+        name: xxx
+        key: yyy
     asserts:
       - isKind:
           of: Deployment
@@ -17,7 +19,9 @@ tests:
       name: test_core-instance
       cloudUrl: test_url
       coreInstance: ci-1234
-      cloudToken: xxx
+      cloudTokenSec: 
+        name: xxx
+        key: yyy
       calyptiaAnnotations: "test=1234,nope=4321"
       images:
         fromCloud:
@@ -32,6 +36,7 @@ tests:
           registry: custom.io
           repository: test/ingestcheck
           tag: 1.2.3
+      http_proxy: https
     asserts:
       # From Cloud
       - equal:
@@ -58,7 +63,10 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env[3]
           value:
-            value: xxx
+            valueFrom:
+              secretKeyRef:
+                key: yyy
+                name: xxx
             name: TOKEN
       - equal:
           path: spec.template.spec.containers[0].env[4]
@@ -82,12 +90,7 @@ tests:
             name: HOTRELOAD_IMAGE
       - equal:
           path: spec.template.spec.containers[0].image
-          value: custom.io/test/fromCloud:1.2.3
-      - equal:
-          path: spec.template.spec.containers[0].env[6]
-          value:
-            value: "true"
-            name: NO_TLS_VERIFY
+          value: custom.io/test/fromCloud:1.2.3     
       - equal:
           path: spec.template.spec.containers[0].env[7]
           value:
@@ -113,6 +116,11 @@ tests:
           value:
             value: test=1234,nope=4321
             name: ANNOTATIONS
+      - equal:
+          path: spec.template.spec.containers[0].env[15]
+          value:
+            value: https
+            name: HTTP_PROXY
 
       # To Cloud
       - equal:
@@ -133,7 +141,10 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].env[3]
           value:
-            value: xxx
+            valueFrom:
+              secretKeyRef:
+                key: yyy
+                name: xxx
             name: TOKEN
       - equal:
           path: spec.template.spec.containers[1].env[4]
@@ -145,6 +156,11 @@ tests:
           value:
             value: "true"
             name: NO_TLS_VERIFY
+      - equal:
+          path: spec.template.spec.containers[1].env[7]
+          value:
+            value: https
+            name: HTTP_PROXY
   - it: checks annotations
     set:
       coreInstance: ci-1234
