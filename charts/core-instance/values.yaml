@@ -4,6 +4,9 @@ clusterLogging: false
 coreInstance: ""
 coreSecret: "core-instance"
 cloudToken: ""
+cloudTokenSec:
+  name:
+  key:
 cloudUrl: "https://cloud-api.calyptia.com"
 enableHealthCheckPipeline: false
 skipServiceCreation: false
@@ -51,6 +54,9 @@ serviceAccount:
   create: true
   name: ""
   annotations: {}
+http_proxy: ""
+https_proxy: ""
+no_proxy: ""
 #
 ## RBAC configuration
 ## @param rbac.create Specifies whether RBAC resources should be created

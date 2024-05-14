@@ -33,7 +33,14 @@ spec:
         - name: CLOUD_URL
           value: {{ default "https://cloud-api.calyptia.com" .Values.cloudUrl | quote }}
         - name: TOKEN
+          {{- if and .Values.cloudTokenSec.name .Values.cloudTokenSec.key }}
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.cloudTokenSec.name }}"
+              key: "{{ .Values.cloudTokenSec.key }}"
+          {{- else }}
           value: "{{ required "cloudToken must be provided" .Values.cloudToken }}"
+          {{- end }}
         - name: INTERVAL
           value: {{ default "15s" .Values.interval | quote }}
         - name: CLUSTER_LOGGING
@@ -56,6 +63,12 @@ spec:
           value: {{ .Values.skipServiceCreation | quote }}
         - name: TOLERATIONS
           value: {{ .Values.calyptiaTolerations }}
+        - name: HTTP_PROXY
+          value: {{ .Values.http_proxy | quote }}     
+        - name: HTTPS_PROXY
+          value: {{ .Values.https_proxy | quote }}     
+        - name: NO_PROXY
+          value: {{ .Values.no_proxy | quote }}     
         image: {{ template "fromCloud.image" . }}
         imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: from-cloud
@@ -70,13 +83,22 @@ spec:
         - name: CLOUD_URL
           value: {{ default "https://cloud-api.calyptia.com" .Values.cloudUrl | quote }}
         - name: TOKEN
+          {{- if and .Values.cloudTokenSec.name .Values.cloudTokenSec.key }}
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.cloudTokenSec.name }}"
+              key: "{{ .Values.cloudTokenSec.key }}"
+          {{- else }}
           value: "{{ required "cloudToken must be provided" .Values.cloudToken }}"
+          {{- end }}
         - name: INTERVAL
           value: {{ default "15s" .Values.interval | quote }}
         - name: NO_TLS_VERIFY
           value: {{ default false .Values.notls | quote }}
         - name: METRICS_PORT
-          value: {{ .Values.metricsPort | toYaml }}
+          value: {{ .Values.metricsPort | toYaml }}   
+        - name: HTTP_PROXY
+          value: {{ .Values.http_proxy | quote }}   
         image: {{ template "toCloud.image" . }}
         imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: to-cloud
