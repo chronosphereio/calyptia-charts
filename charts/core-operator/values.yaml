@@ -4,7 +4,7 @@ images:
   operator:
     registry: ghcr.io
     repository: calyptia/core-operator
-    tag: 2.11.0
+    tag: 2.12.0
     pullSecrets: []
   hotReload:
     registry: ghcr.io
@@ -21,7 +21,6 @@ serviceAccount:
   create: true
   name: ""
   annotations: {}
-
 #
 ## RBAC configuration
 ## @param rbac.create Specifies whether RBAC resources should be created
