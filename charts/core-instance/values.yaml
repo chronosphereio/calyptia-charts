@@ -20,12 +20,12 @@ images:
   fromCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-from-cloud
-    tag: 2.12.4
+    tag: 2.12.5
     pullSecrets: []
   toCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-to-cloud
-    tag: 2.12.4
+    tag: 2.12.5
     pullSecrets: []
   hotReload:
     registry: ghcr.io
