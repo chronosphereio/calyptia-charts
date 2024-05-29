@@ -37,6 +37,7 @@ tests:
           repository: test/ingestcheck
           tag: 1.2.3
       http_proxy: https
+      cloud_proxy: cloud
     asserts:
       # From Cloud
       - equal:
@@ -121,7 +122,11 @@ tests:
           value:
             value: https
             name: HTTP_PROXY
-
+      - equal:
+            path: spec.template.spec.containers[0].env[18]
+            value:
+              value: cloud
+              name: CLOUD_PROXY
       # To Cloud
       - equal:
           path: spec.template.spec.containers[1].env[0]
