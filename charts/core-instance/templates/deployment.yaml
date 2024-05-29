@@ -69,6 +69,8 @@ spec:
           value: {{ .Values.https_proxy | quote }}     
         - name: NO_PROXY
           value: {{ .Values.no_proxy | quote }}     
+        - name: CLOUD_PROXY
+          value: {{ .Values.cloud_proxy | quote }} 
         image: {{ template "fromCloud.image" . }}
         imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: from-cloud

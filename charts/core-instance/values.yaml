@@ -57,6 +57,7 @@ serviceAccount:
 http_proxy: ""
 https_proxy: ""
 no_proxy: ""
+cloud_proxy: ""
 #
 ## RBAC configuration
 ## @param rbac.create Specifies whether RBAC resources should be created
