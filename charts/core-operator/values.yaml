@@ -4,7 +4,7 @@ images:
   operator:
     registry: ghcr.io
     repository: calyptia/core-operator
-    tag: 2.12.7
+    tag: 2.12.6
     pullSecrets: []
   hotReload:
     registry: ghcr.io
