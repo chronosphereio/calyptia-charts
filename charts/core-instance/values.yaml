@@ -20,12 +20,12 @@ images:
   fromCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-from-cloud
-    tag: 2.13.1
+    tag: 2.14.0
     pullSecrets: []
   toCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-to-cloud
-    tag: 2.13.1
+    tag: 2.14.0
     pullSecrets: []
   hotReload:
     registry: ghcr.io
@@ -39,6 +39,8 @@ images:
     pullSecrets: []
 notls: "true"
 interval: "15s"
+# enables core instance metrics
+metrics: "false"
 metricsPort: "15334"
 commonAnnotations: {}
 commonLabels: {}

@@ -127,6 +127,11 @@ tests:
             value:
               value: cloud
               name: CLOUD_PROXY
+      - equal:
+          path: spec.template.spec.containers[0].env[19]
+          value:
+            value: "false"
+            name: METRICS
       # To Cloud
       - equal:
           path: spec.template.spec.containers[1].env[0]
@@ -166,6 +171,11 @@ tests:
           value:
             value: https
             name: HTTP_PROXY
+      - equal:
+          path: spec.template.spec.containers[1].env[8]
+          value:
+            value: "false"
+            name: METRICS
   - it: checks annotations
     set:
       coreInstance: ci-1234
