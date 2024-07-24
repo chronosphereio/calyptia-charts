@@ -1,12 +1,13 @@
+{{- if .Values.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{- printf "calyptia-core-instance-%s" .Release.Name | trunc 63 | trimSuffix "-" -}}"
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "common.names.namespace" . | quote }}
   {{- if .Values.commonAnnotations }}
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
-  labels: 
+  labels:
     app.kubernetes.io/instance: {{ .Values.coreInstance }}
 spec:
   replicas: {{ default 1 .Values.replicas }}
@@ -64,13 +65,13 @@ spec:
         - name: TOLERATIONS
           value: {{ .Values.calyptiaTolerations }}
         - name: HTTP_PROXY
-          value: {{ .Values.http_proxy | quote }}     
+          value: {{ .Values.httpProxy | quote }}
         - name: HTTPS_PROXY
-          value: {{ .Values.https_proxy | quote }}     
+          value: {{ .Values.httpsProxy | quote }}
         - name: NO_PROXY
-          value: {{ .Values.no_proxy | quote }}     
+          value: {{ .Values.noProxy | quote }}
         - name: CLOUD_PROXY
-          value: {{ .Values.cloud_proxy | quote }} 
+          value: {{ .Values.cloudProxy | quote }}
         - name: METRICS
           value: {{ default false .Values.metrics | quote }}
         image: {{ template "fromCloud.image" . }}
@@ -100,9 +101,15 @@ spec:
         - name: NO_TLS_VERIFY
           value: {{ default false .Values.notls | quote }}
         - name: METRICS_PORT
-          value: {{ .Values.metricsPort | toYaml }}   
+          value: {{ .Values.metricsPort | toYaml }}
         - name: HTTP_PROXY
-          value: {{ .Values.http_proxy | quote }}   
+          value: {{ .Values.httpProxy | quote }}
+        - name: HTTPS_PROXY
+          value: {{ .Values.httpsProxy | quote }}
+        - name: NO_PROXY
+          value: {{ .Values.noProxy | quote }}
+        - name: CLOUD_PROXY
+          value: {{ .Values.cloudProxy | quote }}
         - name: METRICS
           value: {{ default false .Values.metrics | quote }}
         image: {{ template "toCloud.image" . }}
@@ -129,3 +136,4 @@ spec:
           {{- end }}
       {{- end }}
     {{- end }}
+{{- end }}

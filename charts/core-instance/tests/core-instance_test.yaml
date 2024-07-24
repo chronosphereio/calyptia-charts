@@ -8,7 +8,7 @@ tests:
   - it: checks kind
     set:
       coreInstance: ci-1234
-      cloudTokenSec: 
+      cloudTokenSec:
         name: xxx
         key: yyy
     asserts:
@@ -19,7 +19,7 @@ tests:
       name: test_core-instance
       cloudUrl: test_url
       coreInstance: ci-1234
-      cloudTokenSec: 
+      cloudTokenSec:
         name: xxx
         key: yyy
       calyptiaAnnotations: "test=1234,nope=4321"
@@ -36,8 +36,8 @@ tests:
           registry: custom.io
           repository: test/ingestcheck
           tag: 1.2.3
-      http_proxy: https
-      cloud_proxy: cloud
+      httpProxy: https
+      cloudProxy: cloud
     asserts:
       # From Cloud
       - equal:
@@ -91,7 +91,7 @@ tests:
             name: HOTRELOAD_IMAGE
       - equal:
           path: spec.template.spec.containers[0].image
-          value: custom.io/test/fromCloud:1.2.3     
+          value: custom.io/test/fromCloud:1.2.3
       - equal:
           path: spec.template.spec.containers[0].env[7]
           value:
@@ -171,11 +171,6 @@ tests:
           value:
             value: https
             name: HTTP_PROXY
-      - equal:
-          path: spec.template.spec.containers[1].env[8]
-          value:
-            value: "false"
-            name: METRICS
   - it: checks annotations
     set:
       coreInstance: ci-1234

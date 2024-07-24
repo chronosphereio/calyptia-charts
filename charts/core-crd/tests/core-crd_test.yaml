@@ -7,11 +7,10 @@ templates:
 tests:
   - it: checks kind
     set:
-      pipelineServiceType: ClusterIP      
+      pipelineServiceType: ClusterIP
     asserts:
       - isKind:
           of: CustomResourceDefinition
-      - equal: 
+      - equal:
           path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.ports.items.properties.serviceType.default
           value: ClusterIP
-  

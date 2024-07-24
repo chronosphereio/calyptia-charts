@@ -1,3 +1,4 @@
+{{- if .Values.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -18,7 +19,7 @@ metadata:
     calyptia.core: core-operator
     control-plane: controller-manager
   name: calyptia-core-controller-manager-metrics-service
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "common.names.namespace" . | quote }}
 spec:
   ports:
   - name: https
@@ -32,3 +33,4 @@ spec:
   selector:
     calyptia.core: core-operator
     control-plane: controller-manager
+{{- end }}

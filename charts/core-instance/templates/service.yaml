@@ -1,3 +1,4 @@
+{{- if .Values.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -10,14 +11,15 @@ metadata:
   {{- end }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
   name: "{{-  printf "calyptia-core-instance-metrics-%s" .Release.Name | trunc 63 | trimSuffix "-" -}}"
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ include "common.names.namespace" . | quote }}
 spec:
   ports:
   - name: metrics
-    port: {{ .Values.metricsPort | int }}
+    port: {{ default 15334 .Values.metricsPort | int }}
     protocol: TCP
     targetPort: metrics
   selector:
     app.kubernetes.io/part-of: calyptia
     calyptia.core: core-instance
     instance: "{{- printf "calyptia-core-instance-%s" .Release.Name -}}"
+{{- end }}
