@@ -1,3 +1,5 @@
+# Turn this chart off/on
+enabled: true
 name: "core-instance"
 clusterLogging: false
 # If not set then we use the release name
@@ -20,12 +22,12 @@ images:
   fromCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-from-cloud
-    tag: 3.1.0
+    tag: 3.2.0
     pullSecrets: []
   toCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-to-cloud
-    tag: 3.1.0
+    tag: 3.2.0
     pullSecrets: []
   hotReload:
     registry: ghcr.io
@@ -48,6 +50,7 @@ podAnnotations: {}
 podLabels: {}
 nameOverride: ""
 fullnameOverride: ""
+namespaceOverride: ""
 fromCloud:
   resources: {}
 toCloud:
@@ -56,10 +59,10 @@ serviceAccount:
   create: true
   name: ""
   annotations: {}
-http_proxy: ""
-https_proxy: ""
-no_proxy: ""
-cloud_proxy: ""
+httpProxy: ""
+httpsProxy: ""
+noProxy: ""
+cloudProxy: ""
 #
 ## RBAC configuration
 ## @param rbac.create Specifies whether RBAC resources should be created

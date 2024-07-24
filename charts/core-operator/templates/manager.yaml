@@ -1,3 +1,4 @@
+{{- if .Values.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -11,7 +12,7 @@ metadata:
     calyptia.core: core-operator
     control-plane: controller-manager
   name: calyptia-core-controller-manager
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ include "common.names.namespace" . | quote }}
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
@@ -71,3 +72,4 @@ spec:
       serviceAccount: {{ template "operator.serviceAccountName" . }}
       {{- include "operator.imagePullSecrets" . | nindent 6 }}
       terminationGracePeriodSeconds: 10
+{{- end }}

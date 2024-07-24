@@ -1,10 +1,10 @@
-# Deprecated
-# operatorImage: "ghcr.io/calyptia/core-operator:v2.0.6"
+# Turn this chart off/on
+enabled: true
 images:
   operator:
     registry: ghcr.io
     repository: calyptia/core-operator
-    tag: 3.1.0
+    tag: 3.2.0
     pullSecrets: []
   hotReload:
     registry: ghcr.io
@@ -17,6 +17,7 @@ podAnnotations: {}
 podLabels: {}
 nameOverride: ""
 fullnameOverride: ""
+namespaceOverride: ""
 serviceAccount:
   create: true
   name: ""

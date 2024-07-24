@@ -1,3 +1,6 @@
+# Turn this chart off/on
+enabled: true
+
 images:
   hotReload:
     registry: ghcr.io
@@ -7,7 +10,7 @@ images:
   fluentBit:
     registry: ghcr.io
     repository: calyptia/core/calyptia-fluent-bit
-    tag: 24.7.3
+    tag: 24.7.4
     pullSecrets: []
   ingestCheck:
     registry: ghcr.io
