@@ -2,9 +2,7 @@ Thank you for installing the Calyptia Core operator chart: {{ .Chart.Name }}.
 
 Your release is named {{ .Release.Name }}.
 
-Review the Calyptia Core documentation for full details: <https://docs.calyptia.com/calyptia-core/getting-started/readme>
-
-Support can be accessed via: <https://support.calyptia.com/>
+Review the Calyptia Core documentation for full details: <https://docs.chronosphere.io/pipelines>
 
 To run post-installation tests please use the standard helm approach: <https://helm.sh/docs/topics/chart_tests/>
 

@@ -66,3 +66,38 @@ Return the proper Container Registry Secret Names
 {{- printf "{\"auths\":{\"%s\":{\"username\":\"%s\",\"password\":\"%s\",\"email\":\"%s\",\"auth\":\"%s\"}}}" .registry .username .password .email (printf "%s:%s" .username .password | b64enc) | b64enc }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Support httpProxy and backwards-compatible http_proxy
+*/}}
+{{- define "instance.httpProxy" -}}
+  {{- if not (empty .Values.http_proxy) -}}
+    {{- printf "%s" .Values.http_proxy -}}
+  {{- else -}}
+    {{ default "" .Values.httpProxy }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "instance.httpsProxy" -}}
+  {{- if not (empty .Values.https_proxy) -}}
+    {{- printf "%s" .Values.https_proxy -}}
+  {{- else -}}
+    {{ default "" .Values.httpsProxy }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "instance.noProxy" -}}
+  {{- if not (empty .Values.no_proxy) -}}
+    {{- printf "%s" .Values.no_proxy -}}
+  {{- else -}}
+    {{ default "" .Values.noProxy }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "instance.cloudProxy" -}}
+  {{- if not (empty .Values.cloud_proxy) -}}
+    {{- printf "%s" .Values.cloud_proxy -}}
+  {{- else -}}
+    {{ default "" .Values.cloudProxy }}
+  {{- end -}}
+{{- end -}}

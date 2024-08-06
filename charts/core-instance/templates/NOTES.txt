@@ -1,0 +1,21 @@
+Thank you for installing the Calyptia Core instance chart: {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+Review the Calyptia Core documentation for full details: <https://docs.chronosphere.io/pipelines>
+
+{{- if not (empty .Values.http_proxy) }}
+WARNING: using deprecated 'http_proxy' setting, please use 'httpProxy'.
+{{- end -}}
+
+{{- if not (empty .Values.https_proxy) }}
+WARNING: using deprecated 'https_proxy' setting, please use 'httpsProxy'.
+{{- end -}}
+
+{{- if not (empty .Values.no_proxy) }}
+WARNING: using deprecated 'no_proxy' setting, please use 'noProxy'.
+{{- end -}}
+
+{{- if not (empty .Values.cloud_proxy) }}
+WARNING: using deprecated 'cloud_proxy' setting, please use 'cloudProxy'.
+{{- end -}}
