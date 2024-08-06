@@ -36,8 +36,9 @@ tests:
           registry: custom.io
           repository: test/ingestcheck
           tag: 1.2.3
+      # Use alternative forms to verify backwards compatible
       httpProxy: https
-      cloudProxy: cloud
+      cloud_proxy: cloud
     asserts:
       # From Cloud
       - equal:

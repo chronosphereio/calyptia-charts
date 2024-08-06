@@ -65,13 +65,13 @@ spec:
         - name: TOLERATIONS
           value: {{ .Values.calyptiaTolerations }}
         - name: HTTP_PROXY
-          value: {{ .Values.httpProxy | quote }}
+          value: {{ template "instance.httpProxy" . }}
         - name: HTTPS_PROXY
-          value: {{ .Values.httpsProxy | quote }}
+          value: {{ template "instance.httpsProxy" . }}
         - name: NO_PROXY
-          value: {{ .Values.noProxy | quote }}
+          value: {{ template "instance.noProxy" . }}
         - name: CLOUD_PROXY
-          value: {{ .Values.cloudProxy | quote }}
+          value: {{ template "instance.cloudProxy" . }}
         - name: METRICS
           value: {{ default false .Values.metrics | quote }}
         image: {{ template "fromCloud.image" . }}
@@ -84,7 +84,7 @@ spec:
         - name: CORE_INSTANCE
           value: {{ default .Release.Name .Values.coreInstance | quote }}
         - name: NAMESPACE
-          value: {{ .Release.Namespace | quote }}
+          value: {{ include "common.names.namespace" . | quote }}
         - name: CLOUD_URL
           value: {{ default "https://cloud-api.calyptia.com" .Values.cloudUrl | quote }}
         - name: TOKEN
@@ -103,13 +103,13 @@ spec:
         - name: METRICS_PORT
           value: {{ .Values.metricsPort | toYaml }}
         - name: HTTP_PROXY
-          value: {{ .Values.httpProxy | quote }}
+          value: {{ template "instance.httpProxy" . }}
         - name: HTTPS_PROXY
-          value: {{ .Values.httpsProxy | quote }}
+          value: {{ template "instance.httpsProxy" . }}
         - name: NO_PROXY
-          value: {{ .Values.noProxy | quote }}
+          value: {{ template "instance.noProxy" . }}
         - name: CLOUD_PROXY
-          value: {{ .Values.cloudProxy | quote }}
+          value: {{ template "instance.cloudProxy" . }}
         - name: METRICS
           value: {{ default false .Values.metrics | quote }}
         image: {{ template "toCloud.image" . }}

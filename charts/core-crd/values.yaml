@@ -1,6 +1,5 @@
 # Turn this chart off/on
 enabled: true
-
 images:
   hotReload:
     registry: ghcr.io
