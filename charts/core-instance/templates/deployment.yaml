@@ -9,6 +9,8 @@ metadata:
   {{- end }}
   labels:
     app.kubernetes.io/instance: {{ .Values.coreInstance }}
+    app.kubernetes.io/part-of: calyptia
+    calyptia.core: core-instance
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
@@ -23,6 +25,7 @@ spec:
         {{- end }}
       labels:
         app.kubernetes.io/part-of: calyptia
+        calyptia.core: core-instance
     spec:
       serviceAccount: {{ template "instance.serviceAccountName" . }}
       containers:
@@ -80,6 +83,13 @@ spec:
         {{- if .Values.fromCloud.resources }}
         resources: {{- toYaml .Values.fromCloud.resources | nindent 12 }}
         {{- end }}
+        volumeMounts:
+        {{- if .Values.extraVolumeMounts }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
+        {{- end }}
+        {{- if .Values.fromCloud.extraVolumeMounts }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.fromCloud.extraVolumeMounts "context" $) | nindent 12 }}
+        {{- end }}
       - env:
         - name: CORE_INSTANCE
           value: {{ default .Release.Name .Values.coreInstance | quote }}
@@ -121,6 +131,13 @@ spec:
         ports:
           - containerPort: {{ .Values.metricsPort | int }}
             name: metrics
+        volumeMounts:
+        {{- if .Values.extraVolumeMounts }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
+        {{- end }}
+        {{- if .Values.toCloud.extraVolumeMounts }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.toCloud.extraVolumeMounts "context" $) | nindent 12 }}
+        {{- end }}
     {{- if .Values.calyptiaTolerations }}
       tolerations:
       {{- $tolerations := .Values.calyptiaTolerations | split "," }}
@@ -136,4 +153,9 @@ spec:
           {{- end }}
       {{- end }}
     {{- end }}
+      volumes:
+        {{- if .Values.extraVolumes }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 8 }}
+        {{- end }}
+      restartPolicy: {{ default "Always" .Values.restartPolicy }}
 {{- end }}

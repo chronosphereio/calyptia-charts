@@ -4,7 +4,7 @@ images:
   operator:
     registry: ghcr.io
     repository: calyptia/core-operator
-    tag: 3.2.1
+    tag: 3.3.3
     pullSecrets: []
   hotReload:
     registry: ghcr.io
@@ -64,3 +64,16 @@ resources:
   requests:
     cpu: 10m
     memory: 64Mi
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: 8081
+  initialDelaySeconds: 5
+  periodSeconds: 10
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 8081
+  initialDelaySeconds: 15
+  periodSeconds: 20
+restartPolicy: Always
