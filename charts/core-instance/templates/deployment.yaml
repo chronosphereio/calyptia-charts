@@ -66,7 +66,7 @@ spec:
         - name: SKIP_SERVICE_CREATION
           value: {{ .Values.skipServiceCreation | quote }}
         - name: TOLERATIONS
-          value: {{ .Values.calyptiaTolerations }}
+          value: {{ .Values.calyptiaTolerations | quote }}
         - name: HTTP_PROXY
           value: {{ template "instance.httpProxy" . }}
         - name: HTTPS_PROXY
