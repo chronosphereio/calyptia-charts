@@ -69,11 +69,30 @@ spec:
             capabilities:
               drop:
                 - ALL
+          env:
+          - name: TOLERATIONS
+            value: {{ .Values.calyptiaTolerations }}
+      value: "$(GREETING) $(HONORIFIC) $(NAME)"
       securityContext:
         runAsNonRoot: true
       serviceAccount: {{ template "operator.serviceAccountName" . }}
       {{- include "operator.imagePullSecrets" . | nindent 6 }}
       terminationGracePeriodSeconds: 10
+    {{- if .Values.calyptiaTolerations }}
+      tolerations:
+      {{- $tolerations := .Values.calyptiaTolerations | split "," }}
+      {{- range $toleration := $tolerations }}
+        {{- $tolerationParts := split ":" $toleration }}
+        {{- $keyValue := split "=" (index $tolerationParts._0) }}
+        - key: "{{ $keyValue._0 }}"
+          operator: "{{ $keyValue._1 }}"
+          value: "{{ index $tolerationParts._1 }}"
+          effect: "{{ index $tolerationParts._2 }}"
+          {{- if gt (len $tolerationParts) 3 }}
+          tolerationSeconds: {{ index $tolerationParts._3 }}
+          {{- end }}
+      {{- end }}
+    {{- end }}
       volumes:
         {{- if .Values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 8 }}
