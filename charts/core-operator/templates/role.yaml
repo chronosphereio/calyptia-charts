@@ -63,9 +63,6 @@ metadata:
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: operator
-    app.kubernetes.io/instance: metrics-reader
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: clusterrole
     app.kubernetes.io/part-of: operator
     calyptia.core: core-operator
   name: calyptia-core-metrics-reader
@@ -130,9 +127,6 @@ metadata:
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: operator
-    app.kubernetes.io/instance: proxy-role
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: clusterrole
     app.kubernetes.io/part-of: operator
     calyptia.core: core-operator
   name: calyptia-core-proxy-role

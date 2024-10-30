@@ -49,9 +49,6 @@ metadata:
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: operator
-    app.kubernetes.io/instance: manager-rolebinding
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: clusterrolebinding
     app.kubernetes.io/part-of: operator
     calyptia.core: core-operator
   name: "{{-  printf "calyptia-core-instance-%s-rolebinding" .Release.Name  -}}"
