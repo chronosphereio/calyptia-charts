@@ -24,3 +24,66 @@ tests:
       - equal:
           path: metadata.namespace
           value: test
+  - it: checks tolerations key
+    set:
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].key
+          value: "key1"
+  - it: checks tolerations effect
+    set:
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].effect
+          value: "Execute"
+  - it: checks tolerations operator
+    set:
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].operator
+          value: "Equal"
+  - it: checks tolerations tolerationSeconds
+    set:
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].tolerationSeconds
+          value: 3600
+  - it: checks tolerations key
+    set:
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600,key2=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[1].key
+          value: "key2"
+  - it: checks tolerations effect
+    set:
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600,key2=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[1].effect
+          value: "Execute"
+  - it: checks tolerations operator
+    set:
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600,key2=Equal:value1:Execute:3600"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[1].operator
+          value: "Equal"
+  - it: checks tolerations tolerationSeconds
+    set:
+      calyptiaTolerations: "key1=Equal:value1:Execute:3600,key2=Equal:value1:Execute:3605"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[1].tolerationSeconds
+          value: 3605
+  - it: checks tolerations exists
+    set:
+      calyptiaTolerations: "=Exists::"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].operator
+          value: "Exists"
