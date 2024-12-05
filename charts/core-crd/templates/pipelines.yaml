@@ -788,6 +788,10 @@ spec:
                 kind:
                   description: Enums
                   type: string
+                labels:
+                  additionalProperties:
+                    type: string
+                  type: object
                 ports:
                   items:
                     properties:
@@ -844,6 +848,9 @@ spec:
                           type: object
                       type: object
                   type: object
+                serviceAccount:
+                  description: service account for pipelines
+                  type: string
                 tolerations:
                   items:
                     description: |-
