@@ -87,11 +87,3 @@ tests:
       - equal:
           path: spec.template.spec.tolerations[0].operator
           value: "Exists"
-  - it: checks env var
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].env[0]
-          value:
-            name: POD_SERVICEACCOUNT
-            value: calyptia-core-po-sa
-

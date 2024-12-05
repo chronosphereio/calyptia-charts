@@ -4,7 +4,7 @@ images:
   operator:
     registry: ghcr.io
     repository: calyptia/core-operator
-    tag: 3.12.0
+    tag: 3.8.0
     pullSecrets: []
   hotReload:
     registry: ghcr.io
@@ -78,7 +78,3 @@ livenessProbe:
   initialDelaySeconds: 15
   periodSeconds: 20
 restartPolicy: Always
-serviceAccounts: []
-# - name: exampleSA
-#   namespace: exampleNamespace
-podServiceAccount: calyptia-core-po-sa

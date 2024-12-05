@@ -41,28 +41,5 @@ subjects:
 - kind: ServiceAccount
   name: {{ template "operator.serviceAccountName" . }}
   namespace: {{ include "common.names.namespace" . | quote }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  labels:
-    app.kubernetes.io/created-by: core-operator
-    app.kubernetes.io/managed-by: core-operator
-    app.kubernetes.io/part-of: calyptia
-    calyptia.core: core-operator
-  name: calyptia-core-pod-rolebinding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: calyptia-core-pod-role
-subjects:
-- kind: ServiceAccount
-  name: calyptia-core-po-sa
-  namespace: {{ .Release.Namespace }}
-{{- range .Values.serviceAccounts }}
-- kind: ServiceAccount
-  name: {{ .name | quote }}
-  namespace: {{ .namespace | quote }}
-  {{- end }}
 {{- end -}}
 {{- end }}
