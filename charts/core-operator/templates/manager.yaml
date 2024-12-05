@@ -55,6 +55,9 @@ spec:
           {{- if .Values.livenessProbe }}
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           {{- end }}
+          env:
+            - name: POD_SERVICEACCOUNT
+              value: calyptia-core-po-sa
           name: manager
           ports:
             - containerPort: 8443
