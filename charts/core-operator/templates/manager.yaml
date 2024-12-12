@@ -55,6 +55,8 @@ spec:
           {{- if .Values.livenessProbe }}
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           {{- end }}
+          args:
+            - "--leader-elect"          
           name: manager
           ports:
             - containerPort: 8443

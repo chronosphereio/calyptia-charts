@@ -788,6 +788,10 @@ spec:
                 kind:
                   description: Enums
                   type: string
+                labels:
+                  additionalProperties:
+                    type: string
+                  type: object
                 ports:
                   items:
                     properties:
@@ -844,6 +848,573 @@ spec:
                           type: object
                       type: object
                   type: object
+                sidecars:
+                  description: Sidecars allows specifying additional containers to run alongside the main container
+                  items:
+                    description: SidecarContainer represents a simplified container specification for sidecars
+                    properties:
+                      args:
+                        description: Arguments to the command
+                        items:
+                          type: string
+                        type: array
+                      command:
+                        description: Command to run in the container
+                        items:
+                          type: string
+                        type: array
+                      env:
+                        description: Environment variables for the sidecar
+                        items:
+                          description: EnvVar represents an environment variable present in a Container.
+                          properties:
+                            name:
+                              description: Name of the environment variable. Must be a C_IDENTIFIER.
+                              type: string
+                            value:
+                              description: |-
+                                Variable references $(VAR_NAME) are expanded
+                                using the previously defined environment variables in the container and
+                                any service environment variables. If a variable cannot be resolved,
+                                the reference in the input string will be unchanged. Double $$ are reduced
+                                to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+                                "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+                                Escaped references will never be expanded, regardless of whether the variable
+                                exists or not.
+                                Defaults to "".
+                              type: string
+                            valueFrom:
+                              description: Source for the environment variable's value. Cannot be used if value is not empty.
+                              properties:
+                                configMapKeyRef:
+                                  description: Selects a key of a ConfigMap.
+                                  properties:
+                                    key:
+                                      description: The key to select.
+                                      type: string
+                                    name:
+                                      default: ""
+                                      description: |-
+                                        Name of the referent.
+                                        This field is effectively required, but due to backwards compatibility is
+                                        allowed to be empty. Instances of this type with an empty value here are
+                                        almost certainly wrong.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      type: string
+                                    optional:
+                                      description: Specify whether the ConfigMap or its key must be defined
+                                      type: boolean
+                                  required:
+                                    - key
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                                fieldRef:
+                                  description: |-
+                                    Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+                                    spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+                                  properties:
+                                    apiVersion:
+                                      description: Version of the schema the FieldPath is written in terms of, defaults to "v1".
+                                      type: string
+                                    fieldPath:
+                                      description: Path of the field to select in the specified API version.
+                                      type: string
+                                  required:
+                                    - fieldPath
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                                resourceFieldRef:
+                                  description: |-
+                                    Selects a resource of the container: only resources limits and requests
+                                    (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+                                  properties:
+                                    containerName:
+                                      description: 'Container name: required for volumes, optional for env vars'
+                                      type: string
+                                    divisor:
+                                      anyOf:
+                                        - type: integer
+                                        - type: string
+                                      description: Specifies the output format of the exposed resources, defaults to "1"
+                                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                      x-kubernetes-int-or-string: true
+                                    resource:
+                                      description: 'Required: resource to select'
+                                      type: string
+                                  required:
+                                    - resource
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      default: ""
+                                      description: |-
+                                        Name of the referent.
+                                        This field is effectively required, but due to backwards compatibility is
+                                        allowed to be empty. Instances of this type with an empty value here are
+                                        almost certainly wrong.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its key must be defined
+                                      type: boolean
+                                  required:
+                                    - key
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                              type: object
+                          required:
+                            - name
+                          type: object
+                        type: array
+                      image:
+                        description: Docker image for the sidecar
+                        type: string
+                      imagePullPolicy:
+                        default: IfNotPresent
+                        description: Optional image pull policy
+                        type: string
+                      livenessProbe:
+                        description: Probe configurations for the sidecar
+                        properties:
+                          exec:
+                            description: |-
+                              One and only one of the following should be specified.
+                              Exec specifies the action to take using a command
+                            properties:
+                              command:
+                                description: Command is the command line to execute inside the container
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - command
+                            type: object
+                          failureThreshold:
+                            description: Minimum consecutive failures for the probe to be considered failed after having succeeded.
+                            format: int32
+                            type: integer
+                          grpc:
+                            description: GRPC specifies a gRPC check against a port
+                            properties:
+                              port:
+                                description: Port number of the gRPC service
+                                format: int32
+                                type: integer
+                              service:
+                                description: Service is the name of the service to place in the gRPC HealthCheckRequest
+                                type: string
+                            required:
+                              - port
+                            type: object
+                          httpGet:
+                            description: HTTPGet specifies the http request to perform
+                            properties:
+                              host:
+                                description: Host name to connect to, defaults to the pod IP
+                                type: string
+                              httpHeaders:
+                                description: Custom headers to set in the request
+                                items:
+                                  description: HTTPHeader describes a custom header to be used in HTTP probes
+                                  properties:
+                                    name:
+                                      description: The header field name
+                                      type: string
+                                    value:
+                                      description: The header field value
+                                      type: string
+                                  required:
+                                    - name
+                                    - value
+                                  type: object
+                                type: array
+                              path:
+                                description: Path to access on the HTTP server
+                                type: string
+                              port:
+                                description: Port number of the HTTP service
+                                format: int32
+                                type: integer
+                              scheme:
+                                description: Scheme to use for connecting to the host
+                                type: string
+                            required:
+                              - port
+                            type: object
+                          initialDelaySeconds:
+                            description: Number of seconds after the container has started before probes are initiated.
+                            format: int32
+                            type: integer
+                          periodSeconds:
+                            description: How often (in seconds) to perform the probe.
+                            format: int32
+                            type: integer
+                          successThreshold:
+                            description: Minimum consecutive successes for the probe to be considered successful after having failed.
+                            format: int32
+                            type: integer
+                          tcpSocket:
+                            description: TCPSocket specifies a TCP check against a port
+                            properties:
+                              host:
+                                description: Host name to connect to, defaults to the pod IP
+                                type: string
+                              port:
+                                description: Port number to probe
+                                format: int32
+                                type: integer
+                            required:
+                              - port
+                            type: object
+                          terminationGracePeriodSeconds:
+                            description: Optional duration in seconds the pod needs to terminate gracefully upon probe failure
+                            format: int64
+                            type: integer
+                          timeoutSeconds:
+                            description: Number of seconds after which the probe times out.
+                            format: int32
+                            type: integer
+                        type: object
+                      name:
+                        description: Name of the sidecar container
+                        type: string
+                      ports:
+                        description: Ports to expose from the container
+                        items:
+                          description: SidecarPort represents a simplified port specification for sidecars
+                          properties:
+                            containerPort:
+                              description: Container port to expose
+                              format: int32
+                              type: integer
+                            name:
+                              description: Name of the port
+                              type: string
+                            protocol:
+                              default: TCP
+                              description: Protocol for port (TCP/UDP)
+                              type: string
+                          required:
+                            - containerPort
+                          type: object
+                        type: array
+                      readinessProbe:
+                        description: Probe describes a health check to be performed to determine whether it is alive or ready to receive traffic
+                        properties:
+                          exec:
+                            description: |-
+                              One and only one of the following should be specified.
+                              Exec specifies the action to take using a command
+                            properties:
+                              command:
+                                description: Command is the command line to execute inside the container
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - command
+                            type: object
+                          failureThreshold:
+                            description: Minimum consecutive failures for the probe to be considered failed after having succeeded.
+                            format: int32
+                            type: integer
+                          grpc:
+                            description: GRPC specifies a gRPC check against a port
+                            properties:
+                              port:
+                                description: Port number of the gRPC service
+                                format: int32
+                                type: integer
+                              service:
+                                description: Service is the name of the service to place in the gRPC HealthCheckRequest
+                                type: string
+                            required:
+                              - port
+                            type: object
+                          httpGet:
+                            description: HTTPGet specifies the http request to perform
+                            properties:
+                              host:
+                                description: Host name to connect to, defaults to the pod IP
+                                type: string
+                              httpHeaders:
+                                description: Custom headers to set in the request
+                                items:
+                                  description: HTTPHeader describes a custom header to be used in HTTP probes
+                                  properties:
+                                    name:
+                                      description: The header field name
+                                      type: string
+                                    value:
+                                      description: The header field value
+                                      type: string
+                                  required:
+                                    - name
+                                    - value
+                                  type: object
+                                type: array
+                              path:
+                                description: Path to access on the HTTP server
+                                type: string
+                              port:
+                                description: Port number of the HTTP service
+                                format: int32
+                                type: integer
+                              scheme:
+                                description: Scheme to use for connecting to the host
+                                type: string
+                            required:
+                              - port
+                            type: object
+                          initialDelaySeconds:
+                            description: Number of seconds after the container has started before probes are initiated.
+                            format: int32
+                            type: integer
+                          periodSeconds:
+                            description: How often (in seconds) to perform the probe.
+                            format: int32
+                            type: integer
+                          successThreshold:
+                            description: Minimum consecutive successes for the probe to be considered successful after having failed.
+                            format: int32
+                            type: integer
+                          tcpSocket:
+                            description: TCPSocket specifies a TCP check against a port
+                            properties:
+                              host:
+                                description: Host name to connect to, defaults to the pod IP
+                                type: string
+                              port:
+                                description: Port number to probe
+                                format: int32
+                                type: integer
+                            required:
+                              - port
+                            type: object
+                          terminationGracePeriodSeconds:
+                            description: Optional duration in seconds the pod needs to terminate gracefully upon probe failure
+                            format: int64
+                            type: integer
+                          timeoutSeconds:
+                            description: Number of seconds after which the probe times out.
+                            format: int32
+                            type: integer
+                        type: object
+                      resources:
+                        description: Resource requirements
+                        properties:
+                          limits:
+                            properties:
+                              cpu:
+                                type: string
+                              memory:
+                                type: string
+                            type: object
+                          requests:
+                            properties:
+                              cpu:
+                                type: string
+                              memory:
+                                type: string
+                              storage:
+                                properties:
+                                  backlog-mem-limit:
+                                    type: string
+                                  max-chunks-pause:
+                                    type: boolean
+                                  max-chunks-up:
+                                    type: integer
+                                  sync-full:
+                                    type: boolean
+                                  volume-size:
+                                    default: 256Mi
+                                    type: string
+                                type: object
+                            type: object
+                        type: object
+                      startupProbe:
+                        description: Probe describes a health check to be performed to determine whether it is alive or ready to receive traffic
+                        properties:
+                          exec:
+                            description: |-
+                              One and only one of the following should be specified.
+                              Exec specifies the action to take using a command
+                            properties:
+                              command:
+                                description: Command is the command line to execute inside the container
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - command
+                            type: object
+                          failureThreshold:
+                            description: Minimum consecutive failures for the probe to be considered failed after having succeeded.
+                            format: int32
+                            type: integer
+                          grpc:
+                            description: GRPC specifies a gRPC check against a port
+                            properties:
+                              port:
+                                description: Port number of the gRPC service
+                                format: int32
+                                type: integer
+                              service:
+                                description: Service is the name of the service to place in the gRPC HealthCheckRequest
+                                type: string
+                            required:
+                              - port
+                            type: object
+                          httpGet:
+                            description: HTTPGet specifies the http request to perform
+                            properties:
+                              host:
+                                description: Host name to connect to, defaults to the pod IP
+                                type: string
+                              httpHeaders:
+                                description: Custom headers to set in the request
+                                items:
+                                  description: HTTPHeader describes a custom header to be used in HTTP probes
+                                  properties:
+                                    name:
+                                      description: The header field name
+                                      type: string
+                                    value:
+                                      description: The header field value
+                                      type: string
+                                  required:
+                                    - name
+                                    - value
+                                  type: object
+                                type: array
+                              path:
+                                description: Path to access on the HTTP server
+                                type: string
+                              port:
+                                description: Port number of the HTTP service
+                                format: int32
+                                type: integer
+                              scheme:
+                                description: Scheme to use for connecting to the host
+                                type: string
+                            required:
+                              - port
+                            type: object
+                          initialDelaySeconds:
+                            description: Number of seconds after the container has started before probes are initiated.
+                            format: int32
+                            type: integer
+                          periodSeconds:
+                            description: How often (in seconds) to perform the probe.
+                            format: int32
+                            type: integer
+                          successThreshold:
+                            description: Minimum consecutive successes for the probe to be considered successful after having failed.
+                            format: int32
+                            type: integer
+                          tcpSocket:
+                            description: TCPSocket specifies a TCP check against a port
+                            properties:
+                              host:
+                                description: Host name to connect to, defaults to the pod IP
+                                type: string
+                              port:
+                                description: Port number to probe
+                                format: int32
+                                type: integer
+                            required:
+                              - port
+                            type: object
+                          terminationGracePeriodSeconds:
+                            description: Optional duration in seconds the pod needs to terminate gracefully upon probe failure
+                            format: int64
+                            type: integer
+                          timeoutSeconds:
+                            description: Number of seconds after which the probe times out.
+                            format: int32
+                            type: integer
+                        type: object
+                      volumeMounts:
+                        description: Volume mounts for the sidecar
+                        items:
+                          description: SidecarVolumeMount represents a simplified volume mount for sidecars
+                          properties:
+                            mountPath:
+                              description: Path where the volume should be mounted in the container
+                              type: string
+                            name:
+                              description: Name of the volume to mount
+                              type: string
+                            readOnly:
+                              description: Whether the volume is read-only
+                              type: boolean
+                            subPath:
+                              description: Optional subdirectory to mount from the volume
+                              type: string
+                          required:
+                            - mountPath
+                            - name
+                          type: object
+                        type: array
+                      volumes:
+                        description: Volumes specific to this sidecar
+                        items:
+                          description: SidecarVolume represents volume configuration for sidecars
+                          properties:
+                            configMap:
+                              description: ConfigMap volume source
+                              properties:
+                                defaultMode:
+                                  description: 'Optional: mode bits to use on created files by default'
+                                  format: int32
+                                  type: integer
+                                items:
+                                  description: Items to project from the ConfigMap
+                                  items:
+                                    description: SidecarKeyToPath defines how to map a ConfigMap key to a path
+                                    properties:
+                                      key:
+                                        description: Key in the ConfigMap
+                                        type: string
+                                      mode:
+                                        description: 'Optional: mode bits to use on this file'
+                                        format: int32
+                                        type: integer
+                                      path:
+                                        description: Path where the key will be projected
+                                        type: string
+                                    required:
+                                      - key
+                                      - path
+                                    type: object
+                                  type: array
+                                name:
+                                  description: Name of the ConfigMap
+                                  type: string
+                                optional:
+                                  description: 'Optional: specify whether the ConfigMap must be defined'
+                                  type: boolean
+                              required:
+                                - name
+                              type: object
+                            name:
+                              description: Name of the volume
+                              type: string
+                          required:
+                            - name
+                          type: object
+                        type: array
+                    required:
+                      - image
+                      - name
+                    type: object
+                  type: array
                 tolerations:
                   items:
                     description: |-

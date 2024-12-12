@@ -20,6 +20,7 @@ rules:
       - rbac.authorization.k8s.io
       - security.openshift.io
       - autoscaling
+      - coordination.k8s.io
     resources:
       - events
       - namespaces
@@ -46,6 +47,7 @@ rules:
       - pipelines/status
       - securitycontextconstraints
       - horizontalpodautoscalers
+      - leases
     verbs:
       - get
       - list
