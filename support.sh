@@ -53,6 +53,12 @@ do
         \kubectl get -n "$namespace" "$resource_type" --show-kind --ignore-not-found -o yaml > "${OUTPUT_DIR}/namespaces/${namespace}"/"$resource_type".yaml
     done
 
+    # Get secrets in the namespace. All data values will be redacted.
+    for secret in $(\kubectl get secrets -n "$namespace" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
+    do
+        \kubectl get secret "$secret" -n "$namespace" -o json | jq '.data |= with_entries(.value = "--REDACTED--")' >> "${OUTPUT_DIR}/namespaces/${namespace}"/secrets.json
+    done
+
     # Attempt to discover token and url for cloud-api in cluster
     if [[ -z "$CALYPTIA_CLOUD_TOKEN" ]]; then
         if \kubectl get --namespace "$namespace" secret auth-secret &>/dev/null; then
