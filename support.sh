@@ -46,8 +46,8 @@ mkdir -p "$OUTPUT_DIR"/cluster
 # Grab stuff not returned by `get all`
 for namespace in $(\kubectl get namespaces --output=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
 do
-    # Get YAML for everything in the namespace
-    for resource_type in $(\kubectl api-resources --namespaced --verbs=list -o name | tr "\n" " ");
+    # Get YAML for everything in the namespace, except secrets. If more resources need to be excluded, add them to the grep list.
+    for resource_type in $(\kubectl api-resources --namespaced --verbs=list -o name | grep -Ewv "^(secrets)$" | tr "\n" " ");
     do
         mkdir -p "${OUTPUT_DIR}/namespaces/${namespace}"
         \kubectl get -n "$namespace" "$resource_type" --show-kind --ignore-not-found -o yaml > "${OUTPUT_DIR}/namespaces/${namespace}"/"$resource_type".yaml
