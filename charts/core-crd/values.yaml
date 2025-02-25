@@ -9,7 +9,7 @@ images:
   fluentBit:
     registry: ghcr.io
     repository: calyptia/core/calyptia-fluent-bit
-    tag: 25.1.1
+    tag: 25.2.1
     pullSecrets: []
   ingestCheck:
     registry: ghcr.io
