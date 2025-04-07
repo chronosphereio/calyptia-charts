@@ -2070,6 +2070,25 @@ entries:
     version: 0.2.6
   core-crd:
   - apiVersion: v2
+    appVersion: v3.36.0
+    created: "2025-04-07T22:24:48.752515621Z"
+    dependencies:
+    - alias: common
+      name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 2.x.x
+    description: A Helm chart for Kubernetes
+    digest: 1691193de425e2fad82e2b457a15778b191cd6df3870298915466bfcda58fce8
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-crd
+    type: application
+    urls:
+    - https://github.com/chronosphereio/calyptia-charts/releases/download/core-crd-3.36.0/core-crd-3.36.0.tgz
+    version: 3.36.0
+  - apiVersion: v2
     appVersion: v3.35.0
     created: "2025-03-25T18:02:24.965331445Z"
     dependencies:
@@ -3305,6 +3324,27 @@ entries:
     - https://github.com/calyptia/charts/releases/download/core-crd-2.0.0/core-crd-2.0.0.tgz
     version: 2.0.0
   core-instance:
+  - apiVersion: v2
+    appVersion: v3.36.0
+    created: "2025-04-07T22:24:48.86314782Z"
+    dependencies:
+    - alias: common
+      name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 2.x.x
+    description: Calyptia Core Instance chart
+    digest: 16aa99dc28da76bb636d7f5209d7fef0776be3a6d559807d7ee153fa765bc2d2
+    home: https://calyptia.com/products/core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-instance
+    type: application
+    urls:
+    - https://github.com/chronosphereio/calyptia-charts/releases/download/core-instance-3.36.0/core-instance-3.36.0.tgz
+    version: 3.36.0
   - apiVersion: v2
     appVersion: v3.35.0
     created: "2025-03-25T18:02:25.166513509Z"
@@ -5080,6 +5120,27 @@ entries:
     - https://github.com/calyptia/charts/releases/download/core-instance-0.0.1/core-instance-0.0.1.tgz
     version: 0.0.1
   core-operator:
+  - apiVersion: v2
+    appVersion: v3.36.0
+    created: "2025-04-07T22:24:48.978720706Z"
+    dependencies:
+    - alias: common
+      name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 2.x.x
+    description: Calyptia Core Operator chart
+    digest: ff5613b336d6a051864884414f29c33bd3e31e1dc46168c666ee5cb32d0207d0
+    home: https://calyptia.com/products/core/
+    icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
+    maintainers:
+    - email: hello@calyptia.com
+      name: Calyptia
+      url: www.calyptia.com
+    name: core-operator
+    type: application
+    urls:
+    - https://github.com/chronosphereio/calyptia-charts/releases/download/core-operator-3.36.0/core-operator-3.36.0.tgz
+    version: 3.36.0
   - apiVersion: v2
     appVersion: v3.35.0
     created: "2025-03-25T18:02:25.337714042Z"
@@ -7094,4 +7155,4 @@ entries:
     urls:
     - https://github.com/calyptia/charts/releases/download/fluentd-0.1.0/fluentd-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-25T18:02:25.33888098Z"
+generated: "2025-04-07T22:24:48.979419557Z"
