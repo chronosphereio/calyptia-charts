@@ -131,8 +131,29 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env[19]
           value:
-            value: "false"
-            name: METRICS
+            value: "5334"
+            name: DEBUG_PORT
+      - equal:
+          path: spec.template.spec.containers[0].env[20]
+          value:
+            value: "0"
+            name: CLOUD_TIMEOUT
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe
+          value:
+            httpGet:
+              path: /healthz
+              port: 5334
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe
+          value:
+            httpGet:
+              path: /readyz
+              port: 5334
+            initialDelaySeconds: 5
+            periodSeconds: 5
       # To Cloud
       - equal:
           path: spec.template.spec.containers[1].env[0]
@@ -168,10 +189,36 @@ tests:
             value: "true"
             name: NO_TLS_VERIFY
       - equal:
-          path: spec.template.spec.containers[1].env[7]
+          path: spec.template.spec.containers[1].env[6]
           value:
             value: https
             name: HTTP_PROXY
+      - equal:
+          path: spec.template.spec.containers[1].env[10]
+          value:
+            value: "15334"
+            name: DEBUG_PORT
+      - equal:
+          path: spec.template.spec.containers[1].env[11]
+          value:
+            value: "0"
+            name: CLOUD_TIMEOUT
+      - equal:
+          path: spec.template.spec.containers[1].livenessProbe
+          value:
+            httpGet:
+              path: /healthz
+              port: 15334
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      - equal:
+          path: spec.template.spec.containers[1].readinessProbe
+          value:
+            httpGet:
+              path: /readyz
+              port: 15334
+            initialDelaySeconds: 5
+            periodSeconds: 5
   - it: checks annotations
     set:
       coreInstance: ci-1234
@@ -288,3 +335,127 @@ tests:
       - equal:
           path: spec.template.spec.tolerations[1].tolerationSeconds
           value: 3605
+  - it: sets cloud timeout
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      cloudTimeout: 15s
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[20]
+          value:
+            value: "15s"
+            name: CLOUD_TIMEOUT
+      - equal:
+          path: spec.template.spec.containers[1].env[11]
+          value:
+            value: "15s"
+            name: CLOUD_TIMEOUT
+  - it: sets debug ports
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      fromCloud:
+        debugPort: 1234
+      toCloud:
+        debugPort: 5678
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[19]
+          value:
+            value: "1234"
+            name: DEBUG_PORT
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: 1234
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: 1234
+      - equal:
+          path: spec.template.spec.containers[1].env[10]
+          value:
+            value: "5678"
+            name: DEBUG_PORT
+      - equal:
+          path: spec.template.spec.containers[1].livenessProbe.httpGet.port
+          value: 5678
+      - equal:
+          path: spec.template.spec.containers[1].readinessProbe.httpGet.port
+          value: 5678
+  - it: sets probeIntervalSec
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      probeIntervalSec: 3
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.periodSeconds
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.initialDelaySeconds
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.periodSeconds
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[1].livenessProbe.initialDelaySeconds
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[1].livenessProbe.periodSeconds
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[1].readinessProbe.initialDelaySeconds
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[1].readinessProbe.periodSeconds
+          value: 3
+  - it: disables probeIntervalSec
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      probeIntervalSec: 0
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].livenessProbe
+      - notExists:
+          path: spec.template.spec.containers[0].readinessProbe
+      - notExists:
+          path: spec.template.spec.containers[1].livenessProbe
+      - notExists:
+          path: spec.template.spec.containers[1].readinessProbe
+  - it: sets legacy metrics
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      metrics: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports
+          value:
+            - containerPort: 5334
+              name: debug
+      - equal:
+          path: spec.template.spec.containers[1].ports
+          value:
+            - containerPort: 15334
+              name: metrics
+  - it: sets legacy metricsPort
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      metrics: true
+      metricsPort: 1234
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports
+          value:
+            - containerPort: 5334
+              name: debug
+      - equal:
+          path: spec.template.spec.containers[1].ports
+          value:
+            - containerPort: 1234
+              name: metrics

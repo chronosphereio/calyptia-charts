@@ -75,14 +75,33 @@ spec:
           value: {{ template "instance.noProxy" . }}
         - name: CLOUD_PROXY
           value: {{ template "instance.cloudProxy" . }}
-        - name: METRICS
-          value: {{ default false .Values.metrics | quote }}
+        - name: DEBUG_PORT
+          value: {{ .Values.fromCloud.debugPort | quote }}
+        - name: CLOUD_TIMEOUT
+          value: {{ .Values.cloudTimeout | quote }}
         image: {{ template "fromCloud.image" . }}
         imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: from-cloud
+{{- if .Values.probeIntervalSec }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.fromCloud.debugPort }}
+          initialDelaySeconds:  {{ .Values.probeIntervalSec }}
+          periodSeconds: {{ .Values.probeIntervalSec }}
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: {{ .Values.fromCloud.debugPort }}
+          initialDelaySeconds:  {{ .Values.probeIntervalSec }}
+          periodSeconds: {{ .Values.probeIntervalSec }}
+{{- end }}
         {{- if .Values.fromCloud.resources }}
         resources: {{- toYaml .Values.fromCloud.resources | nindent 12 }}
         {{- end }}
+        ports:
+          - containerPort: {{ .Values.fromCloud.debugPort }}
+            name: debug
         volumeMounts:
         {{- if .Values.extraVolumeMounts }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
@@ -110,8 +129,6 @@ spec:
           value: {{ default "15s" .Values.interval | quote }}
         - name: NO_TLS_VERIFY
           value: {{ default false .Values.notls | quote }}
-        - name: METRICS_PORT
-          value: {{ .Values.metricsPort | toYaml }}
         - name: HTTP_PROXY
           value: {{ template "instance.httpProxy" . }}
         - name: HTTPS_PROXY
@@ -120,17 +137,39 @@ spec:
           value: {{ template "instance.noProxy" . }}
         - name: CLOUD_PROXY
           value: {{ template "instance.cloudProxy" . }}
-        - name: METRICS
-          value: {{ default false .Values.metrics | quote }}
+{{/* metrics and metricsPort was the legacy way to set the toCloud port so it did not conflict with fromCloud */}}
+{{- $toCloudPort := and .Values.metrics .Values.metricsPort | default .Values.toCloud.debugPort }}
+        - name: DEBUG_PORT
+          value: {{ $toCloudPort | quote }}
+        - name: CLOUD_TIMEOUT
+          value: {{ .Values.cloudTimeout | quote }}
         image: {{ template "toCloud.image" . }}
         imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
         name: to-cloud
+{{- if .Values.probeIntervalSec }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ $toCloudPort }}
+          initialDelaySeconds:  {{ .Values.probeIntervalSec }}
+          periodSeconds: {{ .Values.probeIntervalSec }}
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: {{ $toCloudPort }}
+          initialDelaySeconds:  {{ .Values.probeIntervalSec }}
+          periodSeconds: {{ .Values.probeIntervalSec }}
+{{- end }}
         {{- if .Values.toCloud.resources }}
         resources: {{- toYaml .Values.toCloud.resources | nindent 12 }}
         {{- end }}
         ports:
-          - containerPort: {{ .Values.metricsPort | int }}
+          - containerPort: {{ $toCloudPort }}
+{{- if .Values.metrics }}
             name: metrics
+{{- else }}
+            name: debug
+{{- end }}
         volumeMounts:
         {{- if .Values.extraVolumeMounts }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
