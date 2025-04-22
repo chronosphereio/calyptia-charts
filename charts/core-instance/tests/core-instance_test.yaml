@@ -459,3 +459,22 @@ tests:
           value:
             - containerPort: 1234
               name: metrics
+  - it: sets common annotations
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      commonAnnotations:
+        foo: bar
+        zed: zen
+    asserts:
+      - equal:
+          path: metadata.annotations
+          value:
+            foo: bar
+            zed: zen
+      - equal:
+          path: spec.template.metadata.annotations
+          value:
+            foo: bar
+            kubectl.kubernetes.io/default-container: from-cloud
+            zed: zen
