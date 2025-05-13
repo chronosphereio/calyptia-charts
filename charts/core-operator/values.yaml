@@ -4,13 +4,9 @@ images:
   operator:
     registry: ghcr.io
     repository: calyptia/core-operator
-    tag: 3.43.0
+    tag: 3.44.0
     pullSecrets: []
-  hotReload:
-    registry: ghcr.io
-    repository: calyptia/configmap-reload
-    tag: 0.11.1
-    pullSecrets: []
+    pullPolicy: IfNotPresent
 commonAnnotations: {}
 commonLabels: {}
 podAnnotations: {}
@@ -23,6 +19,7 @@ serviceAccount:
   create: true
   name: ""
   annotations: {}
+
 #
 ## RBAC configuration
 ## @param rbac.create Specifies whether RBAC resources should be created
@@ -37,7 +34,6 @@ rbac:
 ## @section Global parameters
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
-## @param global.storageClass Global StorageClass for Persistent Volume(s)
 ##
 global:
   # Note that this overrides any specific ones below
@@ -45,8 +41,8 @@ global:
   # Add any custom pull secrets required
   imagePullSecrets:
     - regcreds
-  storageClass: ""
-  pullPolicy: IfNotPresent
+  # Note that this overrides any specific ones below
+  pullPolicy: ""
 #
 ## Define this to automatically set up image pull secrets
 # imageCredentials:

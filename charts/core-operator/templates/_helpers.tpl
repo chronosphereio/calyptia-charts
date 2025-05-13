@@ -23,24 +23,10 @@ Return the proper operator.image image name
 {{- end -}}
 
 {{/*
-Return the proper hotReload.image image name
-*/}}
-{{- define "hotReload.image" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.images.hotReload "global" .Values.global) }}
-{{- end -}}
-
-{{/*
 Return the proper Container Registry Secret Names
 */}}
 {{- define "operator.imagePullSecrets" -}}
 {{ include "common.images.pullSecrets" (dict "images" (list .Values.images.operator) "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper Container Registry Secret Names
-*/}}
-{{- define "hotReload.imagePullSecrets" -}}
-{{ include "common.images.pullSecrets" (dict "images" (list .Values.images.hotReload) "global" .Values.global) }}
 {{- end -}}
 
 {{- define "createImagePullSecret" -}}
