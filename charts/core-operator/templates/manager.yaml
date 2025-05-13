@@ -41,7 +41,7 @@ spec:
         - command:
             - /manager
           image: {{ template "operator.image" . }}
-          imagePullPolicy: {{ .Values.global.pullPolicy | quote }}
+          imagePullPolicy: {{ .Values.global.pullPolicy | default .Values.images.operator.pullPolicy | quote }}
           volumeMounts:
           {{- if .Values.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}

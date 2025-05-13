@@ -80,7 +80,7 @@ spec:
         - name: CLOUD_TIMEOUT
           value: {{ .Values.cloudTimeout | quote }}
         image: {{ template "fromCloud.image" . }}
-        imagePullPolicy: {{ default .Values.global.pullPolicy .Values.images.fromCloud.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.global.pullpolicy | default .Values.images.fromCloud.pullPolicy | quote }}
         name: from-cloud
 {{- if .Values.probeIntervalSec }}
         livenessProbe:
@@ -144,7 +144,7 @@ spec:
         - name: CLOUD_TIMEOUT
           value: {{ .Values.cloudTimeout | quote }}
         image: {{ template "toCloud.image" . }}
-        imagePullPolicy: {{ default .Values.global.pullPolicy .Values.images.toCloud.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.global.pullPolicy | default .Values.images.toCloud.pullPolicy | quote }}
         name: to-cloud
 {{- if .Values.probeIntervalSec }}
         livenessProbe:

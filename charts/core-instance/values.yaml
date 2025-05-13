@@ -22,15 +22,15 @@ images:
   fromCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-from-cloud
-    tag: 3.43.0
+    tag: 3.44.0
     pullSecrets: []
-    pullPolicy: ""
+    pullPolicy: IfNotPresent
   toCloud:
     registry: ghcr.io
     repository: calyptia/core-operator/sync-to-cloud
-    tag: 3.43.0
+    tag: 3.44.0
     pullSecrets: []
-    pullPolicy: ""
+    pullPolicy: IfNotPresent
   hotReload:
     registry: ghcr.io
     repository: calyptia/configmap-reload
@@ -67,6 +67,7 @@ httpsProxy: ""
 noProxy: ""
 cloudProxy: ""
 cloudTimeout: 0
+
 #
 ## RBAC configuration
 ## @param rbac.create Specifies whether RBAC resources should be created
@@ -80,7 +81,6 @@ rbac:
 ## @section Global parameters
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
-## @param global.storageClass Global StorageClass for Persistent Volume(s)
 ##
 global:
   # Note that this overrides any specific ones below
@@ -88,8 +88,7 @@ global:
   # Add any custom pull secrets required
   imagePullSecrets:
     - regcreds
-  storageClass: ""
-  pullPolicy: IfNotPresent
+  pullPolicy: ""
 #
 ## Define this to automatically set up image pull secrets
 # imageCredentials:
