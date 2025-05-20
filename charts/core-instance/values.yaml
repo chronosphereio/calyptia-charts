@@ -1,100 +1,155 @@
-# Turn this chart off/on
-enabled: true
-name: "core-instance"
-clusterLogging: false
-# If not set then we use the release name
-coreInstance: ""
-coreSecret: "core-instance"
-cloudToken: ""
-cloudTokenSec:
-  name:
-  key:
-cloudUrl: "https://cloud-api.calyptia.com"
-enableHealthCheckPipeline: false
-skipServiceCreation: false
-healthCheckPipelinePort: 2020
-healthCheckPipelineServiceType: LoadBalancer
-# calyptiaAnnotations is a core-instance specific parameter
-# NOT to be confused with standard annotations
-calyptiaAnnotations: ""
-calyptiaTolerations: ""
-images:
-  fromCloud:
-    registry: ghcr.io
-    repository: calyptia/core-operator/sync-from-cloud
-    tag: 3.44.0
-    pullSecrets: []
-    pullPolicy: IfNotPresent
-  toCloud:
-    registry: ghcr.io
-    repository: calyptia/core-operator/sync-to-cloud
-    tag: 3.44.0
-    pullSecrets: []
-    pullPolicy: IfNotPresent
-  hotReload:
-    registry: ghcr.io
-    repository: calyptia/configmap-reload
-    tag: 0.11.1
-    pullSecrets: []
-  ingestCheck:
-    registry: ghcr.io
-    repository: calyptia/core/ingest-check
-    tag: 0.0.7
-    pullSecrets: []
-notls: "true"
-interval: "15s"
-# how often to run liveness and readiness probes. If 0, probes are disabled.
-probeIntervalSec: "5"
-commonAnnotations: {}
-commonLabels: {}
-podAnnotations: {}
-podLabels: {}
-nameOverride: ""
-fullnameOverride: ""
-namespaceOverride: ""
-fromCloud:
-  debugPort: "5334"
-  resources: {}
-toCloud:
-  debugPort: "15334"
-  resources: {}
-serviceAccount:
-  create: true
-  name: ""
-  annotations: {}
-httpProxy: ""
-httpsProxy: ""
-noProxy: ""
-cloudProxy: ""
-cloudTimeout: 0
-
-#
-## RBAC configuration
-## @param rbac.create Specifies whether RBAC resources should be created
-##
-rbac:
-  create: true
-#
-## Global Docker image parameters
-## Please, note that this will override the image parameters, including dependencies, configured to use the global value
-## Current available global Docker image parameters: imageRegistry and imagePullSecrets
-## @section Global parameters
-## @param global.imageRegistry Global Docker image registry
-## @param global.imagePullSecrets Global Docker registry secret names as an array
+## @section Global Image
+## @descriptionStart
+## Configures image parameters for all images.
+## @descriptionEnd
 ##
 global:
-  # Note that this overrides any specific ones below
+  ## @param global.imageRegistry Image registry to use for all images. This overrides the `registry` for all images.
   imageRegistry: ""
-  # Add any custom pull secrets required
+  ## @param global.imagePullSecrets Image pull secret names to use for all images. This is joined with the `pullSecrets` for all image.
   imagePullSecrets:
     - regcreds
+  ## @param global.pullPolicy Image pull policy to use for all images. This overrides the `pullPolicy` for all images.
   pullPolicy: ""
-#
-## Define this to automatically set up image pull secrets
+
+## @section Deployment
+## @descriptionStart
+## Configures the core-instance deployment.
+## @descriptionEnd
+##
+## @param enabled Enables this chart
+enabled: true
+## @param coreInstance Name of the core-instance
+coreInstance: ""
+## @param cloudToken API Token in plaintext. Only used if `cloudTokenSec` not set.
+cloudToken: ""
+cloudTokenSec:
+  ## @param cloudTokenSec.name API Token secret name.
+  name:
+  ## @param cloudTokenSec.key API Token secret key.
+  key:
+## @param cloudUrl Cloud URL endpoint.
+cloudUrl: "https://cloud-api.calyptia.com"
+images:
+  fromCloud:
+    ## @param images.fromCloud.registry Image registry. This can be overridden by `global.imageRegistry`.
+    registry: ghcr.io
+    ## @param images.fromCloud.repository Image repository.
+    repository: calyptia/core-operator/sync-from-cloud
+    ## @param images.fromCloud.tag Image tag.
+    tag: 3.46.0
+    ## @param images.fromCloud.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
+    pullSecrets: []
+    ## @param images.fromCloud.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
+    pullPolicy: IfNotPresent
+  toCloud:
+    ## @param images.toCloud.registry Image registry. This can be overridden by `global.imageRegistry`.
+    registry: ghcr.io
+    ## @param images.toCloud.repository Image repository.
+    repository: calyptia/core-operator/sync-to-cloud
+    ## @param images.toCloud.tag Image tag.
+    tag: 3.46.0
+    ## @param images.toCloud.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
+    pullSecrets: []
+    ## @param images.toCloud.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
+    pullPolicy: IfNotPresent
+  hotReload:
+    ## @param images.hotReload.registry Image registry. This can be overridden by `global.imageRegistry`.
+    registry: ghcr.io
+    ## @param images.hotReload.repository Image repository.
+    repository: calyptia/configmap-reload
+    ## @param images.hotReload.tag Image tag.
+    tag: 0.11.1
+  ingestCheck:
+    ## @param images.ingestCheck.registry Image registry. This can be overridden by `global.imageRegistry`.
+    registry: ghcr.io
+    ## @param images.ingestCheck.repository Image repository.
+    repository: calyptia/core/ingest-check
+    ## @param images.ingestCheck.tag Image tag.
+    tag: 0.0.7
+## @param interval How often to sync data to/from the cloud.
+interval: "15s"
+## @param probeIntervalSec How often to run liveness and readiness probes. If 0, probes are disabled.
+probeIntervalSec: "5"
+## @param commonAnnotations Annotations added to the resources created by this chart. These annotations are not added to the Pipeline resources created by
+# the operator. Use `calyptiaAnnotations` to add annotations to Pipeline resources.
+commonAnnotations: {}
+## @param namespaceOverride Namespace to use instead of `.Release.Namespace`.
+namespaceOverride: ""
+fromCloud:
+  ## @param fromCloud.debugPort The debug port for the fromCloud container.
+  debugPort: "5334"
+  ## @param fromCloud.resources The resources for the fromCloud container.
+  resources: {}
+toCloud:
+  ## @param toCloud.debugPort The debug port for the toCloud container.
+  debugPort: "15334"
+  ## @param toCloud.resources The resources for the toCloud container.
+  resources: {}
+## @param cloudTimeout HTTP timeout for requests to the cloud. 0 disables the timeout.
+cloudTimeout: 0
+
+## @section Pipeline
+## @descriptionStart
+## Configures the Pipelines installed by the core-instance.
+## @descriptionEnd
+##
+## @param clusterLogging Enables Cluster Logging.
+clusterLogging: false
+## @param calyptiaAnnotations Annotations added to pipeline resources created in the cluster. Format is key1=value1,key2=value.
+calyptiaAnnotations: ""
+## @param calyptiaTolerations Tolerations added to pipeline pods. Only used if Tolerations are not configured for a Pipeline. Format is key=operator:value:effect:seconds,key=operator:value:effect:seconds. Optional parts are represented with an empty string, e.g =Exists:: is a Toleration matching all taints.
+calyptiaTolerations: ""
+## @param enableHealthCheckPipeline Enables a health check pipeline.
+enableHealthCheckPipeline: false
+## @param healthCheckPipelinePort Port for the health check pipeline.
+healthCheckPipelinePort: 2020
+## @param healthCheckPipelineServiceType Service type for the health check pipeline.
+healthCheckPipelineServiceType: LoadBalancer
+## @param skipServiceCreation Skip creating services for pipeline ports.
+skipServiceCreation: false
+## @param notls If true, disables TLS verify for the pipeline config.
+notls: "true"
+## @param httpProxy Sets the HTTP_PROXY env variable for pipeline containers.
+httpProxy: ""
+## @param httpsProxy Sets the HTTPS_PROXY env variable for pipeline containers.
+httpsProxy: ""
+## @param noProxy Sets the NO_PROXY env variable for pipeline containers.
+noProxy: ""
+## @param cloudProxy Sets the http proxy to use when connecting to the cloud.
+cloudProxy: ""
+
+## @section RBAC
+## @descriptionStart
+## Configures the RBAC for the core-instance deployment.
+## @descriptionEnd
+rbac:
+  ## @param rbac.create Specifies whether RBAC resources should be created.
+  create: true
+serviceAccount:
+  ## @param serviceAccount.create If the ServiceAccount is created..
+  create: true
+  ## @param serviceAccount.name The name of the Service Account.
+  name: ""
+  ## @param serviceAccount.annotations Additional annotations added to the Service Account. Merged with `commonAnnotations`.
+  annotations: {}
+## @param fullnameOverride Sets `serviceAccount.name` to `calyptia-core-instance-fullnameOverride-sa` if not set.
+fullnameOverride: ""
+## @param nameOverride Sets `fullnameOverride` to `.Release.Name-nameOverride` if not set.
+nameOverride: ""
+
+## @section Pull Secret
+## @descriptionStart
+## Configures a secret to pull images.
+## @descriptionEnd
 # imageCredentials:
-#   secretName: regcreds
-#   registry: ghcr.io
-#   username: calyptia-ci
-#   password: <TOKEN>
-#   email: ci@calyptia.com
-#
+## @extra imageCredentials.secretName Secret name. This must be included as a `pullSecret` for images to be used.
+#   secretName: ""
+## @extra imageCredentials.registry The image registry. This must be match the `registry` for images.
+#   registry: ""
+## @extra imageCredentials.username Username for login to the registry.
+#   username: ""
+## @extra imageCredentials.password Password for login to the registry.
+#   password: ""
+## @extra imageCredentials.email Email for login to the registry.
+#   email: ""

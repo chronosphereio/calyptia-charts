@@ -14,7 +14,7 @@ metadata:
   name: calyptia-core-controller-manager
   namespace: {{ include "common.names.namespace" . | quote }}
 spec:
-  replicas: {{ default 1 .Values.replicas }}
+  replicas: 1
   selector:
     matchLabels:
       calyptia.core: core-operator
@@ -27,13 +27,6 @@ spec:
         {{- include "common.tplvalues.render" (dict "value" .Values.podAnnotations "context" $) | nindent 8 }}
         {{- end }}
       labels:
-      #  {{- include "common.labels.standard" . | nindent 8 }}
-      #   {{- if .Values.commonLabels }}
-      #   {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 8 }}
-      #   {{- end }}
-      #   {{- if .Values.podLabels }}
-      #   {{- include "common.tplvalues.render" (dict "value" .Values.podLabels "context" $) | nindent 8 }}
-      #   {{- end }}
         calyptia.core: core-operator
         control-plane: controller-manager
     spec:

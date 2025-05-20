@@ -80,7 +80,7 @@ spec:
         - name: CLOUD_TIMEOUT
           value: {{ .Values.cloudTimeout | quote }}
         image: {{ template "fromCloud.image" . }}
-        imagePullPolicy: {{ .Values.global.pullpolicy | default .Values.images.fromCloud.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.global.pullPolicy | default .Values.images.fromCloud.pullPolicy | quote }}
         name: from-cloud
 {{- if .Values.probeIntervalSec }}
         livenessProbe:
@@ -111,7 +111,7 @@ spec:
         {{- end }}
       - env:
         - name: CORE_INSTANCE
-          value: {{ default .Release.Name .Values.coreInstance | quote }}
+          value: {{ .Values.coreInstance | quote }}
         - name: NAMESPACE
           value: {{ include "common.names.namespace" . | quote }}
         - name: CLOUD_URL
