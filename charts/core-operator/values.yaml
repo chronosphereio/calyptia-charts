@@ -1,76 +1,119 @@
-# Turn this chart off/on
+## @section Global Image
+## @descriptionStart
+## Configures image parameters for all images.
+## @descriptionEnd
+##
+global:
+  ## @param global.imageRegistry Image registry to use for all images. This overrides the `registry` for all images.
+  imageRegistry: ""
+  ## @param global.imagePullSecrets Image pull secret names to use for all images. This is joined with the `pullSecrets` for all image.
+  imagePullSecrets:
+    - regcreds
+  ## @param global.pullPolicy Image pull policy to use for all images. This overrides the `pullPolicy` for all images.
+  pullPolicy: ""
+
+## @section Deployment
+## @descriptionStart
+## Configures the operator deployment.
+## @descriptionEnd
+##
+## @param enabled Enables this chart
 enabled: true
 images:
   operator:
+    ## @param images.operator.registry Image registry. This can be overridden by `global.imageRegistry`.
     registry: ghcr.io
+    ## @param images.operator.repository Image repository.
     repository: calyptia/core-operator
-    tag: 3.44.0
+    ## @param images.operator.tag Image tag.
+    tag: 3.46.0
+    ## @param images.operator.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
     pullSecrets: []
+    ## @param images.operator.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
     pullPolicy: IfNotPresent
+## @param commonAnnotations Annotations added to all resources, except the operator pod.
 commonAnnotations: {}
-commonLabels: {}
+## @param podAnnotations Annotations added only to the operator pod.
 podAnnotations: {}
-podLabels: {}
-nameOverride: ""
-fullnameOverride: ""
+## @param namespaceOverride Namespace to use instead of `.Release.Namespace`.
 namespaceOverride: ""
+## @param calyptiaTolerations Tolerations added to the operator pod.
 calyptiaTolerations: ""
-serviceAccount:
-  create: true
-  name: ""
-  annotations: {}
+## @param restartPolicy The restart policy for the pod.
+restartPolicy: Always
 
-#
-## RBAC configuration
-## @param rbac.create Specifies whether RBAC resources should be created
-##
-rbac:
-  create: true
-#
-#
-## Global Docker image parameters
-## Please, note that this will override the image parameters, including dependencies, configured to use the global value
-## Current available global Docker image parameters: imageRegistry and imagePullSecrets
-## @section Global parameters
-## @param global.imageRegistry Global Docker image registry
-## @param global.imagePullSecrets Global Docker registry secret names as an array
-##
-global:
-  # Note that this overrides any specific ones below
-  imageRegistry: ""
-  # Add any custom pull secrets required
-  imagePullSecrets:
-    - regcreds
-  # Note that this overrides any specific ones below
-  pullPolicy: ""
-#
-## Define this to automatically set up image pull secrets
-# imageCredentials:
-#   secretName: regcreds
-#   registry: ghcr.io
-#   username: calyptia-ci
-#   password: <TOKEN>
-#   email: ci@calyptia.com
-#
-replicas: 1
-# Resource information for the operator deployment
+## @section Resources
+## @descriptionStart
+## Resources for the operator deployment.
+## @descriptionEnd
 resources:
   limits:
+    ## @param resources.limits.cpu CPU limit.
     cpu: 500m
+    ## @param resources.limits.memory Memory limit.
     memory: 512Mi
   requests:
+    ## @param resources.requests.cpu CPU request.
     cpu: 10m
+    ## @param resources.requests.memory Memory request.
     memory: 64Mi
+
+## @section Probes
+## @descriptionStart
+## Probes to check the health of the operator deployment.
+## @descriptionEnd
 readinessProbe:
   httpGet:
+    ## @param readinessProbe.httpGet.path Readiness http path.
     path: /readyz
+    ## @param readinessProbe.httpGet.port Readiness http port.
     port: 8081
+  ## @param readinessProbe.initialDelaySeconds Initial delay for the readiness probe in seconds.
   initialDelaySeconds: 5
+  ## @param readinessProbe.periodSeconds How often to run the readiness probe in seconds.
   periodSeconds: 10
 livenessProbe:
   httpGet:
+    ## @param livenessProbe.httpGet.path Liveness http path.
     path: /healthz
+    ## @param livenessProbe.httpGet.port Liveness http port.
     port: 8081
+  ## @param livenessProbe.initialDelaySeconds Initial delay for the livenss probe in seconds.
   initialDelaySeconds: 15
+  ## @param livenessProbe.periodSeconds How often to run the liveness probe in seconds.
   periodSeconds: 20
-restartPolicy: Always
+
+## @section RBAC
+## @descriptionStart
+## Configure the RBAC for the operator deployment.
+## @descriptionEnd
+rbac:
+  ## @param rbac.create Specifies whether RBAC resources should be created
+  create: true
+serviceAccount:
+  ## @param serviceAccount.create If the ServiceAccount is created for the operator.
+  create: true
+  ## @param serviceAccount.name The name of the Service Account.
+  name: ""
+  ## @param serviceAccount.annotations Additional annotations added to the Service Account. Merged with `commonAnnotations`.
+  annotations: {}
+## @param fullnameOverride Sets `serviceAccount.name` to `fullnameOverride-calyptia-core-operator` if not set.
+fullnameOverride: ""
+## @param nameOverride Sets `fullnameOverride` to `.Release.Name-nameOverride` if not set.
+nameOverride: ""
+
+## @section Pull Secret
+## @descriptionStart
+## Configures a secret to pull images.
+## @descriptionEnd
+# imageCredentials:
+## @extra imageCredentials.secretName Secret name. This must be included as a `pullSecret` for images to be used.
+#   secretName: ""
+## @extra imageCredentials.registry The image registry. This must be match the `registry` for images.
+#   registry: ""
+## @extra imageCredentials.username Username for login to the registry.
+#   username: ""
+## @extra imageCredentials.password Password for login to the registry.
+#   password: ""
+## @extra imageCredentials.email Email for login to the registry.
+#   email: ""

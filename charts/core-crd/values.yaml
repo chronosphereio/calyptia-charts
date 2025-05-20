@@ -1,20 +1,35 @@
-# Turn this chart off/on
+## @section Common
+## @descriptionStart
+## Configures common parameters.
+## @descriptionEnd
+## @param enabled Enables this chart
 enabled: true
+## @param pipelineServiceType The default service type to use for a Pipeline if not explicitly set.
+pipelineServiceType: LoadBalancer
+
+## @section Images
+## @descriptionStart
+## Configures the default images used for Pipelines and Ingest Checks when not explicitly set at creation time.
+## @descriptionEnd
 images:
   hotReload:
+    ## @param images.hotReload.registry Image registry.
     registry: ghcr.io
+    ## @param images.hotReload.repository Image repository.
     repository: calyptia/configmap-reload
+    ## @param images.hotReload.tag Image tag.
     tag: 0.11.1
-    pullSecrets: []
   fluentBit:
+    ## @param images.fluentBit.registry Image registry.
     registry: ghcr.io
+    ## @param images.fluentBit.repository Image registry.
     repository: calyptia/core/calyptia-fluent-bit
+    ## @param images.fluentBit.tag Image tag.
     tag: 25.4.2
-    pullSecrets: []
   ingestCheck:
+    ## @param images.ingestCheck.registry Image registry.
     registry: ghcr.io
+    ## @param images.ingestCheck.repository Image repository.
     repository: calyptia/core/ingest-check
+    ## @param images.ingestCheck.tag Image tag.
     tag: 0.0.7
-    pullSecrets: []
-cloudUrl: https://cloud-api.calyptia.com
-pipelineServiceType: LoadBalancer

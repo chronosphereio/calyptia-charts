@@ -28,6 +28,7 @@ rules:
       - deployments
       - clusterrolebindings
       - daemonsets
+      - statefulsets
       - replicasets
       - pods
       - pods/log

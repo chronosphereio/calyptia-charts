@@ -219,6 +219,12 @@ tests:
               port: 15334
             initialDelaySeconds: 5
             periodSeconds: 5
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+      - equal:
+          path: spec.template.spec.containers[1].imagePullPolicy
+          value: IfNotPresent
   - it: checks annotations
     set:
       coreInstance: ci-1234
@@ -478,3 +484,32 @@ tests:
             foo: bar
             kubectl.kubernetes.io/default-container: from-cloud
             zed: zen
+  - it: sets global pull policy
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      global:
+        pullPolicy: Always
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+      - equal:
+          path: spec.template.spec.containers[1].imagePullPolicy
+          value: Always
+  - it: sets individual pull policy
+    set:
+      coreInstance: ci-1234
+      cloudToken: xxx
+      images:
+        fromCloud:
+          pullPolicy: Always
+        toCloud:
+          pullPolicy: Always
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+      - equal:
+          path: spec.template.spec.containers[1].imagePullPolicy
+          value: Always
