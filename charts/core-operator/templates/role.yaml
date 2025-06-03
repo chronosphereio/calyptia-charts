@@ -29,6 +29,7 @@ rules:
       - clusterrolebindings
       - daemonsets
       - statefulsets
+      - persistentvolumeclaims
       - replicasets
       - pods
       - pods/log

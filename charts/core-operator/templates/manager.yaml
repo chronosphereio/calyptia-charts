@@ -49,7 +49,10 @@ spec:
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           {{- end }}
           args:
-            - "--leader-elect"          
+            - "--leader-elect"
+            {{- if .Values.statefulSetDeletionTimeout }}
+            - "--statefulset-deletion-timeout={{ .Values.statefulSetDeletionTimeout }}"
+            {{- end }}
           name: manager
           ports:
             - containerPort: 8443
