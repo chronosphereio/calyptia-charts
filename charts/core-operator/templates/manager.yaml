@@ -62,11 +62,15 @@ spec:
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
+          {{- if .Values.securityContext }}
+          securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- else }}
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
                 - ALL
+          {{- end }}
       securityContext:
         runAsNonRoot: true
       serviceAccount: {{ template "operator.serviceAccountName" . }}

@@ -99,6 +99,9 @@ spec:
         {{- if .Values.fromCloud.resources }}
         resources: {{- toYaml .Values.fromCloud.resources | nindent 12 }}
         {{- end }}
+        {{- if .Values.securityContext }}
+        securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
+        {{- end }}
         ports:
           - containerPort: {{ .Values.fromCloud.debugPort }}
             name: debug
@@ -162,6 +165,9 @@ spec:
 {{- end }}
         {{- if .Values.toCloud.resources }}
         resources: {{- toYaml .Values.toCloud.resources | nindent 12 }}
+        {{- end }}
+        {{- if .Values.securityContext }}
+        securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
         {{- end }}
         ports:
           - containerPort: {{ $toCloudPort }}
