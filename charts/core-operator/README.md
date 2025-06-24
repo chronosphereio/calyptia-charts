@@ -23,7 +23,7 @@ Configures the operator deployment.
 | `enabled`                     | Enables this chart                                                       | `true`                   |
 | `images.operator.registry`    | Image registry. This can be overridden by `global.imageRegistry`.        | `ghcr.io`                |
 | `images.operator.repository`  | Image repository.                                                        | `calyptia/core-operator` |
-| `images.operator.tag`         | Image tag.                                                               | `3.55.0`                 |
+| `images.operator.tag`         | Image tag.                                                               | `3.57.0`                 |
 | `images.operator.pullSecrets` | Image pull secret names. This is joined with `global.image.pullSecrets`. | `[]`                     |
 | `images.operator.pullPolicy`  | Pull policy. This can be overridden by `global.image.pullPolicy`.        | `IfNotPresent`           |
 | `commonAnnotations`           | Annotations added to all resources, except the operator pod.             | `{}`                     |
@@ -83,3 +83,11 @@ Configures a secret to pull images.
 | `imageCredentials.password`   | Password for login to the registry.                                         |       |
 | `imageCredentials.email`      | Email for login to the registry.                                            |       |
 | `statefulSetDeletionTimeout`  | Timeout duration for StatefulSet deletion during resize operations          | `1m`  |
+
+### Security Context
+
+Configures the security context for the operator deployment.
+
+| Name              | Description                                                                                                                           | Value |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| `securityContext` | Security context for the operator pod. If not specified, defaults to not allowing privilege escalation and dropping all capabilities. | `nil` |

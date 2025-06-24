@@ -26,7 +26,7 @@ images:
     ## @param images.operator.repository Image repository.
     repository: calyptia/core-operator
     ## @param images.operator.tag Image tag.
-    tag: 3.55.0
+    tag: 3.57.0
     ## @param images.operator.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
     pullSecrets: []
     ## @param images.operator.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
@@ -120,3 +120,10 @@ nameOverride: ""
 
 ## @param statefulSetDeletionTimeout Timeout duration for StatefulSet deletion during resize operations
 statefulSetDeletionTimeout: "1m"
+
+## @section Security Context
+## @descriptionStart
+## Configures the security context for the operator deployment.
+## @descriptionEnd
+## @param securityContext Security context for the operator pod. If not specified, defaults to not allowing privilege escalation and dropping all capabilities.
+securityContext: null
