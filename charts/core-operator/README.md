@@ -23,7 +23,7 @@ Configures the operator deployment.
 | `enabled`                     | Enables this chart                                                       | `true`                   |
 | `images.operator.registry`    | Image registry. This can be overridden by `global.imageRegistry`.        | `ghcr.io`                |
 | `images.operator.repository`  | Image repository.                                                        | `calyptia/core-operator` |
-| `images.operator.tag`         | Image tag.                                                               | `3.59.0`                 |
+| `images.operator.tag`         | Image tag.                                                               | `3.60.0`                 |
 | `images.operator.pullSecrets` | Image pull secret names. This is joined with `global.image.pullSecrets`. | `[]`                     |
 | `images.operator.pullPolicy`  | Pull policy. This can be overridden by `global.image.pullPolicy`.        | `IfNotPresent`           |
 | `commonAnnotations`           | Annotations added to all resources, except the operator pod.             | `{}`                     |
@@ -62,14 +62,15 @@ Probes to check the health of the operator deployment.
 
 Configure the RBAC for the operator deployment.
 
-| Name                         | Description                                                                           | Value  |
-| ---------------------------- | ------------------------------------------------------------------------------------- | ------ |
-| `rbac.create`                | Specifies whether RBAC resources should be created                                    | `true` |
-| `serviceAccount.create`      | If the ServiceAccount is created for the operator.                                    | `true` |
-| `serviceAccount.name`        | The name of the Service Account.                                                      | `""`   |
-| `serviceAccount.annotations` | Additional annotations added to the Service Account. Merged with `commonAnnotations`. | `{}`   |
-| `fullnameOverride`           | Sets `serviceAccount.name` to `fullnameOverride-calyptia-core-operator` if not set.   | `""`   |
-| `nameOverride`               | Sets `fullnameOverride` to `.Release.Name-nameOverride` if not set.                   | `""`   |
+| Name                         | Description                                                                                                          | Value   |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------- |
+| `rbac.create`                | Specifies whether RBAC resources should be created                                                                   | `true`  |
+| `rbac.enableStatefulSet`     | Enables the StatefulSets and PersistentVolumeClaims delete, create, patch, update verbs for the operator controller. | `false` |
+| `serviceAccount.create`      | If the ServiceAccount is created for the operator.                                                                   | `true`  |
+| `serviceAccount.name`        | The name of the Service Account.                                                                                     | `""`    |
+| `serviceAccount.annotations` | Additional annotations added to the Service Account. Merged with `commonAnnotations`.                                | `{}`    |
+| `fullnameOverride`           | Sets `serviceAccount.name` to `fullnameOverride-calyptia-core-operator` if not set.                                  | `""`    |
+| `nameOverride`               | Sets `fullnameOverride` to `.Release.Name-nameOverride` if not set.                                                  | `""`    |
 
 ### Pull Secret
 

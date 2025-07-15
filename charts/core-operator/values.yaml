@@ -26,7 +26,7 @@ images:
     ## @param images.operator.repository Image repository.
     repository: calyptia/core-operator
     ## @param images.operator.tag Image tag.
-    tag: 3.59.0
+    tag: 3.60.0
     ## @param images.operator.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
     pullSecrets: []
     ## @param images.operator.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
@@ -90,6 +90,8 @@ livenessProbe:
 rbac:
   ## @param rbac.create Specifies whether RBAC resources should be created
   create: true
+  ## @param rbac.enableStatefulSet Enables the StatefulSets and PersistentVolumeClaims delete, create, patch, update verbs for the operator controller.
+  enableStatefulSet: false
 serviceAccount:
   ## @param serviceAccount.create If the ServiceAccount is created for the operator.
   create: true
