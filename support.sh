@@ -59,7 +59,7 @@ mkdir -p "$OUTPUT_DIR"
 \kubectl get -o yaml crd > "$OUTPUT_DIR"/kubectl-crds.yaml
 
 mkdir -p "$OUTPUT_DIR"/cluster
-\kubectl cluster-info dump --all-namespaces -o yaml --output-directory="$OUTPUT_DIR"/cluster
+\kubectl cluster-info dump --namespaces $NAMESPACE_CS -o yaml --output-directory="$OUTPUT_DIR"/cluster
 
 # Grab stuff not returned by `get all`
 for namespace in $(\kubectl get namespaces --output=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
