@@ -58,8 +58,10 @@ mkdir -p "$OUTPUT_DIR"
 \kubectl get -o yaml crd > "$OUTPUT_DIR"/kubectl-crds.yaml
 
 
-\kubectl get pods --all-namespaces -o yaml > "$OUTPUT_DIR"/kubectl-all-pods.yaml
-\kubectl describe all --all-namespaces > "$OUTPUT_DIR"/kubectl-all.log
+for ns in "${NAMESPACE_LIST[@]}"; do
+  \kubectl get pods -n "$ns" -o yaml >> "$OUTPUT_DIR"/kubectl-all-pods.yaml
+  \kubectl describe all -n "$ns" >> "$OUTPUT_DIR"/kubectl-all.log
+done
 
 mkdir -p "$OUTPUT_DIR"/cluster
 \kubectl cluster-info dump --namespaces $NAMESPACE_CS -o yaml --output-directory="$OUTPUT_DIR"/cluster
