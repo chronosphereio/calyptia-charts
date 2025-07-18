@@ -24,7 +24,25 @@ function find_unused_port() {
     return 1
 }
 
+NAMESPACE_LIST=()
+while getopts "n:" opt; do
+  case $opt in
+    n) NAMESPACE_LIST+=("$OPTARG");;
+  esac
+done
+shift $((OPTIND-1))
+
+if [ ${#NAMESPACE_LIST[@]} -eq 0 ]; then
+  NAMESPACE_LIST=($(kubectl get ns -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep '^kube-'))
+  NAMESPACE_LIST+=("default")
+  NAMESPACE_LIST+=("calyptia")
+fi
+
+NAMESPACE_LIST=($(printf "%s\n" "${NAMESPACE_LIST[@]}" | sort -u))
+NAMESPACE_CS=$(IFS=, ; echo "${NAMESPACE_LIST[*]}")
+
 echo "Running support script: $(date -u +"%Y-%m-%dT%H:%M:%SZ") $*"
+echo "Using namespaces: ${NAMESPACE_LIST[*]}"
 
 if ! command -v kubectl &> /dev/null; then
     echo "ERROR: Missing kubectl"
