@@ -33,10 +33,11 @@ done
 shift $((OPTIND-1))
 
 if [ ${#NAMESPACE_LIST[@]} -eq 0 ]; then
-  NAMESPACE_LIST=($(kubectl get ns -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep '^kube-'))
-  NAMESPACE_LIST+=("default")
   NAMESPACE_LIST+=("calyptia")
 fi
+
+NAMESPACE_LIST+=($(kubectl get ns -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep '^kube-'))
+NAMESPACE_LIST+=("default")
 
 NAMESPACE_LIST=($(printf "%s\n" "${NAMESPACE_LIST[@]}" | sort -u))
 NAMESPACE_CS=$(IFS=, ; echo "${NAMESPACE_LIST[*]}")
@@ -54,9 +55,11 @@ echo "Output stored here (add extra information beforehand to be tarred up): $OU
 mkdir -p "$OUTPUT_DIR"
 
 \kubectl get nodes -o yaml > "$OUTPUT_DIR"/kubectl-nodes.yaml
+\kubectl get -o yaml crd > "$OUTPUT_DIR"/kubectl-crds.yaml
+
+
 \kubectl get pods --all-namespaces -o yaml > "$OUTPUT_DIR"/kubectl-all-pods.yaml
 \kubectl describe all --all-namespaces > "$OUTPUT_DIR"/kubectl-all.log
-\kubectl get -o yaml crd > "$OUTPUT_DIR"/kubectl-crds.yaml
 
 mkdir -p "$OUTPUT_DIR"/cluster
 \kubectl cluster-info dump --namespaces $NAMESPACE_CS -o yaml --output-directory="$OUTPUT_DIR"/cluster
