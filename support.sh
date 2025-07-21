@@ -126,7 +126,7 @@ done
 # Grab all images used in the cluster: https://kubernetes.io/docs/tasks/access-application-cluster/list-all-running-container-images/
 for ns in "${NAMESPACE_LIST[@]}"; do
   \kubectl get pods -n "$ns" -o jsonpath="{.items[*].spec.containers[*].image}"
-done | tr -s '[:space:]' '\n' | sort | uniq -c &>> "$OUTPUT_DIR"/kubectl-all-images.log
+done | tr -s '[:space:]' '\n' | sort | uniq -c >> "$OUTPUT_DIR"/kubectl-all-images.log
 
 for namespace in $(\kubectl get namespaces --output=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
 do
