@@ -77,7 +77,7 @@ do
     done
 
     # Get secrets in the namespace. All data values will be redacted.
-    for secret in $(\kubectl get secrets -n "$namespace" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
+    for secret in $(\kubectl get secrets -n "$namespace"  -o json | jq -r '.items[] | select(.data != null and (.data | length > 0)) | .metadata.name')
     do
         \kubectl get secret "$secret" -n "$namespace" -o json | jq '.data |= with_entries(.value = "--REDACTED--")' >> "${OUTPUT_DIR}/namespaces/${namespace}"/secrets.json
     done
