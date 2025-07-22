@@ -4,8 +4,8 @@ description: Calyptia Core Instance chart
 home: https://calyptia.com/products/core/
 icon: https://storage.googleapis.com/calyptia_public_resources_bucket/logo-darkmode.svg
 type: application
-version: 3.60.0
-appVersion: "v3.60.0"
+version: 3.61.0
+appVersion: "v3.61.0"
 maintainers:
   - name: Calyptia
     email: hello@calyptia.com
