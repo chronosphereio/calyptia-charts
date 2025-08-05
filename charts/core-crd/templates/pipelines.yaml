@@ -1669,7 +1669,6 @@ spec:
                 labels:
                   additionalProperties:
                     type: string
-                  description: service account for pipelines
                   type: object
                 lifecycle:
                   description: |-
@@ -1959,6 +1958,9 @@ spec:
                           type: object
                       type: object
                   type: object
+                serviceAccount:
+                  description: ServiceAccount specifies the service account to use for pipeline pods
+                  type: string
                 sidecars:
                   description: Sidecars allows specifying additional containers to run alongside the main container
                   items:
