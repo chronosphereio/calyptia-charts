@@ -1666,6 +1666,11 @@ spec:
                 kind:
                   description: Enums
                   type: string
+                kubernetesSecretName:
+                  description: |-
+                    KubernetesSecretName specifies the name of a Kubernetes secret that contains environment variables
+                    to be injected into pipeline pods. The secret's data keys will become environment variable names.
+                  type: string
                 labels:
                   additionalProperties:
                     type: string
