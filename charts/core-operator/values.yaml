@@ -26,7 +26,7 @@ images:
     ## @param images.operator.repository Image repository.
     repository: calyptia/core-operator
     ## @param images.operator.tag Image tag.
-    tag: 3.64.0
+    tag: 3.66.0
     ## @param images.operator.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
     pullSecrets: []
     ## @param images.operator.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.

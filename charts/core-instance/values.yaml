@@ -37,7 +37,7 @@ images:
     ## @param images.fromCloud.repository Image repository.
     repository: calyptia/core-operator/sync-from-cloud
     ## @param images.fromCloud.tag Image tag.
-    tag: 3.64.0
+    tag: 3.66.0
     ## @param images.fromCloud.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
     pullSecrets: []
     ## @param images.fromCloud.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
@@ -48,7 +48,7 @@ images:
     ## @param images.toCloud.repository Image repository.
     repository: calyptia/core-operator/sync-to-cloud
     ## @param images.toCloud.tag Image tag.
-    tag: 3.64.0
+    tag: 3.66.0
     ## @param images.toCloud.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
     pullSecrets: []
     ## @param images.toCloud.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
@@ -59,14 +59,14 @@ images:
     ## @param images.hotReload.repository Image repository.
     repository: calyptia/configmap-reload
     ## @param images.hotReload.tag Image tag.
-    tag: 0.15.0
+    tag: 0.15.1
   ingestCheck:
     ## @param images.ingestCheck.registry Image registry. This can be overridden by `global.imageRegistry`.
     registry: ghcr.io
     ## @param images.ingestCheck.repository Image repository.
     repository: calyptia/core/ingest-check
     ## @param images.ingestCheck.tag Image tag.
-    tag: 1.0.1
+    tag: 1.0.2
 ## @param interval How often to sync data to/from the cloud.
 interval: "15s"
 ## @param probeIntervalSec How often to run liveness and readiness probes. If 0, probes are disabled.
