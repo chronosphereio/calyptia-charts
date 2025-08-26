@@ -24,7 +24,7 @@ images:
     ## @param images.fluentBit.repository Image registry.
     repository: calyptia/core/calyptia-fluent-bit
     ## @param images.fluentBit.tag Image tag.
-    tag: 25.8.1
+    tag: 25.8.2
   ingestCheck:
     ## @param images.ingestCheck.registry Image registry.
     registry: ghcr.io
