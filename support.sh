@@ -82,6 +82,14 @@ do
         \kubectl get secret "$secret" -n "$namespace" -o json | jq '.data |= with_entries(.value = "--REDACTED--")' >> "${OUTPUT_DIR}/namespaces/${namespace}"/secrets.json
     done
 
+    # Redact sensitive key:value pairs in pipelines
+    sed -E 's/"(private_key_id|private_key)"[[:space:]]*:[[:space:]]*"[^"]*"/"\1": "--REDACTED--"/g' "${OUTPUT_DIR}/namespaces/${namespace}/pipelines.core.calyptia.com.yaml" > "${OUTPUT_DIR}/namespaces/${namespace}/pipelines_redacted.yaml"
+    mv "${OUTPUT_DIR}/namespaces/${namespace}/pipelines_redacted.yaml" "${OUTPUT_DIR}/namespaces/${namespace}/pipelines.core.calyptia.com.yaml"
+
+    # Redact sensitive key:value pairs in configmaps
+    sed -E 's/"(private_key_id|private_key)"[[:space:]]*:[[:space:]]*"[^"]*"/"\1": "--REDACTED--"/g' "${OUTPUT_DIR}/namespaces/${namespace}/configmaps.yaml" > "${OUTPUT_DIR}/namespaces/${namespace}/configmaps_redacted.yaml"
+    mv "${OUTPUT_DIR}/namespaces/${namespace}/configmaps_redacted.yaml" "${OUTPUT_DIR}/namespaces/${namespace}/configmaps.yaml"
+
     # Attempt to discover token and url for cloud-api in cluster
     if [[ -z "$CALYPTIA_CLOUD_TOKEN" ]]; then
         if \kubectl get --namespace "$namespace" secret auth-secret &>/dev/null; then
