@@ -23,6 +23,10 @@ function find_unused_port() {
     echo -1
     return 1
 }
+if ! command -v kubectl &> /dev/null; then
+    echo "ERROR: Missing kubectl"
+    exit 1
+fi
 
 NAMESPACE_LIST=()
 while getopts "n:" opt; do
@@ -31,6 +35,7 @@ while getopts "n:" opt; do
   esac
 done
 shift $((OPTIND-1))
+
 
 if [ ${#NAMESPACE_LIST[@]} -eq 0 ]; then
   NAMESPACE_LIST+=("calyptia")
@@ -44,11 +49,6 @@ NAMESPACE_CS=$(IFS=, ; echo "${NAMESPACE_LIST[*]}")
 
 echo "Running support script: $(date -u +"%Y-%m-%dT%H:%M:%SZ") $*"
 echo "Using namespaces: ${NAMESPACE_LIST[*]}"
-
-if ! command -v kubectl &> /dev/null; then
-    echo "ERROR: Missing kubectl"
-    exit 1
-fi
 
 echo "Output stored here (add extra information beforehand to be tarred up): $OUTPUT_DIR"
 # Ensure we have the directory
