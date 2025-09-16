@@ -3202,6 +3202,8 @@ spec:
                       format: int32
                       type: integer
                   type: object
+                message:
+                  type: string
                 servicestatuses:
                   additionalProperties:
                     description: ServiceStatus represents the current status of a service.

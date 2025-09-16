@@ -37,7 +37,7 @@ images:
     ## @param images.fromCloud.repository Image repository.
     repository: calyptia/core-operator/sync-from-cloud
     ## @param images.fromCloud.tag Image tag.
-    tag: 3.69.0
+    tag: 3.70.0
     ## @param images.fromCloud.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
     pullSecrets: []
     ## @param images.fromCloud.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
@@ -48,7 +48,7 @@ images:
     ## @param images.toCloud.repository Image repository.
     repository: calyptia/core-operator/sync-to-cloud
     ## @param images.toCloud.tag Image tag.
-    tag: 3.69.0
+    tag: 3.70.0
     ## @param images.toCloud.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
     pullSecrets: []
     ## @param images.toCloud.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
