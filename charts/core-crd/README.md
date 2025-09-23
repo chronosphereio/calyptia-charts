@@ -20,11 +20,11 @@ Configures the default images used for Pipelines and Ingest Checks when not expl
 | Name                            | Description       | Value                               |
 | ------------------------------- | ----------------- | ----------------------------------- |
 | `images.hotReload.registry`     | Image registry.   | `ghcr.io`                           |
-| `images.hotReload.repository`   | Image repository. | `calyptia/configmap-reload`         |
-| `images.hotReload.tag`          | Image tag.        | `0.11.1`                            |
+| `images.hotReload.repository`   | Image repository. | `chronosphereio/configmap-reload`   |
+| `images.hotReload.tag`          | Image tag.        | `v1.0.0`                            |
 | `images.fluentBit.registry`     | Image registry.   | `ghcr.io`                           |
 | `images.fluentBit.repository`   | Image registry.   | `calyptia/core/calyptia-fluent-bit` |
-| `images.fluentBit.tag`          | Image tag.        | `25.9.2`                            |
+| `images.fluentBit.tag`          | Image tag.        | `25.9.3`                            |
 | `images.ingestCheck.registry`   | Image registry.   | `ghcr.io`                           |
 | `images.ingestCheck.repository` | Image repository. | `calyptia/core/ingest-check`        |
 | `images.ingestCheck.tag`        | Image tag.        | `0.0.7`                             |
