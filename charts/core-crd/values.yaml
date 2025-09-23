@@ -15,16 +15,16 @@ images:
     ## @param images.hotReload.registry Image registry.
     registry: ghcr.io
     ## @param images.hotReload.repository Image repository.
-    repository: calyptia/configmap-reload
+    repository: chronosphereio/configmap-reload
     ## @param images.hotReload.tag Image tag.
-    tag: 0.11.1
+    tag: v1.0.0
   fluentBit:
     ## @param images.fluentBit.registry Image registry.
     registry: ghcr.io
     ## @param images.fluentBit.repository Image registry.
     repository: calyptia/core/calyptia-fluent-bit
     ## @param images.fluentBit.tag Image tag.
-    tag: 25.9.2
+    tag: 25.9.3
   ingestCheck:
     ## @param images.ingestCheck.registry Image registry.
     registry: ghcr.io

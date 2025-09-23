@@ -11,7 +11,6 @@ global:
     - regcreds
   ## @param global.pullPolicy Image pull policy to use for all images. This overrides the `pullPolicy` for all images.
   pullPolicy: ""
-
 ## @section Deployment
 ## @descriptionStart
 ## Configures the core-instance deployment.
@@ -37,7 +36,7 @@ images:
     ## @param images.fromCloud.repository Image repository.
     repository: calyptia/core-operator/sync-from-cloud
     ## @param images.fromCloud.tag Image tag.
-    tag: 3.70.0
+    tag: 3.71.0
     ## @param images.fromCloud.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
     pullSecrets: []
     ## @param images.fromCloud.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
@@ -48,7 +47,7 @@ images:
     ## @param images.toCloud.repository Image repository.
     repository: calyptia/core-operator/sync-to-cloud
     ## @param images.toCloud.tag Image tag.
-    tag: 3.70.0
+    tag: 3.71.0
     ## @param images.toCloud.pullSecrets Image pull secret names. This is joined with `global.image.pullSecrets`.
     pullSecrets: []
     ## @param images.toCloud.pullPolicy Pull policy. This can be overridden by `global.image.pullPolicy`.
@@ -57,9 +56,9 @@ images:
     ## @param images.hotReload.registry Image registry. This can be overridden by `global.imageRegistry`.
     registry: ghcr.io
     ## @param images.hotReload.repository Image repository.
-    repository: calyptia/configmap-reload
+    repository: chronosphereio/configmap-reload
     ## @param images.hotReload.tag Image tag.
-    tag: 0.15.1
+    tag: v1.0.0
   ingestCheck:
     ## @param images.ingestCheck.registry Image registry. This can be overridden by `global.imageRegistry`.
     registry: ghcr.io
@@ -88,7 +87,6 @@ toCloud:
   resources: {}
 ## @param cloudTimeout HTTP timeout for requests to the cloud. 0 disables the timeout.
 cloudTimeout: 0
-
 ## @section Pipeline
 ## @descriptionStart
 ## Configures the Pipelines installed by the core-instance.
@@ -118,7 +116,6 @@ httpsProxy: ""
 noProxy: ""
 ## @param cloudProxy Sets the http proxy to use when connecting to the cloud.
 cloudProxy: ""
-
 ## @section RBAC
 ## @descriptionStart
 ## Configures the RBAC for the core-instance deployment.
@@ -137,7 +134,6 @@ serviceAccount:
 fullnameOverride: ""
 ## @param nameOverride Sets `fullnameOverride` to `.Release.Name-nameOverride` if not set.
 nameOverride: ""
-
 ## @section Pull Secret
 ## @descriptionStart
 ## Configures a secret to pull images.
