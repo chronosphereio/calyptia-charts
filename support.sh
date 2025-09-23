@@ -23,72 +23,35 @@ function find_unused_port() {
     echo -1
     return 1
 }
+
+echo "Running support script: $(date -u +"%Y-%m-%dT%H:%M:%SZ") $*"
+
 if ! command -v kubectl &> /dev/null; then
     echo "ERROR: Missing kubectl"
     exit 1
 fi
-
-NAMESPACE_LIST=()
-while getopts "n:" opt; do
-  case $opt in
-    n) NAMESPACE_LIST+=("$OPTARG");;
-  esac
-done
-shift $((OPTIND-1))
-
-
-if [ ${#NAMESPACE_LIST[@]} -eq 0 ]; then
-  NAMESPACE_LIST+=("calyptia")
-fi
-
-NAMESPACE_LIST+=($(kubectl get ns -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep '^kube-'))
-NAMESPACE_LIST+=("default")
-
-NAMESPACE_LIST=($(printf "%s\n" "${NAMESPACE_LIST[@]}" | sort -u))
-NAMESPACE_CS=$(IFS=, ; echo "${NAMESPACE_LIST[*]}")
-
-echo "Running support script: $(date -u +"%Y-%m-%dT%H:%M:%SZ") $*"
-echo "Using namespaces: ${NAMESPACE_LIST[*]}"
 
 echo "Output stored here (add extra information beforehand to be tarred up): $OUTPUT_DIR"
 # Ensure we have the directory
 mkdir -p "$OUTPUT_DIR"
 
 \kubectl get nodes -o yaml > "$OUTPUT_DIR"/kubectl-nodes.yaml
+\kubectl get pods --all-namespaces -o yaml > "$OUTPUT_DIR"/kubectl-all-pods.yaml
+\kubectl describe all --all-namespaces > "$OUTPUT_DIR"/kubectl-all.log
 \kubectl get -o yaml crd > "$OUTPUT_DIR"/kubectl-crds.yaml
 
-
-for ns in "${NAMESPACE_LIST[@]}"; do
-  \kubectl get pods -n "$ns" -o yaml >> "$OUTPUT_DIR"/kubectl-all-pods.yaml
-  \kubectl describe all -n "$ns" >> "$OUTPUT_DIR"/kubectl-all.log
-done
-
 mkdir -p "$OUTPUT_DIR"/cluster
-\kubectl cluster-info dump --namespaces $NAMESPACE_CS -o yaml --output-directory="$OUTPUT_DIR"/cluster
+\kubectl cluster-info dump --all-namespaces -o yaml --output-directory="$OUTPUT_DIR"/cluster
 
 # Grab stuff not returned by `get all`
-for namespace in ${NAMESPACE_LIST[@]}
+for namespace in $(\kubectl get namespaces --output=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
 do
-    # Get YAML for everything in the namespace, except secrets. If more resources need to be excluded, add them to the grep list.
-    for resource_type in $(\kubectl api-resources --namespaced --verbs=list -o name | grep -Ewv "^(secrets)$" | tr "\n" " ");
+    # Get YAML for everything in the namespace
+    for resource_type in $(\kubectl api-resources --namespaced --verbs=list -o name | tr "\n" " ");
     do
         mkdir -p "${OUTPUT_DIR}/namespaces/${namespace}"
         \kubectl get -n "$namespace" "$resource_type" --show-kind --ignore-not-found -o yaml > "${OUTPUT_DIR}/namespaces/${namespace}"/"$resource_type".yaml
     done
-
-    # Get secrets in the namespace. All data values will be redacted.
-    for secret in $(\kubectl get secrets -n "$namespace"  -o json | jq -r '.items[] | select(.data != null and (.data | length > 0)) | .metadata.name')
-    do
-        \kubectl get secret "$secret" -n "$namespace" -o json | jq '.data |= with_entries(.value = "--REDACTED--")' >> "${OUTPUT_DIR}/namespaces/${namespace}"/secrets.json
-    done
-
-    # Redact sensitive key:value pairs in pipelines
-    sed -E 's/"(private_key_id|private_key)"[[:space:]]*:[[:space:]]*"[^"]*"/"\1": "--REDACTED--"/g' "${OUTPUT_DIR}/namespaces/${namespace}/pipelines.core.calyptia.com.yaml" > "${OUTPUT_DIR}/namespaces/${namespace}/pipelines_redacted.yaml"
-    mv "${OUTPUT_DIR}/namespaces/${namespace}/pipelines_redacted.yaml" "${OUTPUT_DIR}/namespaces/${namespace}/pipelines.core.calyptia.com.yaml"
-
-    # Redact sensitive key:value pairs in configmaps
-    sed -E 's/"(private_key_id|private_key)"[[:space:]]*:[[:space:]]*"[^"]*"/"\1": "--REDACTED--"/g' "${OUTPUT_DIR}/namespaces/${namespace}/configmaps.yaml" > "${OUTPUT_DIR}/namespaces/${namespace}/configmaps_redacted.yaml"
-    mv "${OUTPUT_DIR}/namespaces/${namespace}/configmaps_redacted.yaml" "${OUTPUT_DIR}/namespaces/${namespace}/configmaps.yaml"
 
     # Attempt to discover token and url for cloud-api in cluster
     if [[ -z "$CALYPTIA_CLOUD_TOKEN" ]]; then
@@ -132,9 +95,10 @@ do
 done
 
 # Grab all images used in the cluster: https://kubernetes.io/docs/tasks/access-application-cluster/list-all-running-container-images/
-for ns in "${NAMESPACE_LIST[@]}"; do
-  \kubectl get pods -n "$ns" -o jsonpath="{.items[*].spec.containers[*].image}"
-done | tr -s '[:space:]' '\n' | sort | uniq -c >> "$OUTPUT_DIR"/kubectl-all-images.log
+\kubectl get pods --all-namespaces -o jsonpath="{.items[*].spec.containers[*].image}" |\
+    tr -s '[:space:]' '\n' |\
+    sort |\
+    uniq -c &> "$OUTPUT_DIR"/kubectl-all-images.log
 
 for namespace in $(\kubectl get namespaces --output=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
 do
