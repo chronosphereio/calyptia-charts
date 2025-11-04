@@ -24,7 +24,7 @@ Configures the default images used for Pipelines and Ingest Checks when not expl
 | `images.hotReload.tag`          | Image tag.        | `v1.0.1`                            |
 | `images.fluentBit.registry`     | Image registry.   | `ghcr.io`                           |
 | `images.fluentBit.repository`   | Image registry.   | `calyptia/core/calyptia-fluent-bit` |
-| `images.fluentBit.tag`          | Image tag.        | `25.10.5`                           |
+| `images.fluentBit.tag`          | Image tag.        | `25.10.7`                           |
 | `images.ingestCheck.registry`   | Image registry.   | `ghcr.io`                           |
 | `images.ingestCheck.repository` | Image repository. | `calyptia/core/ingest-check`        |
 | `images.ingestCheck.tag`        | Image tag.        | `0.0.7`                             |
