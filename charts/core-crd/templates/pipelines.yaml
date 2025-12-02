@@ -1963,6 +1963,34 @@ spec:
                           type: object
                       type: object
                   type: object
+                secretVolumeMounts:
+                  description: SecretVolumeMounts defines secrets to mount as volumes with environment variable mappings
+                  items:
+                    description: SecretVolumeMount defines a secret to mount as files with environment variable mappings
+                    properties:
+                      envMappings:
+                        description: EnvMappings defines which secret keys to expose as environment variables
+                        items:
+                          description: EnvMapping maps a secret key to an environment variable
+                          properties:
+                            envVar:
+                              description: EnvVar is the environment variable name that will contain the file path
+                              type: string
+                            key:
+                              description: Key is the secret key to mount as a file
+                              type: string
+                          required:
+                            - envVar
+                            - key
+                          type: object
+                        type: array
+                      secretName:
+                        description: SecretName is the name of the Kubernetes secret to mount
+                        type: string
+                    required:
+                      - secretName
+                    type: object
+                  type: array
                 serviceAccount:
                   description: ServiceAccount specifies the service account to use for pipeline pods
                   type: string
