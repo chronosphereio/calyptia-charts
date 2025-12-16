@@ -29,12 +29,12 @@ Configures the core-instance deployment.
 | `cloudUrl`                      | Cloud URL endpoint.                                                                                                            | `https://cloud-api.calyptia.com`         |
 | `images.fromCloud.registry`     | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
 | `images.fromCloud.repository`   | Image repository.                                                                                                              | `calyptia/core-operator/sync-from-cloud` |
-| `images.fromCloud.tag`          | Image tag.                                                                                                                     | `3.81.0`                                 |
+| `images.fromCloud.tag`          | Image tag.                                                                                                                     | `3.82.0`                                 |
 | `images.fromCloud.pullSecrets`  | Image pull secret names. This is joined with `global.image.pullSecrets`.                                                       | `[]`                                     |
 | `images.fromCloud.pullPolicy`   | Pull policy. This can be overridden by `global.image.pullPolicy`.                                                              | `IfNotPresent`                           |
 | `images.toCloud.registry`       | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
 | `images.toCloud.repository`     | Image repository.                                                                                                              | `calyptia/core-operator/sync-to-cloud`   |
-| `images.toCloud.tag`            | Image tag.                                                                                                                     | `3.81.0`                                 |
+| `images.toCloud.tag`            | Image tag.                                                                                                                     | `3.82.0`                                 |
 | `images.toCloud.pullSecrets`    | Image pull secret names. This is joined with `global.image.pullSecrets`.                                                       | `[]`                                     |
 | `images.toCloud.pullPolicy`     | Pull policy. This can be overridden by `global.image.pullPolicy`.                                                              | `IfNotPresent`                           |
 | `images.hotReload.registry`     | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
