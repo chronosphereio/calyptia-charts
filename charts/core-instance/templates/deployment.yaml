@@ -28,6 +28,7 @@ spec:
         calyptia.core: core-instance
     spec:
       serviceAccount: {{ template "instance.serviceAccountName" . }}
+      {{- include "instance.imagePullSecrets" . | nindent 6 }}
       containers:
       - env:
         - name: CORE_INSTANCE

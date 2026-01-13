@@ -41,17 +41,11 @@ Return the proper hotReload.image image name
 {{- end -}}
 
 {{/*
-Return the proper Container Registry Secret Names
+Return the imagePullSecrets for the core-instance deployment.
+Uses global.imagePullSecrets which applies to all images (fromCloud, toCloud, etc.).
 */}}
-{{- define "fromCloud.imagePullSecrets" -}}
-{{ include "common.images.pullSecrets" (dict "images" (list .Values.images.fromCloud) "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper Container Registry Secret Names
-*/}}
-{{- define "toCloud.imagePullSecrets" -}}
-{{ include "common.images.pullSecrets" (dict "images" (list .Values.images.toCloud) "global" .Values.global) }}
+{{- define "instance.imagePullSecrets" -}}
+{{ include "common.images.pullSecrets" (dict "images" (list .Values.images.fromCloud .Values.images.toCloud) "global" .Values.global) }}
 {{- end -}}
 
 {{- define "createImagePullSecret" -}}
