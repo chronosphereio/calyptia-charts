@@ -23,9 +23,6 @@ rules:
   - secrets
   - pods
   - pods/log
-  - ingestchecks
-  - ingestchecks/finalizers
-  - ingestchecks/status
   - pipelines
   - pipelines/finalizers
   - pipelines/status

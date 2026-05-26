@@ -299,12 +299,7 @@ core-crd:
       tag: 24.4.4
       pullSecrets: []
       digest: ''
-    ingestCheck:
-      registry: ghcr.io
-      repository: calyptia/core/ingest-check
-      tag: 0.0.7
-      pullSecrets: []
-      digest: ''
+
 #
 # Dependent chart config: https://github.com/calyptia/charts/tree/master/charts/core-operator
 core-operator:

@@ -32,10 +32,7 @@ tests:
           registry: custom.io
           repository: test/hotreload
           tag: 1.2.3
-        ingestCheck:
-          registry: custom.io
-          repository: test/ingestcheck
-          tag: 1.2.3
+
       # Use alternative forms to verify backwards compatible
       httpProxy: https
       cloud_proxy: cloud
@@ -111,30 +108,25 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env[11]
           value:
-            value: custom.io/test/ingestcheck:1.2.3
-            name: INGEST_CHECK_IMAGE
-      - equal:
-          path: spec.template.spec.containers[0].env[12]
-          value:
             value: test=1234,nope=4321
             name: ANNOTATIONS
       - equal:
-          path: spec.template.spec.containers[0].env[15]
+          path: spec.template.spec.containers[0].env[14]
           value:
             value: https
             name: HTTP_PROXY
       - equal:
-            path: spec.template.spec.containers[0].env[18]
+            path: spec.template.spec.containers[0].env[17]
             value:
               value: cloud
               name: CLOUD_PROXY
       - equal:
-          path: spec.template.spec.containers[0].env[19]
+          path: spec.template.spec.containers[0].env[18]
           value:
             value: "5334"
             name: DEBUG_PORT
       - equal:
-          path: spec.template.spec.containers[0].env[20]
+          path: spec.template.spec.containers[0].env[19]
           value:
             value: "0"
             name: CLOUD_TIMEOUT
@@ -232,7 +224,7 @@ tests:
       calyptiaAnnotations: "test=1234,nope=test"
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env[12]
+          path: spec.template.spec.containers[0].env[11]
           value:
             value: test=1234,nope=test
             name: ANNOTATIONS
@@ -243,7 +235,7 @@ tests:
       calyptiaAnnotations: "test=some three words,nope=two words"
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env[12]
+          path: spec.template.spec.containers[0].env[11]
           value:
             value: test=some three words,nope=two words
             name: ANNOTATIONS
@@ -254,7 +246,7 @@ tests:
       calyptiaAnnotations: "test=email@test.com,nope=two words"
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env[12]
+          path: spec.template.spec.containers[0].env[11]
           value:
             value: test=email@test.com,nope=two words
             name: ANNOTATIONS
@@ -265,7 +257,7 @@ tests:
       calyptiaAnnotations: "myspecial/annotation='this has spaces'"
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env[12]
+          path: spec.template.spec.containers[0].env[11]
           value:
             value: myspecial/annotation='this has spaces'
             name: ANNOTATIONS
@@ -348,7 +340,7 @@ tests:
       cloudTimeout: 15s
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env[20]
+          path: spec.template.spec.containers[0].env[19]
           value:
             value: "15s"
             name: CLOUD_TIMEOUT
@@ -367,7 +359,7 @@ tests:
         debugPort: 5678
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env[19]
+          path: spec.template.spec.containers[0].env[18]
           value:
             value: "1234"
             name: DEBUG_PORT

@@ -40,9 +40,6 @@ Configures the core-instance deployment.
 | `images.hotReload.registry`     | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
 | `images.hotReload.repository`   | Image repository.                                                                                                              | `chronosphereio/configmap-reload`        |
 | `images.hotReload.tag`          | Image tag.                                                                                                                     | `v1.0.10`                                |
-| `images.ingestCheck.registry`   | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
-| `images.ingestCheck.repository` | Image repository.                                                                                                              | `calyptia/core/ingest-check`             |
-| `images.ingestCheck.tag`        | Image tag.                                                                                                                     | `1.0.7`                                  |
 | `interval`                      | How often to sync data to/from the cloud.                                                                                      | `15s`                                    |
 | `probeIntervalSec`              | How often to run liveness and readiness probes. If 0, probes are disabled.                                                     | `5`                                      |
 | `commonAnnotations`             | Annotations added to the resources created by this chart. These annotations are not added to the Pipeline resources created by | `{}`                                     |

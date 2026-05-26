@@ -70,7 +70,7 @@ CRD removal can be prevented with the following annotation:
 
 ```shell
 kubectl annotate crd pipelines.core.calyptia.com helm.sh/resource-policy=keep --overwrite
-kubectl annotate crd ingestchecks.core.calyptia.com helm.sh/resource-policy=keep --overwrite
+
 ```
 
 To upgrade from 1.x series chart to 2.x, also add these annotations to prevent replacement of the CRD:
