@@ -39,9 +39,6 @@ rules:
       - nodes
       - jobs
       - podsecuritypolicies
-      - ingestchecks
-      - ingestchecks/finalizers
-      - ingestchecks/status
       - pipelines
       - pipelines/finalizers
       - pipelines/status

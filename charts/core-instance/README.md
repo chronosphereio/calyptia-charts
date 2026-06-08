@@ -19,39 +19,36 @@ Configures image parameters for all images.
 
 Configures the core-instance deployment.
 
-| Name                            | Description                                                                                                                    | Value                                    |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
-| `enabled`                       | Enables this chart                                                                                                             | `true`                                   |
-| `coreInstance`                  | Name of the core-instance                                                                                                      | `""`                                     |
-| `cloudToken`                    | API Token in plaintext. Only used if `cloudTokenSec` not set.                                                                  | `""`                                     |
-| `cloudTokenSec.name`            | API Token secret name.                                                                                                         | `nil`                                    |
-| `cloudTokenSec.key`             | API Token secret key.                                                                                                          | `nil`                                    |
-| `cloudUrl`                      | Cloud URL endpoint.                                                                                                            | `https://cloud-api.calyptia.com`         |
-| `images.fromCloud.registry`     | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
-| `images.fromCloud.repository`   | Image repository.                                                                                                              | `calyptia/core-operator/sync-from-cloud` |
-| `images.fromCloud.tag`          | Image tag.                                                                                                                     | `3.107.0`                                |
-| `images.fromCloud.pullSecrets`  | Image pull secret names. This is joined with `global.image.pullSecrets`.                                                       | `[]`                                     |
-| `images.fromCloud.pullPolicy`   | Pull policy. This can be overridden by `global.image.pullPolicy`.                                                              | `IfNotPresent`                           |
-| `images.toCloud.registry`       | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
-| `images.toCloud.repository`     | Image repository.                                                                                                              | `calyptia/core-operator/sync-to-cloud`   |
-| `images.toCloud.tag`            | Image tag.                                                                                                                     | `3.107.0`                                |
-| `images.toCloud.pullSecrets`    | Image pull secret names. This is joined with `global.image.pullSecrets`.                                                       | `[]`                                     |
-| `images.toCloud.pullPolicy`     | Pull policy. This can be overridden by `global.image.pullPolicy`.                                                              | `IfNotPresent`                           |
-| `images.hotReload.registry`     | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
-| `images.hotReload.repository`   | Image repository.                                                                                                              | `chronosphereio/configmap-reload`        |
-| `images.hotReload.tag`          | Image tag.                                                                                                                     | `v1.0.10`                                |
-| `images.ingestCheck.registry`   | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
-| `images.ingestCheck.repository` | Image repository.                                                                                                              | `calyptia/core/ingest-check`             |
-| `images.ingestCheck.tag`        | Image tag.                                                                                                                     | `1.0.7`                                  |
-| `interval`                      | How often to sync data to/from the cloud.                                                                                      | `15s`                                    |
-| `probeIntervalSec`              | How often to run liveness and readiness probes. If 0, probes are disabled.                                                     | `5`                                      |
-| `commonAnnotations`             | Annotations added to the resources created by this chart. These annotations are not added to the Pipeline resources created by | `{}`                                     |
-| `namespaceOverride`             | Namespace to use instead of `.Release.Namespace`.                                                                              | `""`                                     |
-| `fromCloud.debugPort`           | The debug port for the fromCloud container.                                                                                    | `5334`                                   |
-| `fromCloud.resources`           | The resources for the fromCloud container.                                                                                     | `{}`                                     |
-| `toCloud.debugPort`             | The debug port for the toCloud container.                                                                                      | `15334`                                  |
-| `toCloud.resources`             | The resources for the toCloud container.                                                                                       | `{}`                                     |
-| `cloudTimeout`                  | HTTP timeout for requests to the cloud. 0 disables the timeout.                                                                | `0`                                      |
+| Name                           | Description                                                                                                                    | Value                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| `enabled`                      | Enables this chart                                                                                                             | `true`                                   |
+| `coreInstance`                 | Name of the core-instance                                                                                                      | `""`                                     |
+| `cloudToken`                   | API Token in plaintext. Only used if `cloudTokenSec` not set.                                                                  | `""`                                     |
+| `cloudTokenSec.name`           | API Token secret name.                                                                                                         | `nil`                                    |
+| `cloudTokenSec.key`            | API Token secret key.                                                                                                          | `nil`                                    |
+| `cloudUrl`                     | Cloud URL endpoint.                                                                                                            | `https://cloud-api.calyptia.com`         |
+| `images.fromCloud.registry`    | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
+| `images.fromCloud.repository`  | Image repository.                                                                                                              | `calyptia/core-operator/sync-from-cloud` |
+| `images.fromCloud.tag`         | Image tag.                                                                                                                     | `3.109.0`                                |
+| `images.fromCloud.pullSecrets` | Image pull secret names. This is joined with `global.image.pullSecrets`.                                                       | `[]`                                     |
+| `images.fromCloud.pullPolicy`  | Pull policy. This can be overridden by `global.image.pullPolicy`.                                                              | `IfNotPresent`                           |
+| `images.toCloud.registry`      | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
+| `images.toCloud.repository`    | Image repository.                                                                                                              | `calyptia/core-operator/sync-to-cloud`   |
+| `images.toCloud.tag`           | Image tag.                                                                                                                     | `3.109.0`                                |
+| `images.toCloud.pullSecrets`   | Image pull secret names. This is joined with `global.image.pullSecrets`.                                                       | `[]`                                     |
+| `images.toCloud.pullPolicy`    | Pull policy. This can be overridden by `global.image.pullPolicy`.                                                              | `IfNotPresent`                           |
+| `images.hotReload.registry`    | Image registry. This can be overridden by `global.imageRegistry`.                                                              | `ghcr.io`                                |
+| `images.hotReload.repository`  | Image repository.                                                                                                              | `chronosphereio/configmap-reload`        |
+| `images.hotReload.tag`         | Image tag.                                                                                                                     | `v1.0.10`                                |
+| `interval`                     | How often to sync data to/from the cloud.                                                                                      | `15s`                                    |
+| `probeIntervalSec`             | How often to run liveness and readiness probes. If 0, probes are disabled.                                                     | `5`                                      |
+| `commonAnnotations`            | Annotations added to the resources created by this chart. These annotations are not added to the Pipeline resources created by | `{}`                                     |
+| `namespaceOverride`            | Namespace to use instead of `.Release.Namespace`.                                                                              | `""`                                     |
+| `fromCloud.debugPort`          | The debug port for the fromCloud container.                                                                                    | `5334`                                   |
+| `fromCloud.resources`          | The resources for the fromCloud container.                                                                                     | `{}`                                     |
+| `toCloud.debugPort`            | The debug port for the toCloud container.                                                                                      | `15334`                                  |
+| `toCloud.resources`            | The resources for the toCloud container.                                                                                       | `{}`                                     |
+| `cloudTimeout`                 | HTTP timeout for requests to the cloud. 0 disables the timeout.                                                                | `0`                                      |
 
 ### Pipeline
 

@@ -60,8 +60,6 @@ spec:
           value: {{ .Values.healthCheckPipelinePort | quote }}
         - name: HEALTH_CHECK_PIPELINE_SERVICE_TYPE
           value: {{ .Values.healthCheckPipelineServiceType | quote }}
-        - name: INGEST_CHECK_IMAGE
-          value: {{ template "ingestCheck.image" . }}
         - name: ANNOTATIONS
           value: {{ .Values.calyptiaAnnotations }}
         - name: SKIP_SERVICE_CREATION
