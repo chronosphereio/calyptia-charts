@@ -15,16 +15,13 @@ Configures common parameters.
 
 ### Images
 
-Configures the default images used for Pipelines and Ingest Checks when not explicitly set at creation time.
+Configures the default images used for Pipelines when not explicitly set at creation time.
 
-| Name                            | Description       | Value                               |
-| ------------------------------- | ----------------- | ----------------------------------- |
-| `images.hotReload.registry`     | Image registry.   | `ghcr.io`                           |
-| `images.hotReload.repository`   | Image repository. | `chronosphereio/configmap-reload`   |
-| `images.hotReload.tag`          | Image tag.        | `v1.0.10`                           |
-| `images.fluentBit.registry`     | Image registry.   | `ghcr.io`                           |
-| `images.fluentBit.repository`   | Image registry.   | `calyptia/core/calyptia-fluent-bit` |
-| `images.fluentBit.tag`          | Image tag.        | `26.5.5`                            |
-| `images.ingestCheck.registry`   | Image registry.   | `ghcr.io`                           |
-| `images.ingestCheck.repository` | Image repository. | `calyptia/core/ingest-check`        |
-| `images.ingestCheck.tag`        | Image tag.        | `1.0.7`                             |
+| Name                          | Description       | Value                               |
+| ----------------------------- | ----------------- | ----------------------------------- |
+| `images.hotReload.registry`   | Image registry.   | `ghcr.io`                           |
+| `images.hotReload.repository` | Image repository. | `chronosphereio/configmap-reload`   |
+| `images.hotReload.tag`        | Image tag.        | `v1.0.10`                           |
+| `images.fluentBit.registry`   | Image registry.   | `ghcr.io`                           |
+| `images.fluentBit.repository` | Image registry.   | `calyptia/core/calyptia-fluent-bit` |
+| `images.fluentBit.tag`        | Image tag.        | `26.6.2`                            |
