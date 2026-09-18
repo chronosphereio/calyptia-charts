@@ -21,7 +21,7 @@ Configures the default images used for Pipelines when not explicitly set at crea
 | ----------------------------- | ----------------- | ----------------------------------- |
 | `images.hotReload.registry`   | Image registry.   | `ghcr.io`                           |
 | `images.hotReload.repository` | Image repository. | `chronosphereio/configmap-reload`   |
-| `images.hotReload.tag`        | Image tag.        | `v1.0.12`                           |
+| `images.hotReload.tag`        | Image tag.        | `v1.0.13`                           |
 | `images.fluentBit.registry`   | Image registry.   | `ghcr.io`                           |
 | `images.fluentBit.repository` | Image registry.   | `calyptia/core/calyptia-fluent-bit` |
-| `images.fluentBit.tag`        | Image tag.        | `26.8.3`                            |
+| `images.fluentBit.tag`        | Image tag.        | `26.9.8`                            |
